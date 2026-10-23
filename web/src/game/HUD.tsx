@@ -1,8 +1,9 @@
 import { Bell, BellOff, BookOpen, Camera, Check, Clock, Compass, Ellipsis, Eye, EyeOff, House, Info, Library, LogOut, MapPin, Moon, Settings2, Search, Sun, Sunrise, Sunset, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { COARSE_POINTER } from "./Environment";
 import { exhibitApproach, type Exhibit } from "./exhibits";
 import { lineMatchesQuery, groveApproach, searchTrees, treeApproach, type Forest, type Grove, type TreeSite } from "./forest";
+import { albumRank, ALBUM_RANKS } from "./familyForest";
 import { GenreGlyph } from "./GenreGlyph";
 import { SPECIES, speciesFor } from "./species";
 import { saveScreenshot } from "./screenshot";
@@ -77,6 +78,15 @@ export function HUD({ forest }: { forest: Forest }) {
   const showBook = Boolean(nearby && (pinnedSlug || nearby.line.slug !== nearbyDismissed));
   const bookDist = nearby ? Math.hypot(nearby.x - x, nearby.z - z) : Infinity;
   const pressed = nearby ? library.includes(nearby.line.slug) : false;
+  // A line that lifts the album to a new rank says so, in place of the usual toast.
+  const rank = albumRank(library.length, forest.trees.length);
+  const lastRank = useRef(rank);
+  useEffect(() => {
+    const level = (r: string | null) => (ALBUM_RANKS as readonly string[]).indexOf(r ?? "");
+    const rise = level(rank) > level(lastRank.current);
+    lastRank.current = rank;
+    if (rise) useGame.setState({ toast: `New rank: ${rank}` });
+  }, [rank]);
   // The redwood's card shows on the hub plaza; once closed it stays closed until the cart leaves.
   const hubDist = Math.hypot(x, z);
   const [redwoodClosed, setRedwoodClosed] = useState(false);
@@ -663,9 +673,11 @@ function GrovesTab({ forest }: { forest: Forest }) {
 function PressTab({ forest }: { forest: Forest }) {
   const library = useGame((s) => s.library);
   const collected = forest.trees.filter((t) => library.includes(t.line.slug));
+  const rank = albumRank(collected.length, forest.trees.length);
 
   return (<>
     <p className="mt-2 text-sm text-muted">
+      {rank ? <><span className="font-medium text-fg">{rank}</span> · </> : null}
       {collected.length} collected of {forest.trees.length}
     </p>
     <ul className="mt-3 min-h-0 flex-1 space-y-2 overflow-auto">

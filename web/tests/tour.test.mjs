@@ -113,3 +113,50 @@ test("?tree=<line id> names a tree, whatever the case, and anything else names n
   assert.equal(treeFromSearch("?tree=", trees), undefined);
   assert.equal(treeFromSearch("", trees), undefined);
 });
+
+test("the tour meets the groves in the order their families began, from home", () => {
+  const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
+  const { planTour } = require(`${process.env.FOREST_TEST_BUILD}/tour.js`);
+  const { indexCatalog } = require(`${process.env.FOREST_TEST_BUILD}/familyCatalog.js`);
+  const { foundingYear } = require(`${process.env.FOREST_TEST_BUILD}/familyForest.js`);
+  const [family, focal] = orchardArgs();
+  const f = getForest(family, focal);
+  const index = indexCatalog(family);
+  const year = (grove) => Math.min(...family.lines.filter((l) => l.grove === grove).map((l) => foundingYear(index, l) ?? Infinity));
+  const want = [...f.groves].map((g) => g.genre).sort((a, b) => year(a) - year(b) || a.localeCompare(b));
+  assert.ok(Number.isFinite(year(want[0])), "the Kennedy file dates some founding marriages");
+  assert.deepEqual(f.circuit.map((wp) => wp.genre), want);
+  const tour = planTour(f, f.home.x, f.home.z, f.home.yaw);
+  assert.deepEqual(tour.stops.map((s) => s.genre), want);
+});
+
+test("a line's founding year is its founder's first dated marriage, else the eldest child's birth", () => {
+  const { indexCatalog } = require(`${process.env.FOREST_TEST_BUILD}/familyCatalog.js`);
+  const { foundingYear } = require(`${process.env.FOREST_TEST_BUILD}/familyForest.js`);
+  const person = (id, born) => ({ id, name: id, surname: "X", sex: null, born, died: null, birth_place: null, line: "x", living: false });
+  const catalog = {
+    people: [person("A", "1800"), person("B", null), person("C", "1830"), person("D", "1828"), person("E", null)],
+    families: [
+      { id: "F1", spouses: ["A", "B"], children: ["C", "D"], married: null },
+      { id: "F2", spouses: ["A"], children: [], married: "12 MAY 1840" },
+    ],
+    lines: [], links: [], places: [],
+  };
+  const line = (founder) => ({ id: founder, surname: "X", grove: "x", founders: [founder], members: [founder], span: null });
+  assert.equal(foundingYear(indexCatalog(catalog), line("A")), 1840);
+  catalog.families[1].married = null;
+  assert.equal(foundingYear(indexCatalog(catalog), line("A")), 1828);
+  assert.equal(foundingYear(indexCatalog(catalog), line("E")), null);
+});
+
+test("album ranks run Reader to Keeper of the Line", () => {
+  const { albumRank } = require(`${process.env.FOREST_TEST_BUILD}/familyForest.js`);
+  assert.equal(albumRank(0, 48), null);
+  assert.equal(albumRank(1, 48), "Reader");
+  assert.equal(albumRank(5, 48), "Clerk");
+  assert.equal(albumRank(12, 48), "Registrar");
+  assert.equal(albumRank(24, 48), "Archivist");
+  assert.equal(albumRank(47, 48), "Archivist");
+  assert.equal(albumRank(48, 48), "Keeper of the Line");
+  assert.equal(albumRank(1, 1), "Keeper of the Line");
+});

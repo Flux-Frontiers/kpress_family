@@ -47,15 +47,17 @@ export function sunflower(n: number, inner: number, spacing: number): { pts: { x
  * A hub-and-spoke wheel of groves. Groves stand in one or two tiers around a
  * clear hub, each tier outside its own circular ring road: a grove's inner
  * edge sits `setback` beyond its tier's ring, so the road passes every grove
- * in the tier at the same distance. The smaller groves take the inner tier,
- * where a ring is short; the tier split is whichever gives the smallest world.
- * Within a tier big and small groves alternate (small ones stand nearer the
- * ring, so a big neighbour needs less angle) and any spare angle is shared
- * evenly. Spokes run straight from the hub out to the last ring, through the
- * gaps between inner-tier groves that leave a `lane` of clearance on both sides,
- * at most `spokes` of them, as evenly spread as the gaps allow.
+ * in the tier at the same distance. Groves are seated in the caller's order:
+ * the first ones on the inner tier, counterclockwise, the rest on the outer;
+ * the tier split is whichever gives the smallest world, and any spare angle
+ * in a tier is shared evenly. Spokes run straight from the hub out to the
+ * last ring, through gaps between inner-tier groves. The first spoke always
+ * runs through the gap before the first grove, and each outer tier is turned
+ * so a counterclockwise lap of every ring from that spoke meets the groves in
+ * order. The others take gaps that leave a `lane` of clearance on both
+ * sides, at most `spokes` in all, as evenly spread as the gaps allow.
  *
- * :param radii: Grove radii, in the caller's grove order.
+ * :param radii: Grove radii, in the order the groves are to be met.
  * :param opts: `hub`, the least radius of the first ring; `setback`, ring road
  *   to grove edge; `gap`, least clear distance between two groves; `lane`,
  *   least clear distance from a spoke's centreline to a grove edge; `spokes`,
@@ -76,16 +78,6 @@ export function wheelLayout(
   const sep = (R: number, a: number, b: number) => {
     const ca = R + setback + a, cb = R + setback + b, d = a + b + gap;
     return Math.acos(clamp((ca * ca + cb * cb - d * d) / (2 * ca * cb), -1, 1));
-  };
-  // Big, small, next big, next small ...; ties by grove order so the layout is stable.
-  const alternate = (idx: number[]) => {
-    const s = [...idx].sort((a, b) => radii[b]! - radii[a]! || a - b);
-    const out: number[] = [];
-    while (s.length) {
-      out.push(s.shift()!);
-      if (s.length) out.push(s.pop()!);
-    }
-    return out;
   };
   const place = (order: number[], R: number): number[] | null => {
     const k = order.length;
@@ -117,11 +109,11 @@ export function wheelLayout(
     }
     return hi;
   };
-  const bySize = [...radii.keys()].sort((a, b) => radii[a]! - radii[b]! || a - b);
+  const all = [...radii.keys()];
   let best: { tiers: number[][]; rings: number[]; outer: number } | null = null;
-  // k groves in the inner tier; k = 0 is a single ring.
+  // The first k groves in the inner tier; k = 0 is a single ring.
   for (let k = 0; k < n; k++) {
-    const tiers = (k ? [bySize.slice(0, k), bySize.slice(k)] : [bySize]).map(alternate);
+    const tiers = k ? [all.slice(0, k), all.slice(k)] : [all];
     const rings: number[] = [];
     let least = hub;
     for (const t of tiers) {
@@ -136,19 +128,14 @@ export function wheelLayout(
   const { tiers, rings, outer } = best!;
   const centers: { x: number; z: number }[] = new Array(n);
   const tier: number[] = new Array(n);
-  const angles: number[][] = [];
-  tiers.forEach((order, t) => {
-    const ang = place(order, rings[t]!)!;
-    angles.push(ang);
-    order.forEach((g, i) => {
-      const c = rings[t]! + setback + radii[g]!;
-      centers[g] = { x: c * Math.cos(ang[i]!), z: c * Math.sin(ang[i]!) };
-      tier[g] = t;
-    });
+  const angles: number[][] = tiers.map((order, t) => place(order, rings[t]!)!);
+  const seat = (t: number) => tiers[t]!.forEach((g, i) => {
+    const c = rings[t]! + setback + radii[g]!;
+    centers[g] = { x: c * Math.cos(angles[t]![i]!), z: c * Math.sin(angles[t]![i]!) };
+    tier[g] = t;
   });
-  // A spoke in each gap of the inner tier, at the bearing that keeps farthest
-  // from the groves either side; only where it keeps `lane` from every grove.
-  const first = tiers[0]!;
+  // Spokes run from the hub out to the last ring through gaps of the inner
+  // tier, at the bearing in each gap that keeps farthest from the groves.
   const reach = rings[rings.length - 1]!;
   const clearOf = (a: number) => {
     const ux = Math.cos(a), uz = Math.sin(a);
@@ -161,9 +148,9 @@ export function wheelLayout(
     });
     return worst;
   };
-  const open: number[] = [];
+  const first = tiers[0]!;
   const firstAng = angles[0]!;
-  for (let i = 0; i < first.length; i++) {
+  const bestIn = (i: number) => {
     const a0 = firstAng[i]!, a1 = i + 1 < first.length ? firstAng[i + 1]! : firstAng[0]! + 2 * Math.PI;
     let bestA = 0, bestC = -Infinity;
     for (let s = 1; s < 64; s++) {
@@ -171,33 +158,37 @@ export function wheelLayout(
       const c = clearOf(a);
       if (c > bestC) { bestC = c; bestA = a; }
     }
-    if (bestC >= lane) open.push(Math.atan2(Math.sin(bestA), Math.cos(bestA)));
+    return { a: Math.atan2(Math.sin(bestA), Math.cos(bestA)), clear: bestC };
+  };
+  // The first spoke is the tour's: it runs through the gap before the inner
+  // tier's first grove, so a counterclockwise lap from it meets the groves in
+  // order. Each outer tier is turned so its own gap between last and first
+  // grove straddles that spoke, and its lap is in order too.
+  seat(0);
+  const tourA = bestIn(first.length - 1).a;
+  for (let t = 1; t < tiers.length; t++) {
+    const ang = angles[t]!;
+    const turn = tourA - (ang[ang.length - 1]! + 2 * Math.PI) / 2;
+    angles[t] = ang.map((a) => a + turn);
+    seat(t);
   }
-  // Keep the most even `spokes` of the open gaps: try evenly spaced bearings at
-  // every turn of the wheel, take the open gap nearest each, and keep the set
-  // that strays least from even.
-  const want = Math.min(opts.spokes, open.length);
-  let spokes = open;
-  if (want < open.length) {
-    let bestErr = Infinity;
-    for (let s = 0; s < 128; s++) {
-      const used = new Set<number>();
-      let err = 0;
-      for (let j = 0; j < want; j++) {
-        const target = (2 * Math.PI * (s / 128 + j)) / want;
-        let pick = -1, d = Infinity;
-        open.forEach((a, i) => {
-          const e = Math.abs(Math.atan2(Math.sin(a - target), Math.cos(a - target)));
-          if (!used.has(i) && e < d) { d = e; pick = i; }
-        });
-        used.add(pick);
-        err = Math.max(err, d);
-      }
-      if (err < bestErr) {
-        bestErr = err;
-        spokes = open.filter((_, i) => used.has(i));
-      }
-    }
+  const open: number[] = [];
+  for (let i = 0; i + 1 < first.length; i++) {
+    const { a, clear } = bestIn(i);
+    if (clear >= lane) open.push(a);
+  }
+  // The rest of the spokes: the open gap nearest each of `spokes - 1` bearings
+  // spread evenly around from the tour's.
+  const spokes = [tourA];
+  const want = Math.min(opts.spokes - 1, open.length);
+  for (let j = 1; j <= want; j++) {
+    const target = tourA + (2 * Math.PI * j) / (want + 1);
+    let pick = -1, d = Infinity;
+    open.forEach((a, i) => {
+      const e = Math.abs(Math.atan2(Math.sin(a - target), Math.cos(a - target)));
+      if (!spokes.includes(a) && e < d) { d = e; pick = i; }
+    });
+    spokes.push(open[pick]!);
   }
   return { centers, tier, rings, spokes, outer };
 }

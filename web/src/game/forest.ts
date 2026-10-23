@@ -1,6 +1,6 @@
 import { EXHIBITS, placeExhibits, type Exhibit } from "./exhibits";
 import { indexCatalog, UNKNOWN_LINE, type FamilyCatalog, type FamilyLine } from "./familyCatalog";
-import { homeTree, lineCard, lineGrown, speciesForSurname, type HomeTree, type LineCard } from "./familyForest";
+import { foundingYear, homeTree, lineCard, lineGrown, speciesForSurname, type HomeTree, type LineCard } from "./familyForest";
 import { hourglassTree, lineTree } from "./familyTree";
 import { GROW_VERSION, cellKey3, emitBark, emitLeaves, type BarkBuffers, type GrownTree } from "./growTree";
 import { sunflower, wheelLayout } from "./math";
@@ -368,11 +368,18 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
     list.push(line);
     byGenre.set(line.grove, list);
   }
-  const genres = [...byGenre.keys()];
+  // Groves in the order their families began, for the tour: by the earliest
+  // founding year among their lines, undated groves last, ties by name.
+  const groveYear = new Map([...byGenre].map(([g, lines]) => {
+    const years = lines.map((l) => foundingYear(index, l)).filter((y): y is number => y !== null);
+    return [g, years.length ? Math.min(...years) : Infinity];
+  }));
+  const genres = [...byGenre.keys()].sort((a, b) => groveYear.get(a)! - groveYear.get(b)! || a.localeCompare(b));
   const nGenres = genres.length;
   const booksBy = new Map(genres.map((g) => [g, byGenre.get(g)!.map((line) => lineCard(index, line))]));
   // Trees packed as tight as their crowns allow (shyLayout); groves on a
-  // hub-and-spoke wheel around the home tree (wheelLayout).
+  // hub-and-spoke wheel around the home tree (wheelLayout), seated in date
+  // order so the tour loop meets them oldest first.
   const bookInner = 6.5;
   const grownBy = genres.map((g) => byGenre.get(g)!.map((line) => lineGrown(lineTree(index, line.id), line.id)));
   const layouts = grownBy.map((g) => shyLayout(g, bookInner));

@@ -103,6 +103,46 @@ export type LineCard = {
   search: string;
 };
 
+const yearOf = (date: string | null | undefined) => {
+  const m = date ? /\d{4}/.exec(date) : null;
+  return m ? Number(m[0]) : null;
+};
+
+/**
+ * The year a line was founded, for the tour's order: the founder's earliest
+ * dated marriage or, when no marriage is dated, the birth of the founder's
+ * eldest dated child. Null when neither is known.
+ */
+export function foundingYear(index: FamilyIndex, line: FamilyLine): number | null {
+  const founder = line.founders[0];
+  if (!founder) return null;
+  const families = (index.familiesOf.get(founder) ?? []).map((f) => index.family.get(f)!);
+  for (const f of families) {
+    const y = yearOf(f.married);
+    if (y !== null) return y;
+  }
+  const births = families.flatMap((f) => f.children.map((c) => yearOf(index.person.get(c)?.born)))
+    .filter((y): y is number => y !== null);
+  return births.length ? Math.min(...births) : null;
+}
+
+/** The album's ranks, lowest first. */
+export const ALBUM_RANKS = ["Reader", "Clerk", "Registrar", "Archivist", "Keeper of the Line"] as const;
+
+/**
+ * The rank an album of `count` lines earns out of `total`: Reader for the
+ * first line, Clerk at a tenth, Registrar at a quarter, Archivist at half,
+ * Keeper of the Line with every line. Null for an empty album.
+ */
+export function albumRank(count: number, total: number): string | null {
+  const need = [1, Math.ceil(total / 10), Math.ceil(total / 4), Math.ceil(total / 2), total];
+  let rank: string | null = null;
+  need.forEach((n, i) => {
+    if (count >= Math.max(1, n)) rank = ALBUM_RANKS[i]!;
+  });
+  return rank;
+}
+
 /** A line's card: its people, by name, for every place the UI shows a tree. */
 export function lineCard(index: FamilyIndex, line: FamilyLine): LineCard {
   const founders = line.founders.map((id) => index.person.get(id)?.name ?? id).join(" & ");

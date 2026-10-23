@@ -21,7 +21,7 @@ const TOUCH: [string, string][] = [
   ["Stick, bottom left", "drive: up forward, down reverse, sideways to steer"],
   ["Drag anywhere else", "look around; the view eases back to ahead when you let go"],
   ["Add", "the nearest tree's line to your album, once you are close"],
-  ["Guided tour", "the cart drives the ring and stops at each grove"],
+  ["Guided tour", "the cart drives the ring and stops at each grove, oldest family first"],
   ["Three-dot menu", "time of day, silent mode, screenshot, settings, this page"],
 ];
 

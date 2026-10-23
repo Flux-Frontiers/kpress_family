@@ -11,7 +11,7 @@ export const TOUR_WELCOME = "Welcome to the Knowledge Press: The Family, a famil
 
 /** How the forest is made. */
 export const TOUR_ABOUT =
-  "Each of its {books} family lines is a tree of parents and children, gathered into {groves} groves by surname.";
+  "Its {books} family lines stand in {groves} groves by surname, visited in the order the families began.";
 
 /** How to take over. */
 export const TOUR_TIPS = "You can take over at any time: just turn or brake.";
