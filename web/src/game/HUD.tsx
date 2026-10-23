@@ -1,16 +1,14 @@
-import { Bell, BellOff, BookOpen, Camera, Check, Clock, Compass, Ellipsis, Eye, EyeOff, House, Info, Library, LogOut, MapPin, MessagesSquare, Moon, Settings2, Search, Sun, Sunrise, Sunset, X } from "lucide-react";
+import { Bell, BellOff, BookOpen, Camera, Check, Clock, Compass, Ellipsis, Eye, EyeOff, House, Info, Library, LogOut, MapPin, Moon, Settings2, Search, Sun, Sunrise, Sunset, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { COARSE_POINTER } from "./Environment";
 import { exhibitApproach, type Exhibit } from "./exhibits";
 import { lineMatchesQuery, groveApproach, searchTrees, treeApproach, type Forest, type Grove, type TreeSite } from "./forest";
 import { GenreGlyph } from "./GenreGlyph";
 import { SPECIES, speciesFor } from "./species";
-import { QUESTS, questProgress } from "./quests";
 import { saveScreenshot } from "./screenshot";
 import { SEASONS } from "./seasons";
 import { wrapAngle, yawToward } from "./sim";
 import { FamilyReader } from "./FamilyReader";
-import { LiveMootPlayer, MootList, MootPlayer } from "./MootOverlay";
 import { READ_RANGE, useGame, type PlaqueText } from "./store";
 import type { TimeMode } from "./sky";
 
@@ -40,8 +38,6 @@ export function HUD({ forest }: { forest: Forest }) {
   const collect = useGame((s) => s.collect);
   const nearbyDismissed = useGame((s) => s.nearbyDismissed);
   const dismissNearby = useGame((s) => s.dismissNearby);
-  const questHintHidden = useGame((s) => s.questHintHidden);
-  const dismissQuestHint = useGame((s) => s.dismissQuestHint);
   const library = useGame((s) => s.library);
   const grovesVisited = useGame((s) => s.grovesVisited);
   const speed = useGame((s) => s.speed);
@@ -66,9 +62,6 @@ export function HUD({ forest }: { forest: Forest }) {
   const readingSlug = useGame((s) => s.readingSlug);
   const openReader = useGame((s) => s.openReader);
   const reading = readingSlug ? forest.trees.find((t) => t.line.slug === readingSlug) : undefined;
-  const mootsOpen = useGame((s) => s.mootsOpen);
-  const mootId = useGame((s) => s.mootId);
-  const liveMoot = useGame((s) => s.liveMoot);
   const clean = useGame((s) => s.cleanView);
   const toggleCleanView = useGame((s) => s.toggleCleanView);
   const silent = useGame((s) => s.preferences.silent);
@@ -90,8 +83,6 @@ export function HUD({ forest }: { forest: Forest }) {
   const leftHub = hubDist > 20;
   useEffect(() => { if (leftHub) setRedwoodClosed(false); }, [leftHub]);
   const atRedwood = !silent && !pinnedSlug && hubDist < 16 && !redwoodClosed;
-  const progress = questProgress({ library, grovesVisited, season });
-  const nextQuest = QUESTS.find((q) => !q.done({ library, grovesVisited, season }));
   const selected = forest.groves.find((g) => g.genre === selectedGrove);
 
   // Sorted from where the cart was when the query changed; re-sorting every pose tick would reshuffle the list under the pointer.
@@ -111,13 +102,12 @@ export function HUD({ forest }: { forest: Forest }) {
       <header className="pointer-events-none flex items-start justify-between gap-3 p-3 sm:p-4">
         {clean ? null : (
           <div className="rounded-lg border border-border bg-surface/90 px-3 py-2">
-            <p className="font-display text-lg leading-none">Knowledge Press</p>
+            <p className="font-display text-lg leading-none">The Family</p>
             <p className="mt-1 text-xs text-muted">
               {forest.trees.length} trees · {SEASONS[season].label}
               {" · "}
               {timeLabel}
               {travelMode === "circuit" ? " · ring" : ""}
-              {progress.done ? ` · ${progress.done}/${progress.total}` : ""}
             </p>
             {stats ? (
               <p className="mt-1 font-mono text-[11px] text-faint tabular-nums">
@@ -189,14 +179,6 @@ export function HUD({ forest }: { forest: Forest }) {
               </button>
               <button
                 type="button"
-                onClick={() => useGame.getState().openMoots(true)}
-                className="hidden size-11 place-items-center rounded-md border border-border bg-surface sm:grid"
-                aria-label="Moots: books that talk to each other" title="Moots"
-              >
-                <MessagesSquare className="size-4" strokeWidth={1.75} />
-              </button>
-              <button
-                type="button"
                 onClick={() => pause(true)}
                 className="hidden size-11 place-items-center rounded-md border border-border bg-surface sm:grid"
                 aria-label="Controls and settings" title="Controls and settings · Esc"
@@ -241,8 +223,6 @@ export function HUD({ forest }: { forest: Forest }) {
                     onClick={() => { setMenuOpen(false); saveScreenshot(COARSE_POINTER); }} />
                   <MenuItem icon={<EyeOff className="size-4" strokeWidth={1.75} />} label="Clean view"
                     onClick={() => { setMenuOpen(false); toggleCleanView(); }} />
-                  <MenuItem icon={<MessagesSquare className="size-4" strokeWidth={1.75} />} label="Moots"
-                    onClick={() => { setMenuOpen(false); useGame.getState().openMoots(true); }} />
                   <MenuItem icon={<Settings2 className="size-4" strokeWidth={1.75} />} label="Controls and settings"
                     onClick={() => { setMenuOpen(false); pause(true); }} />
                   <MenuItem icon={<Info className="size-4" strokeWidth={1.75} />} label="About and tonight's sky"
@@ -408,20 +388,6 @@ export function HUD({ forest }: { forest: Forest }) {
                 ) : null}
               </div>
             </article>
-          ) : !silent && nextQuest && nextQuest.id !== questHintHidden ? (
-            <div className="relative flex items-start gap-2 rounded-md border border-border bg-surface/80 px-3 py-2 pr-12 text-sm text-muted">
-              <p className="min-w-0 flex-1">
-                <span className="text-fg">{nextQuest.title}.</span> {nextQuest.hint}
-              </p>
-              <button
-                type="button"
-                onClick={() => dismissQuestHint(nextQuest.id)}
-                className="absolute top-0.5 right-0.5 grid size-11 place-items-center rounded-md text-muted"
-                aria-label="Dismiss hint"
-              >
-                <X className="size-4" strokeWidth={1.75} />
-              </button>
-            </div>
           ) : null}
         </div>
 
@@ -452,9 +418,6 @@ export function HUD({ forest }: { forest: Forest }) {
       {browsing ? <BrowsePanel forest={forest} /> : null}
       {plaque ? <PlaquePanel plaque={plaque} /> : null}
       {reading ? <FamilyReader key={reading.line.slug} line={reading.line} /> : null}
-      {mootsOpen ? <MootList /> : null}
-      {mootId && liveMoot ? <LiveMootPlayer key={mootId} request={liveMoot} forest={forest} />
-        : mootId ? <MootPlayer key={mootId} id={mootId} forest={forest} /> : null}
     </div>
   );
 }
@@ -502,7 +465,7 @@ function flyToTree(t: TreeSite) {
 
 function jumpHome(forest: Forest) {
   useGame.getState().selectGrove(null);
-  useGame.getState().requestJump(forest.home, "Home · the corpus redwood");
+  useGame.getState().requestJump(forest.home, "Home · the home tree");
 }
 
 function jumpToExhibit(e: Exhibit) {
@@ -602,8 +565,8 @@ function BrowsePanel({ forest }: { forest: Forest }) {
   const close = () => useGame.setState({ atlasOpen: false, catalogOpen: false, libraryOpen: false });
   const tabs = [
     { id: "groves", label: "Groves", open: () => useGame.getState().toggleAtlas() },
-    { id: "books", label: "Books", open: () => useGame.getState().openCatalog(null) },
-    { id: "press", label: `Press · ${library.length}`, open: () => useGame.getState().toggleLibrary() },
+    { id: "books", label: "Lines", open: () => useGame.getState().openCatalog(null) },
+    { id: "press", label: `Album · ${library.length}`, open: () => useGame.getState().toggleLibrary() },
   ] as const;
 
   return (
@@ -738,8 +701,8 @@ function PressTab({ forest }: { forest: Forest }) {
     </ul>
     {collected.length > 0 && (
       <button type="button" className="mt-3 min-h-11 w-full rounded-md border border-border text-sm text-muted"
-        onClick={() => { if (window.confirm("Empty the press? Every book comes out, and the quests that count them start over.")) useGame.getState().emptyPress(); }}>
-        Empty the press
+        onClick={() => { if (window.confirm("Empty the album? Every line comes out.")) useGame.getState().emptyPress(); }}>
+        Empty the album
       </button>
     )}
   </>);

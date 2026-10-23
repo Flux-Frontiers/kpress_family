@@ -5,12 +5,6 @@ const require = createRequire(import.meta.url);
 globalThis.window ??= { localStorage: { getItem: () => null, setItem() {} } };
 const build = process.env.FOREST_TEST_BUILD;
 
-test("every genre in the catalog has its own glyph, and no glyph is left over", () => {
-  const { GLYPHS } = require(`${build}/genreMarks.js`);
-  const { GENRE_ORDER } = require(`${build}/catalog.js`);
-  assert.deepEqual(Object.keys(GLYPHS).sort(), [...GENRE_ORDER].sort());
-});
-
 test("glyph paths are well-formed SVG path data on the 100 grid", () => {
   const { GLYPHS, glyphFor } = require(`${build}/genreMarks.js`);
   for (const [genre, glyph] of Object.entries(GLYPHS)) {

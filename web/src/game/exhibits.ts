@@ -31,14 +31,8 @@ export type Exhibit = ExhibitSpec & {
 
 export const EXHIBITS: ExhibitSpec[] = [
   { id: "mysterium", label: "Mysterium Cosmographicum", obstacle: 2.6, treeClearance: 10 },
-  // George B. Suchanek's sculpture (FlameOfKnowledge.tsx): 4.6 m across, 8.5 m tall.
-  { id: "flame", label: "The Flame of Knowledge", obstacle: 2.6, treeClearance: 10 },
-  // The wind sculptures (WindSculptures.tsx): narrow plinths, but rotors that need open air.
-  { id: "helix", label: "Helical Rotor", obstacle: 1.8, treeClearance: 8 },
-  { id: "darrieus", label: "Darrieus Rotor", obstacle: 2.0, treeClearance: 8 },
-  { id: "savonius", label: "Savonius Tower", obstacle: 1.8, treeClearance: 8 },
+  // The Double Helix (WindSculptures.tsx): a narrow plinth, but a spinning helix that needs open air.
   { id: "dna", label: "Double Helix", obstacle: 1.8, treeClearance: 8 },
-  { id: "mast", label: "Weather Mast", obstacle: 1.4, treeClearance: 8 },
   // The armillary sundial (Sundial.tsx): rings up to 4 m across, over a plinth.
   { id: "sundial", label: "Armillary Sundial", obstacle: 2.4, treeClearance: 8 },
 ];

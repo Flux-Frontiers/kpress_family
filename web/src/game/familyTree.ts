@@ -288,12 +288,26 @@ function finish(b: Builder, key: string, f: Frame): FamilyTree {
   }
   const n = parents.length;
   const parentArr = Int32Array.from(parents);
-  const skeleton: Skeleton = {
-    nodes: Float32Array.from(pts),
-    parents: parentArr,
-    radii: pipeRadii(parentArr, n, TIP_RADIUS * f.scale, PIPE_EXPONENT, f.trunkHeight),
-    n,
-  };
+  const radii = pipeRadii(parentArr, n, TIP_RADIUS * f.scale, PIPE_EXPONENT, f.trunkHeight);
+  // The pipe model thickens every node toward the trunk's floor in proportion
+  // to its share of the trunk; in a tree with few tips, a tip's share is the
+  // whole trunk, and a spouse's twig came out as thick as the trunk. So each
+  // edge into a person with no one beyond them tapers to a fine tip from the
+  // wood it leaves.
+  const hasChild = new Uint8Array(n);
+  for (let i = 1; i < n; i++) if (parentArr[i]! >= 0) hasChild[parentArr[i]!] = 1;
+  for (let i = 1; i < n; i++) {
+    if (hasChild[i]) continue;
+    const chain = [i];
+    let k = parentArr[i]!;
+    for (let s = 0; s < EDGE_SUBDIVISIONS && k > 0; s++, k = parentArr[k]!) chain.push(k);
+    const from = radii[k]!;
+    chain.forEach((node, j) => {
+      const t = j / chain.length; // 0 at the tip
+      radii[node] = Math.min(radii[node]!, TIP_RADIUS + (from - TIP_RADIUS) * t);
+    });
+  }
+  const skeleton: Skeleton = { nodes: Float32Array.from(pts), parents: parentArr, radii, n };
   const people = b.people.map((p) => ({ ...p, node: map[p.node]! }));
   return { skeleton, people, trunkHeight: f.trunkHeight, scale: f.scale, skipped: b.skipped };
 }

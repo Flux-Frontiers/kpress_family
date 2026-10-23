@@ -37,15 +37,19 @@ Not copied: the iOS and macOS shells (`app/ios`, `app/macos`), `docs/`,
 `scripts/`, `assets/`, `renders/`, `screenshots/`, the release workflow,
 `mkdocs.yml` and the changelog.
 
-## Still pointing at knowledge_press
+## What was cut
 
-The copy still shows books, so these are left as they are until the
-Family code replaces them:
+The family edition removed what only a library needs (Phase 3, slice 3b,
+2026-10-23): the compiled book catalog, the book reader and its text loader,
+moots (overlay, voices, live-moot client and the moot settings), diaries, the
+stoic quest, the space-colonization grower (every tree is an hourglass layout
+now), the Flame of Knowledge and four of the wind sculptures, the compass
+rose, the species preview page, and the Knowledge Press App Store privacy and
+support pages. The Cosmographium, the Double Helix and the sundial were kept.
 
-- `web/src/game/links.ts`: the user guide URL.
-- `web/public/privacy.html`, `web/public/support.html`: the App Store
-  privacy and support pages.
-- `web/README.md`: the forest's own README.
-- The book catalog, moots, reader and exhibits under `web/src/` and
-  `web/public/`, and `CatalogPack`, `ChapterText` and `CorpusBrowser` in
-  the kit.
+## Still from knowledge_press
+
+- `public/start/`: the start screen's stills are still of the book forest.
+- Grove marks: every surname grove shows the same globe glyph, since the
+  glyphs are keyed by book genre.
+- The cart carries the album as the forest carried pressed books.

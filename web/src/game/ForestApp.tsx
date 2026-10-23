@@ -155,13 +155,11 @@ export function ForestApp() {
       if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
       const st = useGame.getState();
       // About: ? anywhere, the start screen too. Its dialog handles Escape itself.
-      if (e.key === "?" && !st.paused && !st.readingSlug && !st.mootsOpen && !st.mootId && !isInputTarget(e.target)) { st.toggleHelp(); return; }
+      if (e.key === "?" && !st.paused && !st.readingSlug && !isInputTarget(e.target)) { st.toggleHelp(); return; }
       if (!st.playing) return;
       if (e.code === "Escape") {
         if (st.paused || st.helpOpen) return; // The settings and About dialogs handle Escape themselves.
-        if (st.mootId) st.playMoot(null);
-        else if (st.mootsOpen) st.openMoots(false);
-        else if (st.readingSlug) st.openReader(null);
+        if (st.readingSlug) st.openReader(null);
         else if (st.plaque) st.openPlaque(null);
         else if (st.catalogOpen) st.setCatalogOpen(false);
         else if (st.atlasOpen) st.setAtlasOpen(false);
@@ -170,7 +168,7 @@ export function ForestApp() {
         return;
       }
       // The reader, the moots and the settings take the keyboard; only Escape reaches past them.
-      if (st.paused || st.readingSlug || st.mootsOpen || st.mootId || isInputTarget(e.target)) return;
+      if (st.paused || st.readingSlug || isInputTarget(e.target)) return;
       if (e.code === "KeyL") st.toggleLibrary();
       if (e.code === "KeyG") st.toggleAtlas();
       if (e.code === "KeyB") st.toggleCatalog();
@@ -181,7 +179,7 @@ export function ForestApp() {
       }
       if (e.code === "KeyH" && forest) {
         st.selectGrove(null);
-        st.requestJump(forest.home, "Home · the corpus redwood");
+        st.requestJump(forest.home, "Home · the home tree");
       }
     }
     window.addEventListener("keydown", onKey);
