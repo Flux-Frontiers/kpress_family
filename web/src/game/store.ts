@@ -306,11 +306,11 @@ export const useGame = create<GameStore>((set, get) => ({
   collect: (slug, title) => {
     const lib = get().library;
     if (lib.includes(slug)) {
-      set({ lastReadSlug: slug, toast: `Already in your press · ${title}` });
+      set({ lastReadSlug: slug, toast: `Already in your album · ${title}` });
       return;
     }
     const library = [...lib, slug];
-    set({ library, lastReadSlug: slug, toast: `Pressed · ${title}` });
+    set({ library, lastReadSlug: slug, toast: `Added to the album · ${title}` });
     persist({ ...get(), library });
   },
   emptyPress: () => {

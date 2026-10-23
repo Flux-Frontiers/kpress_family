@@ -58,14 +58,14 @@ test("fog level reads back from saved preferences", () => {
   assert.ok(FOG_SCALE.clear < FOG_SCALE.normal && FOG_SCALE.normal < FOG_SCALE.heavy);
 });
 
-test("reading a book twice says it is already in the press", () => {
+test("adding a line twice says it is already in the album", () => {
   const { useGame } = require(`${process.env.FOREST_TEST_BUILD}/store.js`);
   const st = () => useGame.getState();
   st().collect("othello", "Othello");
-  assert.equal(st().toast, "Pressed · Othello");
+  assert.equal(st().toast, "Added to the album · Othello");
   assert.ok(st().library.includes("othello"));
   st().collect("othello", "Othello");
-  assert.equal(st().toast, "Already in your press · Othello");
+  assert.equal(st().toast, "Already in your album · Othello");
   assert.equal(st().library.filter((s) => s === "othello").length, 1);
 });
 
