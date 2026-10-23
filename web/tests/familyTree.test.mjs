@@ -67,6 +67,28 @@ test("every limb runs between kin", () => {
   }
 });
 
+test("every parent-to-child pair within a line is wood: the child's limb runs down to the parent", () => {
+  const kennedy = JSON.parse(readFileSync(new URL("./fixtures/kennedy/catalog.json", import.meta.url)));
+  for (const cat of [catalog, kennedy]) {
+    const idx = indexCatalog(cat);
+    let pairs = 0;
+    for (const line of cat.lines.filter((l) => l.id !== UNKNOWN_LINE && l.members.length)) {
+      const tree = lineTree(idx, line.id);
+      const nodeOf = new Map(tree.people.filter((p) => !p.marriedIn).map((p) => [p.id, p.node]));
+      for (const child of line.members) {
+        for (const parent of parentsOf(idx, child)) {
+          if (idx.person.get(parent)?.line !== line.id) continue;
+          pairs++;
+          const below = [];
+          for (let i = tree.skeleton.parents[nodeOf.get(child)]; i >= 0; i = tree.skeleton.parents[i]) below.push(i);
+          assert.ok(below.includes(nodeOf.get(parent)), `${line.id}: ${child} does not grow from ${parent}`);
+        }
+      }
+    }
+    assert.ok(pairs > 0, "the fixture has parent-to-child pairs within a line");
+  }
+});
+
 test("every person is a member of exactly one line tree", () => {
   const membership = new Map();
   for (const line of catalog.lines.filter((l) => l.id !== UNKNOWN_LINE)) {
