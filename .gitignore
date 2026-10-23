@@ -55,6 +55,8 @@ site/
 
 # A family exported by `genkg export-web` (make family). Personal data: never committed.
 web/public/family/
+# make demo's genealogy_kg store (the public Kennedy file).
+.demo/
 
 # Local stills for review; not committed
 renders/

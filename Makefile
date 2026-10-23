@@ -4,9 +4,9 @@
 # Author: Eric G. Suchanek, PhD -- Flux-Frontiers, Liberty TWP, OH
 # Copyright (c) 2026 Eric G. Suchanek, PhD. Elastic License 2.0; see LICENSE.
 #
-# Phase 0: a copy of knowledge_press at the commit in PROVENANCE.md, still
-# showing books. Nothing here publishes, uploads or deploys, and nothing
-# here builds a graph: genealogy_kg does that.
+# Started as a copy of knowledge_press; see PROVENANCE.md. Nothing here
+# publishes, uploads or deploys. genealogy_kg builds the graphs and writes
+# the exports; `make demo` only drives it.
 #
 # The web forest (web/):
 #   make web-install   -- npm install
@@ -15,10 +15,14 @@
 #   make web-build     -- typecheck and production build
 #   make web-preview   -- production build, served like web-dev
 #   make web-kill      -- stop every running Vite dev or preview server
+#   make gallery       -- a portrait of each line tree into renders/lines
+#                         (needs make web-dev running and puppeteer-core)
 #
 # A family (web/public/family, never committed):
 #   make family FAMILY_REPO=<dir>  -- genkg export-web from a genealogy_kg store
 #                                     built with the living-person filter on
+#   make demo          -- build the public Kennedy file from genealogy_kg's
+#                         corpus into .demo/kennedy (filter on), then export it
 #
 # The Swift kit (app/KnowledgePressKit):
 #   make kit-build     -- swift build
@@ -29,8 +33,10 @@ KIT_DIR := app/KnowledgePressKit
 GENEALOGY_KG_DIR ?= ../genealogy_kg
 FAMILY_REPO ?=
 FAMILY_CUTOFF ?= 100
+DEMO_DIR := .demo/kennedy
+DEMO_GED := $(GENEALOGY_KG_DIR)/corpora/gedcom-samples/sample-kennedy/kennedy.ged
 
-.PHONY: web-install web-dev web-test web-build web-preview web-kill kit-build kit-test family
+.PHONY: web-install web-dev web-test web-build web-preview web-kill kit-build kit-test family demo gallery
 
 web-install:
 	cd web && npm install
@@ -67,3 +73,14 @@ family:
 	cd $(GENEALOGY_KG_DIR) && env -u VIRTUAL_ENV -u POETRY_ACTIVE poetry run genkg export-web \
 		--repo $(abspath $(FAMILY_REPO)) --out $(abspath web/public/family) \
 		--living-cutoff $(FAMILY_CUTOFF) --force
+
+demo:
+	mkdir -p $(DEMO_DIR)
+	cp "$(DEMO_GED)" $(DEMO_DIR)/kennedy.ged
+	printf '[tool.genealogykg]\nliving_cutoff_years = $(FAMILY_CUTOFF)\nunknown_birth_policy = "redact"\n' > $(DEMO_DIR)/pyproject.toml
+	cd $(GENEALOGY_KG_DIR) && env -u VIRTUAL_ENV -u POETRY_ACTIVE poetry run genkg build \
+		--repo $(abspath $(DEMO_DIR)) --source $(abspath $(DEMO_DIR))/kennedy.ged
+	$(MAKE) family FAMILY_REPO=$(DEMO_DIR)
+
+gallery:
+	cd web && node scripts/gallery.mjs

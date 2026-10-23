@@ -9,12 +9,14 @@ from a GEDCOM file, through two apps:
 - an iPhone, iPad and Mac app that answers questions about the family on
   the device.
 
-**Status: Phase 3, in progress.** The orchard grows from a family: one
-grove per surname, one tree per family line, and the home tree at the hub, a
-full hourglass whose roots (the focal person's ancestors) are seen through a
-glass floor over a lit pit. Every tree's wood is the kinship graph itself.
-The HUD, search and tour still speak in books; they are rewritten next.
-The repository started as a copy of
+**Status.** The web orchard is complete. One grove stands for each surname
+and one tree for each family line, and every tree's wood is the kinship
+graph itself. The home tree at the hub is a full hourglass: the focal
+person's descendants are the crown, and their ancestors are the roots, seen
+through a glass floor over a lit pit. Drive up to a tree to read its line's
+records, add lines to your album, search names, places and years, or ride
+the guided tour, which visits the groves in the order their families began.
+The iPhone, iPad and Mac app is next. The repository started as a copy of
 [knowledge_press](https://github.com/Flux-Frontiers/knowledge_press); see
 [PROVENANCE.md](PROVENANCE.md).
 
@@ -29,8 +31,13 @@ make family FAMILY_REPO=../my-family    # a genkg store built with the living fi
 make web-dev
 ```
 
+`make demo` builds the public Kennedy sample from genealogy_kg's local
+corpus (`corpora/gedcom-samples/sample-kennedy/kennedy.ged`) into
+`.demo/kennedy`, with the living filter on, and exports it the same way.
+
 `?focal=<id>` opens on that person's hourglass; otherwise the app picks the
-person whose hourglass is fullest.
+person whose hourglass is fullest. `?tree=<line id>` opens beside a line's
+tree.
 
 ## Build and test
 
@@ -42,6 +49,7 @@ make web-test      # node test suite
 make web-build     # typecheck and production build
 make web-dev       # dev server on port 5173
 make kit-test      # Swift kit tests
+make gallery       # a portrait of each line tree into renders/lines (needs web-dev)
 ```
 
 `make kit-test` skips the corpus suites unless `GUTENBERG_PACKS` names a
@@ -50,8 +58,16 @@ built GutenbergKG corpus.
 ## Privacy
 
 A GEDCOM holds personal data about living people. Real family data is never
-committed to this repository or published from it. Demos and screenshots
-use public corpora only.
+committed to this repository or published from it, and nothing here
+deploys: `web/dist/` holds the exported family after a local build, so it
+is not for publishing either. Demos and screenshots use public corpora
+only.
+
+`genkg export-web` refuses a store built without the living filter, and
+after writing it scans the export for every redacted name. The web tests
+check what this repository can: every committed fixture was exported with
+the filter on, each living person in it is a name of "Living" with no
+dates, places or page, and git tracks no export, GEDCOM or pack.
 
 ## License
 
