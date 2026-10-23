@@ -344,7 +344,7 @@ export function Player({ forest, playing }: { forest: Forest; playing: boolean }
       let want = { back: 0, rise: 0, tilt: 0 };
       if (preferences.camera === "follow") {
         for (const t of treesNear(forest, sim.x, sim.z, 18)) {
-          const frame = crownFrame(Math.hypot(t.x - sim.x, t.z - sim.z), t.top, cam.fov);
+          const frame = crownFrame(Math.hypot(t.x - sim.x, t.z - sim.z), t.top, cam.fov, sim.speed);
           if (frame.back > want.back) want = frame;
         }
       }
