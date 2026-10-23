@@ -1,3 +1,4 @@
+import { orchardArgs } from "./orchard.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -56,9 +57,9 @@ test("the welcome is only remembered once given, and a blocked store is harmless
 test("the numbers in the welcome are the real forest's", () => {
   const { getForest } = require(`${build}/forest.js`);
   const { tourIntro } = script();
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   const text = tourIntro({ books: f.trees.length, groves: f.groves.length }, false).join(" ");
-  assert.ok(f.trees.length === 253 && text.includes("253 books"), `${f.trees.length} trees`);
+  assert.ok(f.trees.length > 0 && text.includes(`${f.trees.length} books`), `${f.trees.length} trees`);
   assert.ok(text.includes(`${f.groves.length} groves`));
 });
 
@@ -66,7 +67,7 @@ test("once every grove has been visited the tour drives back to the redwood and 
   const { getForest } = require(`${build}/forest.js`);
   const { sim, teleportSim, stepVehicle } = require(`${build}/sim.js`);
   const { planTour, steerTour } = require(`${build}/tour.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   teleportSim(0, 0, 0);
   const tour = planTour(f, sim.x, sim.z, sim.yaw);
   assert.equal(tour.laps, 0);

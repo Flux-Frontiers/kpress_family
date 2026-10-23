@@ -10,9 +10,9 @@ import { FOG_SCALE } from "./preferences";
 const GOD_EYE_FOG = 0.1;
 import type { Exhibit } from "./exhibits";
 import { bookMatchesQuery, groveApproach, groveByGenre, type Forest } from "./forest";
-import { disc, ribbon, type FlatMesh } from "./roads";
-import { CompassRose } from "./CompassRose";
+import { annulus, disc, ribbon, type FlatMesh } from "./roads";
 import { CorpusRedwood } from "./CorpusRedwood";
+import { GlassPit, MarriageArcs } from "./GlassPit";
 import { Cart } from "./Cart";
 import { FlameOfKnowledge } from "./FlameOfKnowledge";
 import { GroveMarks } from "./GroveMarks";
@@ -102,7 +102,8 @@ export function World({ forest, season }: { forest: Forest; season: SeasonName }
       <directionalLight position={[-30, 20, -40]} intensity={0.2} color="#8aa0b8" />
 
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <circleGeometry args={[forest.worldRadius + 30, 64]} />
+        {/* A hole at the hub for the glass pit (GlassPit.tsx). */}
+        <ringGeometry args={[forest.corpusTree.pitRadius, forest.worldRadius + 30, 96, 1]} />
         <meshStandardMaterial color={season === "winter" ? "#c8d1ce" : groundColor} map={groundTexture} bumpMap={groundTexture} bumpScale={0.09} roughness={0.96} metalness={0} />
       </mesh>
 
@@ -118,7 +119,7 @@ export function World({ forest, season }: { forest: Forest; season: SeasonName }
       {portrait ? null : (<>
         <LanternTrail forest={forest} selectedGrove={selectedGrove} query={query} searchPick={searchPick} />
         <Signposts forest={forest} />
-        <CompassRose forest={forest} />
+        {/* No compass rose: the glass pit fills the hub plaza where it was inlaid. */}
         <GroveMarks forest={forest} />
 
         {forest.groves.map((g) => {
@@ -134,6 +135,8 @@ export function World({ forest, season }: { forest: Forest; season: SeasonName }
         })}
 
         <CorpusRedwood forest={forest} season={season} />
+        <GlassPit forest={forest} />
+        <MarriageArcs forest={forest} />
         {forest.exhibits.map((e) => {
           const View = EXHIBIT_VIEWS[e.id];
           return View ? <View key={e.id} exhibit={e} /> : null;
@@ -180,7 +183,11 @@ function Roads({ forest, circuit }: { forest: Forest; circuit: boolean }) {
       else if (line.kind === "spur") ribbon(line, 2.4, 0.035, spokes);
       else ribbon(line, 3.4, 0.045, ring);
     }
-    for (const p of forest.plazas) disc(p.x, p.z, p.r, 0.055, ring);
+    // The hub plaza is paved round the glass pit, not over it.
+    for (const p of forest.plazas) {
+      if (p.x === 0 && p.z === 0) annulus(0, 0, forest.corpusTree.pitRadius + 0.1, p.r, 0.055, ring);
+      else disc(p.x, p.z, p.r, 0.055, ring);
+    }
     return { spokes: flatGeometry(spokes), ring: flatGeometry(ring) };
   }, [forest]);
   const materials = useMemo(() => {

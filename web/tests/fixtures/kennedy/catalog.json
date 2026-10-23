@@ -1,0 +1,5226 @@
+{
+ "meta": {
+  "format": 1,
+  "generator": "genealogy_kg 0.3.0",
+  "generated": "2026-10-23T18:10:33+00:00",
+  "sources": [
+   "kennedy.ged"
+  ],
+  "privacy": {
+   "living_cutoff_years": 100,
+   "unknown_birth_policy": "redact",
+   "include_living": false
+  },
+  "counts": {
+   "people": 208,
+   "families": 75,
+   "lines": 48,
+   "links": 46,
+   "places": 104
+  }
+ },
+ "lines": [
+  {
+   "id": "baker-I10",
+   "surname": "Baker",
+   "grove": "baker",
+   "founders": [
+    "I10",
+    "I34"
+   ],
+   "members": [
+    "I10"
+   ],
+   "span": [
+    "1891",
+    "1891"
+   ]
+  },
+  {
+   "id": "baker-I9",
+   "surname": "Baker",
+   "grove": "baker",
+   "founders": [
+    "I9",
+    "I40"
+   ],
+   "members": [
+    "I9"
+   ],
+   "span": [
+    "1902",
+    "1902"
+   ]
+  },
+  {
+   "id": "bouvier-I20",
+   "surname": "Bouvier",
+   "grove": "bouvier",
+   "founders": [
+    "I20",
+    "I169"
+   ],
+   "members": [
+    "I20",
+    "I19",
+    "I25",
+    "I23",
+    "I17",
+    "I16",
+    "I26",
+    "I166",
+    "I18",
+    "I22",
+    "I24"
+   ],
+   "span": [
+    "1727",
+    "1893"
+   ]
+  },
+  {
+   "id": "brannack-I27",
+   "surname": "Brannack",
+   "grove": "brannack",
+   "founders": [
+    "I27",
+    "I186"
+   ],
+   "members": [
+    "I27"
+   ],
+   "span": [
+    "1892",
+    "1892"
+   ]
+  },
+  {
+   "id": "burke-I30",
+   "surname": "Burke",
+   "grove": "burke",
+   "founders": [
+    "I30",
+    "I110"
+   ],
+   "members": [
+    "I30",
+    "I31",
+    "I28",
+    "I29"
+   ],
+   "span": [
+    "1899",
+    "1926"
+   ]
+  },
+  {
+   "id": "caulfield-I41",
+   "surname": "Caulfield",
+   "grove": "caulfield",
+   "founders": [
+    "I41",
+    "I111"
+   ],
+   "members": [
+    "I41",
+    "I42",
+    "I37",
+    "I34",
+    "I38",
+    "I36",
+    "I35",
+    "I39",
+    "I40"
+   ],
+   "span": [
+    "1861",
+    "1899"
+   ]
+  },
+  {
+   "id": "cavendish-I43",
+   "surname": "Cavendish",
+   "grove": "cavendish",
+   "founders": [
+    "I43",
+    "I107"
+   ],
+   "members": [
+    "I43"
+   ],
+   "span": [
+    "1917",
+    "1917"
+   ]
+  },
+  {
+   "id": "clifford-I45",
+   "surname": "Clifford",
+   "grove": "clifford",
+   "founders": [
+    "I45",
+    "I138"
+   ],
+   "members": [
+    "I45"
+   ],
+   "span": null
+  },
+  {
+   "id": "connelly-I47",
+   "surname": "Connelly",
+   "grove": "connelly",
+   "founders": [
+    "I47",
+    "I115"
+   ],
+   "members": [
+    "I47",
+    "I48"
+   ],
+   "span": [
+    "1898",
+    "1898"
+   ]
+  },
+  {
+   "id": "cox-I51",
+   "surname": "Cox",
+   "grove": "cox",
+   "founders": [
+    "I51",
+    "I67"
+   ],
+   "members": [
+    "I51"
+   ],
+   "span": [
+    "1836",
+    "1836"
+   ]
+  },
+  {
+   "id": "crawford-I52",
+   "surname": "Crawford",
+   "grove": "crawford",
+   "founders": [
+    "I52",
+    "I42"
+   ],
+   "members": [
+    "I52"
+   ],
+   "span": [
+    "1882",
+    "1882"
+   ]
+  },
+  {
+   "id": "devine-I54",
+   "surname": "DeVine",
+   "grove": "devine",
+   "founders": [
+    "I54",
+    "I31"
+   ],
+   "members": [
+    "I54"
+   ],
+   "span": [
+    "1920",
+    "1920"
+   ]
+  },
+  {
+   "id": "ewing-I56",
+   "surname": "Ewing",
+   "grove": "ewing",
+   "founders": [
+    "I56",
+    "I23"
+   ],
+   "members": [
+    "I56"
+   ],
+   "span": null
+  },
+  {
+   "id": "farley-I57",
+   "surname": "Farley",
+   "grove": "farley",
+   "founders": [
+    "I57",
+    "I145"
+   ],
+   "members": [
+    "I57"
+   ],
+   "span": [
+    "1884",
+    "1884"
+   ]
+  },
+  {
+   "id": "field-I58",
+   "surname": "Field",
+   "grove": "field",
+   "founders": [
+    "I58",
+    "I75"
+   ],
+   "members": [
+    "I58"
+   ],
+   "span": [
+    "1836",
+    "1836"
+   ]
+  },
+  {
+   "id": "finkfelt-I60",
+   "surname": "Finkfelt",
+   "grove": "finkfelt",
+   "founders": [
+    "I60",
+    "I39"
+   ],
+   "members": [
+    "I60"
+   ],
+   "span": [
+    "1894",
+    "1894"
+   ]
+  },
+  {
+   "id": "fitzgerald-I62",
+   "surname": "Fitzgerald",
+   "grove": "fitzgerald",
+   "founders": [
+    "I62"
+   ],
+   "members": [
+    "I62",
+    "I61",
+    "I64",
+    "I63",
+    "I66",
+    "I65",
+    "I67"
+   ],
+   "span": [
+    "1798",
+    "1890"
+   ]
+  },
+  {
+   "id": "hannon-I73",
+   "surname": "Hannon",
+   "grove": "hannon",
+   "founders": [
+    "I73",
+    "I64"
+   ],
+   "members": [
+    "I73",
+    "I72"
+   ],
+   "span": [
+    "1832",
+    "1865"
+   ]
+  },
+  {
+   "id": "hassett-I74",
+   "surname": "Hassett",
+   "grove": "hassett",
+   "founders": [
+    "I74",
+    "I77"
+   ],
+   "members": [
+    "I74"
+   ],
+   "span": null
+  },
+  {
+   "id": "hickey-I77",
+   "surname": "Hickey",
+   "grove": "hickey",
+   "founders": [
+    "I77",
+    "I74"
+   ],
+   "members": [
+    "I77",
+    "I75",
+    "I76"
+   ],
+   "span": [
+    "1836",
+    "1857"
+   ]
+  },
+  {
+   "id": "kane-I85",
+   "surname": "Kane",
+   "grove": "kane",
+   "founders": [
+    "I85",
+    "I159"
+   ],
+   "members": [
+    "I85",
+    "I83",
+    "I82",
+    "I84",
+    "I80",
+    "I81",
+    "I79"
+   ],
+   "span": [
+    "1858",
+    "1892"
+   ]
+  },
+  {
+   "id": "kennedy-I120",
+   "surname": "Kennedy",
+   "grove": "kennedy",
+   "founders": [
+    "I120",
+    "I4"
+   ],
+   "members": [
+    "I120",
+    "I121",
+    "I114",
+    "I102",
+    "I103",
+    "I111",
+    "I123",
+    "I105",
+    "I100",
+    "I115",
+    "I110",
+    "I91",
+    "I104",
+    "I107",
+    "I127",
+    "I99",
+    "I119",
+    "I125",
+    "I96",
+    "I90",
+    "I122",
+    "I101",
+    "I106",
+    "I108",
+    "I109",
+    "I112",
+    "I113",
+    "I116",
+    "I117",
+    "I118",
+    "I124",
+    "I126",
+    "I191",
+    "I192",
+    "I193",
+    "I195",
+    "I199",
+    "I200",
+    "I201",
+    "I86",
+    "I87",
+    "I88",
+    "I89",
+    "I92",
+    "I93",
+    "I94",
+    "I95",
+    "I97",
+    "I98"
+   ],
+   "span": [
+    "1823",
+    "1963"
+   ]
+  },
+  {
+   "id": "lawford-I129",
+   "surname": "Lawford",
+   "grove": "lawford",
+   "founders": [
+    "I129",
+    "I119"
+   ],
+   "members": [
+    "I129",
+    "I128",
+    "I130",
+    "I131",
+    "I132"
+   ],
+   "span": [
+    "1923",
+    "1923"
+   ]
+  },
+  {
+   "id": "leaman-I133",
+   "surname": "Leaman",
+   "grove": "leaman",
+   "founders": [
+    "I133",
+    "I174"
+   ],
+   "members": [
+    "I133"
+   ],
+   "span": null
+  },
+  {
+   "id": "lee-I134",
+   "surname": "Lee",
+   "grove": "lee",
+   "founders": [
+    "I134",
+    "I162"
+   ],
+   "members": [
+    "I134",
+    "I135",
+    "I136",
+    "I7",
+    "I8"
+   ],
+   "span": [
+    "1877",
+    "1907"
+   ]
+  },
+  {
+   "id": "lindsay-I138",
+   "surname": "Lindsay",
+   "grove": "lindsay",
+   "founders": [
+    "I138",
+    "I45"
+   ],
+   "members": [
+    "I138",
+    "I137"
+   ],
+   "span": null
+  },
+  {
+   "id": "linnehan-I139",
+   "surname": "Linnehan",
+   "grove": "linnehan",
+   "founders": [
+    "I139",
+    "I61"
+   ],
+   "members": [
+    "I139"
+   ],
+   "span": null
+  },
+  {
+   "id": "mahoney-I146",
+   "surname": "Mahoney",
+   "grove": "mahoney",
+   "founders": [
+    "I146",
+    "I102"
+   ],
+   "members": [
+    "I146",
+    "I141",
+    "I147",
+    "I148",
+    "I142",
+    "I140",
+    "I145",
+    "I144",
+    "I143"
+   ],
+   "span": [
+    "1847",
+    "1890"
+   ]
+  },
+  {
+   "id": "mccarthy-I150",
+   "surname": "McCarthy",
+   "grove": "mccarthy",
+   "founders": [
+    "I150",
+    "I48"
+   ],
+   "members": [
+    "I150"
+   ],
+   "span": [
+    "1926",
+    "1926"
+   ]
+  },
+  {
+   "id": "mercier-I153",
+   "surname": "Mercier",
+   "grove": "mercier",
+   "founders": [
+    "I153"
+   ],
+   "members": [
+    "I153",
+    "I152",
+    "I154"
+   ],
+   "span": [
+    "1740",
+    "1766"
+   ]
+  },
+  {
+   "id": "merritt-I155",
+   "surname": "Merritt",
+   "grove": "merritt",
+   "founders": [
+    "I155",
+    "I135"
+   ],
+   "members": [
+    "I155"
+   ],
+   "span": null
+  },
+  {
+   "id": "metcalf-I156",
+   "surname": "Metcalf",
+   "grove": "metcalf",
+   "founders": [
+    "I156",
+    "I81"
+   ],
+   "members": [
+    "I156"
+   ],
+   "span": [
+    "1891",
+    "1891"
+   ]
+  },
+  {
+   "id": "murphy-I159",
+   "surname": "Murphy",
+   "grove": "murphy",
+   "founders": [
+    "I159",
+    "I85"
+   ],
+   "members": [
+    "I159"
+   ],
+   "span": [
+    "1858",
+    "1858"
+   ]
+  },
+  {
+   "id": "murphy-I160",
+   "surname": "Murphy",
+   "grove": "murphy",
+   "founders": [
+    "I160",
+    "I3"
+   ],
+   "members": [
+    "I160",
+    "I158"
+   ],
+   "span": [
+    "1821",
+    "1821"
+   ]
+  },
+  {
+   "id": "noonan-I161",
+   "surname": "Noonan",
+   "grove": "noonan",
+   "founders": [
+    "I161",
+    "I71"
+   ],
+   "members": [
+    "I161"
+   ],
+   "span": [
+    "1793",
+    "1793"
+   ]
+  },
+  {
+   "id": "norton-I162",
+   "surname": "Norton",
+   "grove": "norton",
+   "founders": [
+    "I162",
+    "I134"
+   ],
+   "members": [
+    "I162"
+   ],
+   "span": null
+  },
+  {
+   "id": "onassis-I164",
+   "surname": "Onassis",
+   "grove": "onassis",
+   "founders": [
+    "I164",
+    "I22"
+   ],
+   "members": [
+    "I164"
+   ],
+   "span": null
+  },
+  {
+   "id": "paulin-I165",
+   "surname": "Paulin",
+   "grove": "paulin",
+   "founders": [
+    "I165",
+    "I203"
+   ],
+   "members": [
+    "I165"
+   ],
+   "span": null
+  },
+  {
+   "id": "repelin-I169",
+   "surname": "Repelin",
+   "grove": "repelin",
+   "founders": [
+    "I169",
+    "I20"
+   ],
+   "members": [
+    "I169"
+   ],
+   "span": null
+  },
+  {
+   "id": "sergeant-I174",
+   "surname": "Sergeant",
+   "grove": "sergeant",
+   "founders": [
+    "I174",
+    "I133"
+   ],
+   "members": [
+    "I174",
+    "I173"
+   ],
+   "span": null
+  },
+  {
+   "id": "shriver-I177",
+   "surname": "Shriver",
+   "grove": "shriver",
+   "founders": [
+    "I177",
+    "I99"
+   ],
+   "members": [
+    "I177",
+    "I176",
+    "I178",
+    "I179",
+    "I180",
+    "I181"
+   ],
+   "span": [
+    "1915",
+    "1915"
+   ]
+  },
+  {
+   "id": "skakel-I186",
+   "surname": "Skakel",
+   "grove": "skakel",
+   "founders": [
+    "I186",
+    "I27"
+   ],
+   "members": [
+    "I186",
+    "I183",
+    "I184",
+    "I185",
+    "I187",
+    "I188",
+    "I189",
+    "I190"
+   ],
+   "span": [
+    "1892",
+    "1892"
+   ]
+  },
+  {
+   "id": "stone-I197",
+   "surname": "Stone",
+   "grove": "stone",
+   "founders": [
+    "I197",
+    "I26"
+   ],
+   "members": [
+    "I197"
+   ],
+   "span": null
+  },
+  {
+   "id": "trintignant-I203",
+   "surname": "Trintignant",
+   "grove": "trintignant",
+   "founders": [
+    "I203",
+    "I165"
+   ],
+   "members": [
+    "I203",
+    "I202"
+   ],
+   "span": null
+  },
+  {
+   "id": "twomey-I204",
+   "surname": "Twomey",
+   "grove": "twomey",
+   "founders": [
+    "I204",
+    "I142"
+   ],
+   "members": [
+    "I204"
+   ],
+   "span": [
+    "1879",
+    "1879"
+   ]
+  },
+  {
+   "id": "vernou-I205",
+   "surname": "Vernou",
+   "grove": "vernou",
+   "founders": [
+    "I205",
+    "I137"
+   ],
+   "members": [
+    "I205",
+    "I206"
+   ],
+   "span": null
+  },
+  {
+   "id": "wilmouth-I207",
+   "surname": "Wilmouth",
+   "grove": "wilmouth",
+   "founders": [
+    "I207",
+    "I65"
+   ],
+   "members": [
+    "I207"
+   ],
+   "span": [
+    "1797",
+    "1797"
+   ]
+  },
+  {
+   "id": "unknown",
+   "surname": "Unknown",
+   "grove": "unknown",
+   "founders": [],
+   "members": [
+    "I1",
+    "I11",
+    "I12",
+    "I13",
+    "I14",
+    "I149",
+    "I15",
+    "I151",
+    "I157",
+    "I163",
+    "I167",
+    "I168",
+    "I170",
+    "I171",
+    "I172",
+    "I175",
+    "I182",
+    "I194",
+    "I196",
+    "I198",
+    "I2",
+    "I208",
+    "I21",
+    "I3",
+    "I32",
+    "I33",
+    "I4",
+    "I44",
+    "I46",
+    "I49",
+    "I5",
+    "I50",
+    "I53",
+    "I55",
+    "I59",
+    "I6",
+    "I68",
+    "I69",
+    "I70",
+    "I71",
+    "I78"
+   ],
+   "span": null
+  }
+ ],
+ "people": [
+  {
+   "id": "I1",
+   "name": "Bridget (-----)",
+   "surname": "(-----)",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": false
+  },
+  {
+   "id": "I10",
+   "name": "Julius Baker",
+   "surname": "Baker",
+   "sex": "M",
+   "born": "1891",
+   "died": "1928",
+   "birth_place": "boston-suffolk-county-ma-usa",
+   "line": "baker-I10",
+   "living": false
+  },
+  {
+   "id": "I100",
+   "name": "Francis Benedict Kennedy",
+   "surname": "Kennedy",
+   "sex": "M",
+   "born": "1891",
+   "died": "1892",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I101",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I102",
+   "name": "Joanna L. Kennedy",
+   "surname": "Kennedy",
+   "sex": "F",
+   "born": "1852",
+   "died": "1926",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I103",
+   "name": "John Kennedy",
+   "surname": "Kennedy",
+   "sex": "M",
+   "born": "1854",
+   "died": "1855",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I104",
+   "name": "John Fitzgerald KENNEDY",
+   "surname": "KENNEDY",
+   "sex": "M",
+   "born": "1917",
+   "died": "1963",
+   "birth_place": "brookline-norfolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I105",
+   "name": "Joseph Patrick Kennedy",
+   "surname": "Kennedy",
+   "sex": "M",
+   "born": "1888",
+   "died": "1969",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I106",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I107",
+   "name": "Kathleen \"Kick\" Kennedy",
+   "surname": "Kennedy",
+   "sex": "F",
+   "born": "1920",
+   "died": "1948",
+   "birth_place": "brookline-norfolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I108",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I109",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I11",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I110",
+   "name": "Margaret Louise Kennedy",
+   "surname": "Kennedy",
+   "sex": "F",
+   "born": "1898",
+   "died": "1974",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I111",
+   "name": "Margaret M. Kennedy",
+   "surname": "Kennedy",
+   "sex": "F",
+   "born": "1855",
+   "died": "1929",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I112",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I113",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I114",
+   "name": "Mary L. Kennedy",
+   "surname": "Kennedy",
+   "sex": "F",
+   "born": "1851",
+   "died": "1926",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I115",
+   "name": "Mary Loretta Kennedy",
+   "surname": "Kennedy",
+   "sex": "F",
+   "born": "1892",
+   "died": "1972",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I116",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I117",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I118",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I119",
+   "name": "Patricia Kennedy",
+   "surname": "Kennedy",
+   "sex": "F",
+   "born": "1924",
+   "died": null,
+   "birth_place": "brookline-norfolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I12",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I120",
+   "name": "Patrick Kennedy",
+   "surname": "Kennedy",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": "ireland",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I121",
+   "name": "Patrick Kennedy",
+   "surname": "Kennedy",
+   "sex": "M",
+   "born": "1823",
+   "died": "1858",
+   "birth_place": "dunganstown-county-wexford-ireland",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I122",
+   "name": "Patrick Bouvier Kennedy",
+   "surname": "Kennedy",
+   "sex": "M",
+   "born": "1963",
+   "died": "1963",
+   "birth_place": "falmouth-barnstable-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I123",
+   "name": "Patrick Joseph Kennedy",
+   "surname": "Kennedy",
+   "sex": "M",
+   "born": "1858",
+   "died": "1929",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I124",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I125",
+   "name": "Robert Francis Kennedy",
+   "surname": "Kennedy",
+   "sex": "M",
+   "born": "1925",
+   "died": "1968",
+   "birth_place": "brookline-norfolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I126",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I127",
+   "name": "Rosemary (Rose Marie) Kennedy",
+   "surname": "Kennedy",
+   "sex": "F",
+   "born": "1920",
+   "died": null,
+   "birth_place": "brookline-norfolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I128",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "lawford-I129",
+   "living": true
+  },
+  {
+   "id": "I129",
+   "name": "Peter Lawford",
+   "surname": "Lawford",
+   "sex": "M",
+   "born": "1923",
+   "died": "1984",
+   "birth_place": "london-england",
+   "line": "lawford-I129",
+   "living": false
+  },
+  {
+   "id": "I13",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I130",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "lawford-I129",
+   "living": true
+  },
+  {
+   "id": "I131",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "lawford-I129",
+   "living": true
+  },
+  {
+   "id": "I132",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "lawford-I129",
+   "living": true
+  },
+  {
+   "id": "I133",
+   "name": "Edith Leaman",
+   "surname": "Leaman",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "leaman-I133",
+   "living": false
+  },
+  {
+   "id": "I134",
+   "name": "Dr. James Lee",
+   "surname": "Lee",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "lee-I134",
+   "living": false
+  },
+  {
+   "id": "I135",
+   "name": "James Thomas Lee",
+   "surname": "Lee",
+   "sex": "M",
+   "born": "1877",
+   "died": null,
+   "birth_place": null,
+   "line": "lee-I134",
+   "living": false
+  },
+  {
+   "id": "I136",
+   "name": "Janet Norton Lee",
+   "surname": "Lee",
+   "sex": "F",
+   "born": "1907",
+   "died": "1989",
+   "birth_place": null,
+   "line": "lee-I134",
+   "living": false
+  },
+  {
+   "id": "I137",
+   "name": "Elizabeth Clifford Lindsay",
+   "surname": "Lindsay",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "lindsay-I138",
+   "living": false
+  },
+  {
+   "id": "I138",
+   "name": "William Alexander Lindsay",
+   "surname": "Lindsay",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "lindsay-I138",
+   "living": false
+  },
+  {
+   "id": "I139",
+   "name": "Mary Linnehan",
+   "surname": "Linnehan",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "linnehan-I139",
+   "living": false
+  },
+  {
+   "id": "I14",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I140",
+   "name": "Annie Mahoney",
+   "surname": "Mahoney",
+   "sex": "F",
+   "born": "1883",
+   "died": "1889",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "mahoney-I146",
+   "living": false
+  },
+  {
+   "id": "I141",
+   "name": "Daniel Mahoney",
+   "surname": "Mahoney",
+   "sex": "M",
+   "born": "1873",
+   "died": "1875",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "mahoney-I146",
+   "living": false
+  },
+  {
+   "id": "I142",
+   "name": "Frances Josephine Mahoney",
+   "surname": "Mahoney",
+   "sex": "F",
+   "born": "1880",
+   "died": "1963",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "mahoney-I146",
+   "living": false
+  },
+  {
+   "id": "I143",
+   "name": "Frederick Louis Mahoney",
+   "surname": "Mahoney",
+   "sex": "M",
+   "born": "1890",
+   "died": "1965",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "mahoney-I146",
+   "living": false
+  },
+  {
+   "id": "I144",
+   "name": "Gertrude Mahoney",
+   "surname": "Mahoney",
+   "sex": "F",
+   "born": "1886",
+   "died": "1887",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "mahoney-I146",
+   "living": false
+  },
+  {
+   "id": "I145",
+   "name": "Henry Joseph Mahoney",
+   "surname": "Mahoney",
+   "sex": "M",
+   "born": "1884",
+   "died": "1961",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "mahoney-I146",
+   "living": false
+  },
+  {
+   "id": "I146",
+   "name": "Humphrey Charles Mahoney",
+   "surname": "Mahoney",
+   "sex": "M",
+   "born": "1847",
+   "died": "1928",
+   "birth_place": "boston-suffolk-county-ma-usa",
+   "line": "mahoney-I146",
+   "living": false
+  },
+  {
+   "id": "I147",
+   "name": "Mary E. Mahoney",
+   "surname": "Mahoney",
+   "sex": "F",
+   "born": "1875",
+   "died": "1875",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "mahoney-I146",
+   "living": false
+  },
+  {
+   "id": "I148",
+   "name": "William Henry Mahoney",
+   "surname": "Mahoney",
+   "sex": "M",
+   "born": "1878",
+   "died": "1879",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "mahoney-I146",
+   "living": false
+  },
+  {
+   "id": "I149",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I15",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I150",
+   "name": "Matthew James McCarthy",
+   "surname": "McCarthy",
+   "sex": "M",
+   "born": "1926",
+   "died": null,
+   "birth_place": "chicago-cook-county-il-usa",
+   "line": "mccarthy-I150",
+   "living": false
+  },
+  {
+   "id": "I151",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I152",
+   "name": "Joseph Mercier",
+   "surname": "Mercier",
+   "sex": "M",
+   "born": "1740",
+   "died": null,
+   "birth_place": null,
+   "line": "mercier-I153",
+   "living": false
+  },
+  {
+   "id": "I153",
+   "name": "Melkior Mercier",
+   "surname": "Mercier",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "mercier-I153",
+   "living": false
+  },
+  {
+   "id": "I154",
+   "name": "Therese Mercier",
+   "surname": "Mercier",
+   "sex": "F",
+   "born": "1766",
+   "died": "1815",
+   "birth_place": null,
+   "line": "mercier-I153",
+   "living": false
+  },
+  {
+   "id": "I155",
+   "name": "Margaret A. Merritt",
+   "surname": "Merritt",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "merritt-I155",
+   "living": false
+  },
+  {
+   "id": "I156",
+   "name": "Charles Everett Metcalf",
+   "surname": "Metcalf",
+   "sex": "M",
+   "born": "1891",
+   "died": "1955",
+   "birth_place": "chelsea-suffolk-county-ma-usa",
+   "line": "metcalf-I156",
+   "living": false
+  },
+  {
+   "id": "I157",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I158",
+   "name": "Bridget Murphy",
+   "surname": "Murphy",
+   "sex": "F",
+   "born": "1821",
+   "died": "1888",
+   "birth_place": "dunganstown-county-wexford-ireland",
+   "line": "murphy-I160",
+   "living": false
+  },
+  {
+   "id": "I159",
+   "name": "Margaret Murphy",
+   "surname": "Murphy",
+   "sex": "F",
+   "born": "1858",
+   "died": null,
+   "birth_place": "ireland",
+   "line": "murphy-I159",
+   "living": false
+  },
+  {
+   "id": "I16",
+   "name": "John Vernou Bouvier III",
+   "surname": "Bouvier",
+   "sex": "M",
+   "born": "1891",
+   "died": "1957",
+   "birth_place": "easthampton-hampshire-county-ma-usa",
+   "line": "bouvier-I20",
+   "living": false
+  },
+  {
+   "id": "I160",
+   "name": "Richard Murphy",
+   "surname": "Murphy",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "murphy-I160",
+   "living": false
+  },
+  {
+   "id": "I161",
+   "name": "Ellen Noonan",
+   "surname": "Noonan",
+   "sex": "F",
+   "born": "1793",
+   "died": "1877",
+   "birth_place": null,
+   "line": "noonan-I161",
+   "living": false
+  },
+  {
+   "id": "I162",
+   "name": "Mary Norton",
+   "surname": "Norton",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "norton-I162",
+   "living": false
+  },
+  {
+   "id": "I163",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I164",
+   "name": "Aristotle Socrates Onassis",
+   "surname": "Onassis",
+   "sex": "M",
+   "born": null,
+   "died": "1975",
+   "birth_place": null,
+   "line": "onassis-I164",
+   "living": false
+  },
+  {
+   "id": "I165",
+   "name": "Therese Paulin",
+   "surname": "Paulin",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "paulin-I165",
+   "living": false
+  },
+  {
+   "id": "I166",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "bouvier-I20",
+   "living": true
+  },
+  {
+   "id": "I167",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I168",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I169",
+   "name": "Benoite Repelin",
+   "surname": "Repelin",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "repelin-I169",
+   "living": false
+  },
+  {
+   "id": "I17",
+   "name": "John Vernou Bouvier Jr.",
+   "surname": "Bouvier",
+   "sex": "M",
+   "born": "1865",
+   "died": "1948",
+   "birth_place": null,
+   "line": "bouvier-I20",
+   "living": false
+  },
+  {
+   "id": "I170",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I171",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I172",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I173",
+   "name": "Maud Frances Sergeant",
+   "surname": "Sergeant",
+   "sex": "F",
+   "born": null,
+   "died": "1940",
+   "birth_place": null,
+   "line": "sergeant-I174",
+   "living": false
+  },
+  {
+   "id": "I174",
+   "name": "William R. Sergeant",
+   "surname": "Sergeant",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "sergeant-I174",
+   "living": false
+  },
+  {
+   "id": "I175",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I176",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "shriver-I177",
+   "living": true
+  },
+  {
+   "id": "I177",
+   "name": "Robert Sargent Shriver Jr.",
+   "surname": "Shriver",
+   "sex": "M",
+   "born": "1915",
+   "died": null,
+   "birth_place": "westminster-carroll-county-md-usa",
+   "line": "shriver-I177",
+   "living": false
+  },
+  {
+   "id": "I178",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "shriver-I177",
+   "living": true
+  },
+  {
+   "id": "I179",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "shriver-I177",
+   "living": true
+  },
+  {
+   "id": "I18",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "bouvier-I20",
+   "living": true
+  },
+  {
+   "id": "I180",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "shriver-I177",
+   "living": true
+  },
+  {
+   "id": "I181",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "shriver-I177",
+   "living": true
+  },
+  {
+   "id": "I182",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I183",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "skakel-I186",
+   "living": true
+  },
+  {
+   "id": "I184",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "skakel-I186",
+   "living": true
+  },
+  {
+   "id": "I185",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "skakel-I186",
+   "living": true
+  },
+  {
+   "id": "I186",
+   "name": "George Skakel",
+   "surname": "Skakel",
+   "sex": "M",
+   "born": "1892",
+   "died": "1955",
+   "birth_place": "chicago-cook-county-il-usa",
+   "line": "skakel-I186",
+   "living": false
+  },
+  {
+   "id": "I187",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "skakel-I186",
+   "living": true
+  },
+  {
+   "id": "I188",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "skakel-I186",
+   "living": true
+  },
+  {
+   "id": "I189",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "skakel-I186",
+   "living": true
+  },
+  {
+   "id": "I19",
+   "name": "Eustache Bouvier",
+   "surname": "Bouvier",
+   "sex": "M",
+   "born": "1758",
+   "died": "1835",
+   "birth_place": "grenoble-isere-france",
+   "line": "bouvier-I20",
+   "living": false
+  },
+  {
+   "id": "I190",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "skakel-I186",
+   "living": true
+  },
+  {
+   "id": "I191",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I192",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I193",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I194",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I195",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I196",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I197",
+   "name": "Emma Louise Stone",
+   "surname": "Stone",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "stone-I197",
+   "living": false
+  },
+  {
+   "id": "I198",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I199",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I2",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I20",
+   "name": "Francois Bouvier",
+   "surname": "Bouvier",
+   "sex": "M",
+   "born": "1727",
+   "died": null,
+   "birth_place": "france",
+   "line": "bouvier-I20",
+   "living": false
+  },
+  {
+   "id": "I200",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I201",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I202",
+   "name": "Anne Trintignant",
+   "surname": "Trintignant",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "trintignant-I203",
+   "living": false
+  },
+  {
+   "id": "I203",
+   "name": "Jean Trintignant",
+   "surname": "Trintignant",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "trintignant-I203",
+   "living": false
+  },
+  {
+   "id": "I204",
+   "name": "Louis Leo Twomey",
+   "surname": "Twomey",
+   "sex": "M",
+   "born": "1879",
+   "died": "1965",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "twomey-I204",
+   "living": false
+  },
+  {
+   "id": "I205",
+   "name": "John Vernou",
+   "surname": "Vernou",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "vernou-I205",
+   "living": false
+  },
+  {
+   "id": "I206",
+   "name": "Louise C. Vernou",
+   "surname": "Vernou",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "vernou-I205",
+   "living": false
+  },
+  {
+   "id": "I207",
+   "name": "Ellen Wilmouth",
+   "surname": "Wilmouth",
+   "sex": "F",
+   "born": "1797",
+   "died": "1875",
+   "birth_place": null,
+   "line": "wilmouth-I207",
+   "living": false
+  },
+  {
+   "id": "I208",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I21",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I22",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "bouvier-I20",
+   "living": true
+  },
+  {
+   "id": "I23",
+   "name": "John Vernou Bouvier",
+   "surname": "Bouvier",
+   "sex": "M",
+   "born": "1843",
+   "died": "1926",
+   "birth_place": null,
+   "line": "bouvier-I20",
+   "living": false
+  },
+  {
+   "id": "I24",
+   "name": "Michel Bouvier",
+   "surname": "Bouvier",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "bouvier-I20",
+   "living": false
+  },
+  {
+   "id": "I25",
+   "name": "Michel Bouvier",
+   "surname": "Bouvier",
+   "sex": "M",
+   "born": "1792",
+   "died": "1874",
+   "birth_place": "pont-saint-esprit-gard-france",
+   "line": "bouvier-I20",
+   "living": false
+  },
+  {
+   "id": "I26",
+   "name": "William Sergeant (Bud) Bouvier",
+   "surname": "Bouvier",
+   "sex": "M",
+   "born": "1893",
+   "died": "1929",
+   "birth_place": "easthampton-hampshire-county-ma-usa",
+   "line": "bouvier-I20",
+   "living": false
+  },
+  {
+   "id": "I27",
+   "name": "Ann Brannack",
+   "surname": "Brannack",
+   "sex": "F",
+   "born": "1892",
+   "died": "1955",
+   "birth_place": null,
+   "line": "brannack-I27",
+   "living": false
+  },
+  {
+   "id": "I28",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "burke-I30",
+   "living": true
+  },
+  {
+   "id": "I29",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "burke-I30",
+   "living": true
+  },
+  {
+   "id": "I3",
+   "name": "Mary (-----)",
+   "surname": "(-----)",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": false
+  },
+  {
+   "id": "I30",
+   "name": "Charles Joseph Burke",
+   "surname": "Burke",
+   "sex": "M",
+   "born": "1899",
+   "died": "1967",
+   "birth_place": "medford-middlesex-county-ma-usa",
+   "line": "burke-I30",
+   "living": false
+  },
+  {
+   "id": "I31",
+   "name": "Margaret Louise Burke",
+   "surname": "Burke",
+   "sex": "F",
+   "born": "1926",
+   "died": null,
+   "birth_place": "winthrop-suffolk-county-ma-usa",
+   "line": "burke-I30",
+   "living": false
+  },
+  {
+   "id": "I32",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I33",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I34",
+   "name": "Edith M. Caulfield",
+   "surname": "Caulfield",
+   "sex": "F",
+   "born": "1888",
+   "died": "1943",
+   "birth_place": "new-york-city-ny-usa",
+   "line": "caulfield-I41",
+   "living": false
+  },
+  {
+   "id": "I35",
+   "name": "Elsie G. Caulfield",
+   "surname": "Caulfield",
+   "sex": "F",
+   "born": "1894",
+   "died": "1914",
+   "birth_place": "bayonne-hudson-county-nj-usa",
+   "line": "caulfield-I41",
+   "living": false
+  },
+  {
+   "id": "I36",
+   "name": "Florence J. Caulfield",
+   "surname": "Caulfield",
+   "sex": "F",
+   "born": "1891",
+   "died": "1892",
+   "birth_place": "new-york-city-ny-usa",
+   "line": "caulfield-I41",
+   "living": false
+  },
+  {
+   "id": "I37",
+   "name": "Frederick Caulfield",
+   "surname": "Caulfield",
+   "sex": "M",
+   "born": "1886",
+   "died": null,
+   "birth_place": "new-york-city-ny-usa",
+   "line": "caulfield-I41",
+   "living": false
+  },
+  {
+   "id": "I38",
+   "name": "Henry R. Caulfield",
+   "surname": "Caulfield",
+   "sex": "M",
+   "born": "1889",
+   "died": "1925",
+   "birth_place": "new-york-city-ny-usa",
+   "line": "caulfield-I41",
+   "living": false
+  },
+  {
+   "id": "I39",
+   "name": "Jeanette Dorothea Caulfield",
+   "surname": "Caulfield",
+   "sex": "F",
+   "born": "1896",
+   "died": "1953",
+   "birth_place": "bayonne-hudson-county-nj-usa",
+   "line": "caulfield-I41",
+   "living": false
+  },
+  {
+   "id": "I4",
+   "name": "Mary Johanna (-----)",
+   "surname": "(-----)",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": "ireland",
+   "line": "unknown",
+   "living": false
+  },
+  {
+   "id": "I40",
+   "name": "John Theodore Caulfield",
+   "surname": "Caulfield",
+   "sex": "M",
+   "born": "1899",
+   "died": "1966",
+   "birth_place": "winthrop-suffolk-county-ma-usa",
+   "line": "caulfield-I41",
+   "living": false
+  },
+  {
+   "id": "I41",
+   "name": "John Thomas Caulfield",
+   "surname": "Caulfield",
+   "sex": "M",
+   "born": "1861",
+   "died": "1937",
+   "birth_place": "weymouth-norfolk-county-ma-usa",
+   "line": "caulfield-I41",
+   "living": false
+  },
+  {
+   "id": "I42",
+   "name": "Mary Frances Caulfield",
+   "surname": "Caulfield",
+   "sex": "F",
+   "born": "1884",
+   "died": "1938",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "caulfield-I41",
+   "living": false
+  },
+  {
+   "id": "I43",
+   "name": "William John Robert Cavendish",
+   "surname": "Cavendish",
+   "sex": "M",
+   "born": "1917",
+   "died": "1944",
+   "birth_place": null,
+   "line": "cavendish-I43",
+   "living": false
+  },
+  {
+   "id": "I44",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I45",
+   "name": "Elizabeth Clifford",
+   "surname": "Clifford",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "clifford-I45",
+   "living": false
+  },
+  {
+   "id": "I46",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I47",
+   "name": "George William Connelly",
+   "surname": "Connelly",
+   "sex": "M",
+   "born": "1898",
+   "died": "1971",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "connelly-I47",
+   "living": false
+  },
+  {
+   "id": "I48",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "connelly-I47",
+   "living": true
+  },
+  {
+   "id": "I49",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I5",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I50",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I51",
+   "name": "Rosanna Cox",
+   "surname": "Cox",
+   "sex": "F",
+   "born": "1836",
+   "died": "1879",
+   "birth_place": null,
+   "line": "cox-I51",
+   "living": false
+  },
+  {
+   "id": "I52",
+   "name": "Alexander G. Crawford",
+   "surname": "Crawford",
+   "sex": "M",
+   "born": "1882",
+   "died": null,
+   "birth_place": "liverpool-england",
+   "line": "crawford-I52",
+   "living": false
+  },
+  {
+   "id": "I53",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I54",
+   "name": "John Bernard DeVine",
+   "surname": "DeVine",
+   "sex": "M",
+   "born": "1920",
+   "died": null,
+   "birth_place": "ann-arbor-48109-washtenaw-county-mi-usa",
+   "line": "devine-I54",
+   "living": false
+  },
+  {
+   "id": "I55",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I56",
+   "name": "Caroline Maslin Ewing",
+   "surname": "Ewing",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "ewing-I56",
+   "living": false
+  },
+  {
+   "id": "I57",
+   "name": "Mary Elizabeth Farley",
+   "surname": "Farley",
+   "sex": "F",
+   "born": "1884",
+   "died": "1949",
+   "birth_place": "mckeesport-allegheny-county-pa-usa",
+   "line": "farley-I57",
+   "living": false
+  },
+  {
+   "id": "I58",
+   "name": "Margaret M. Field",
+   "surname": "Field",
+   "sex": "F",
+   "born": "1836",
+   "died": "1911",
+   "birth_place": null,
+   "line": "field-I58",
+   "living": false
+  },
+  {
+   "id": "I59",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I6",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I60",
+   "name": "Frank William Finkfelt",
+   "surname": "Finkfelt",
+   "sex": "M",
+   "born": "1894",
+   "died": "1960",
+   "birth_place": "boston-suffolk-county-ma-usa",
+   "line": "finkfelt-I60",
+   "living": false
+  },
+  {
+   "id": "I61",
+   "name": "Edmond (Edward) Fitzgerald",
+   "surname": "Fitzgerald",
+   "sex": "M",
+   "born": "1798",
+   "died": "1883",
+   "birth_place": "ireland",
+   "line": "fitzgerald-I62",
+   "living": false
+  },
+  {
+   "id": "I62",
+   "name": "James Fitzgerald",
+   "surname": "Fitzgerald",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "fitzgerald-I62",
+   "living": false
+  },
+  {
+   "id": "I63",
+   "name": "John Francis \"Honey Fitz\" Fitzgerald",
+   "surname": "Fitzgerald",
+   "sex": "M",
+   "born": "1863",
+   "died": "1950",
+   "birth_place": "boston-suffolk-county-ma-usa",
+   "line": "fitzgerald-I62",
+   "living": false
+  },
+  {
+   "id": "I64",
+   "name": "Mary Ann Fitzgerald",
+   "surname": "Fitzgerald",
+   "sex": "F",
+   "born": "1832",
+   "died": null,
+   "birth_place": null,
+   "line": "fitzgerald-I62",
+   "living": false
+  },
+  {
+   "id": "I65",
+   "name": "Michael Fitzgerald",
+   "surname": "Fitzgerald",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "fitzgerald-I62",
+   "living": false
+  },
+  {
+   "id": "I66",
+   "name": "Rose Elizabeth Fitzgerald",
+   "surname": "Fitzgerald",
+   "sex": "F",
+   "born": "1890",
+   "died": "1995",
+   "birth_place": "boston-suffolk-county-ma-usa",
+   "line": "fitzgerald-I62",
+   "living": false
+  },
+  {
+   "id": "I67",
+   "name": "Thomas Fitzgerald",
+   "surname": "Fitzgerald",
+   "sex": "M",
+   "born": null,
+   "died": "1885",
+   "birth_place": null,
+   "line": "fitzgerald-I62",
+   "living": false
+  },
+  {
+   "id": "I68",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I69",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I7",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "lee-I134",
+   "living": true
+  },
+  {
+   "id": "I70",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I71",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I72",
+   "name": "Mary Josephine Hannon",
+   "surname": "Hannon",
+   "sex": "F",
+   "born": "1865",
+   "died": "1964",
+   "birth_place": "town-of-acton-middlesex-county-ma-usa",
+   "line": "hannon-I73",
+   "living": false
+  },
+  {
+   "id": "I73",
+   "name": "Michael Hannon",
+   "surname": "Hannon",
+   "sex": "M",
+   "born": "1832",
+   "died": "1900",
+   "birth_place": null,
+   "line": "hannon-I73",
+   "living": false
+  },
+  {
+   "id": "I74",
+   "name": "Catherine Hassett",
+   "surname": "Hassett",
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "hassett-I74",
+   "living": false
+  },
+  {
+   "id": "I75",
+   "name": "James Hickey",
+   "surname": "Hickey",
+   "sex": "M",
+   "born": "1836",
+   "died": "1900",
+   "birth_place": "cork-cork-county-munster-province-ireland",
+   "line": "hickey-I77",
+   "living": false
+  },
+  {
+   "id": "I76",
+   "name": "Mary Augusta Hickey",
+   "surname": "Hickey",
+   "sex": "F",
+   "born": "1857",
+   "died": "1923",
+   "birth_place": "winthrop-suffolk-county-ma-usa",
+   "line": "hickey-I77",
+   "living": false
+  },
+  {
+   "id": "I77",
+   "name": "Michael Hickey",
+   "surname": "Hickey",
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "hickey-I77",
+   "living": false
+  },
+  {
+   "id": "I78",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "unknown",
+   "living": true
+  },
+  {
+   "id": "I79",
+   "name": "Frederick Kane",
+   "surname": "Kane",
+   "sex": "M",
+   "born": "1892",
+   "died": "1897",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kane-I85",
+   "living": false
+  },
+  {
+   "id": "I8",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "lee-I134",
+   "living": true
+  },
+  {
+   "id": "I80",
+   "name": "George Philip Kane",
+   "surname": "Kane",
+   "sex": "M",
+   "born": "1888",
+   "died": "1954",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kane-I85",
+   "living": false
+  },
+  {
+   "id": "I81",
+   "name": "Gertrude Margaret Kane",
+   "surname": "Kane",
+   "sex": "F",
+   "born": "1890",
+   "died": "1969",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kane-I85",
+   "living": false
+  },
+  {
+   "id": "I82",
+   "name": "Joseph Lawrence Kane",
+   "surname": "Kane",
+   "sex": "M",
+   "born": "1883",
+   "died": "1967",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kane-I85",
+   "living": false
+  },
+  {
+   "id": "I83",
+   "name": "Lawrence M. Kane",
+   "surname": "Kane",
+   "sex": "M",
+   "born": "1858",
+   "died": "1905",
+   "birth_place": "loch-garman-county-wexford-leinster-ireland",
+   "line": "kane-I85",
+   "living": false
+  },
+  {
+   "id": "I84",
+   "name": "Mary Margaret Kane",
+   "surname": "Kane",
+   "sex": "F",
+   "born": "1885",
+   "died": "1885",
+   "birth_place": "east-boston-suffolk-county-ma-usa",
+   "line": "kane-I85",
+   "living": false
+  },
+  {
+   "id": "I85",
+   "name": "Philip Kane",
+   "surname": "Kane",
+   "sex": "M",
+   "born": "1858",
+   "died": null,
+   "birth_place": "ireland",
+   "line": "kane-I85",
+   "living": false
+  },
+  {
+   "id": "I86",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I87",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I88",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I89",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I9",
+   "name": "Hazel Elizabeth Baker",
+   "surname": "Baker",
+   "sex": "F",
+   "born": "1902",
+   "died": "1968",
+   "birth_place": "lynn-essex-county-ma-usa",
+   "line": "baker-I9",
+   "living": false
+  },
+  {
+   "id": "I90",
+   "name": "John Fitzgerald Kennedy Jr.",
+   "surname": "Kennedy",
+   "sex": "M",
+   "born": "1960",
+   "died": "1999",
+   "birth_place": "washington-dc-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I91",
+   "name": "Joseph Patrick Kennedy Jr.",
+   "surname": "Kennedy",
+   "sex": "M",
+   "born": "1915",
+   "died": "1944",
+   "birth_place": "hull-plymouth-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I92",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I93",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I94",
+   "name": "Living",
+   "surname": null,
+   "sex": "F",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I95",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I96",
+   "name": "David Anthony Kennedy",
+   "surname": "Kennedy",
+   "sex": "M",
+   "born": "1955",
+   "died": "1984",
+   "birth_place": "washington-dc-usa",
+   "line": "kennedy-I120",
+   "living": false
+  },
+  {
+   "id": "I97",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I98",
+   "name": "Living",
+   "surname": null,
+   "sex": "M",
+   "born": null,
+   "died": null,
+   "birth_place": null,
+   "line": "kennedy-I120",
+   "living": true
+  },
+  {
+   "id": "I99",
+   "name": "Eunice Mary Kennedy",
+   "surname": "Kennedy",
+   "sex": "F",
+   "born": "1921",
+   "died": null,
+   "birth_place": "brookline-norfolk-county-ma-usa",
+   "line": "kennedy-I120",
+   "living": false
+  }
+ ],
+ "families": [
+  {
+   "id": "F0",
+   "spouses": [
+    "I105",
+    "I66"
+   ],
+   "children": [
+    "I101",
+    "I104",
+    "I107",
+    "I119",
+    "I125",
+    "I127",
+    "I91",
+    "I98",
+    "I99"
+   ],
+   "married": "1914"
+  },
+  {
+   "id": "F1",
+   "spouses": [
+    "I177",
+    "I99"
+   ],
+   "children": [
+    "I176",
+    "I178",
+    "I179",
+    "I180",
+    "I181"
+   ],
+   "married": "1953"
+  },
+  {
+   "id": "F10",
+   "spouses": [
+    "I108",
+    "I198"
+   ],
+   "children": [
+    "I199",
+    "I200",
+    "I201"
+   ],
+   "married": null
+  },
+  {
+   "id": "F11",
+   "spouses": [
+    "I168",
+    "I86"
+   ],
+   "children": [
+    "I117",
+    "I87"
+   ],
+   "married": null
+  },
+  {
+   "id": "F12",
+   "spouses": [
+    "I15",
+    "I93"
+   ],
+   "children": [
+    "I88"
+   ],
+   "married": null
+  },
+  {
+   "id": "F13",
+   "spouses": [
+    "I112",
+    "I171"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F14",
+   "spouses": [
+    "I118",
+    "I69"
+   ],
+   "children": [
+    "I109",
+    "I92"
+   ],
+   "married": null
+  },
+  {
+   "id": "F15",
+   "spouses": [
+    "I120",
+    "I4"
+   ],
+   "children": [
+    "I121"
+   ],
+   "married": null
+  },
+  {
+   "id": "F16",
+   "spouses": [
+    "I160",
+    "I3"
+   ],
+   "children": [
+    "I158"
+   ],
+   "married": null
+  },
+  {
+   "id": "F17",
+   "spouses": [
+    "I121",
+    "I158"
+   ],
+   "children": [
+    "I102",
+    "I103",
+    "I111",
+    "I114",
+    "I123"
+   ],
+   "married": "1849"
+  },
+  {
+   "id": "F18",
+   "spouses": [
+    "I159",
+    "I85"
+   ],
+   "children": [
+    "I83"
+   ],
+   "married": null
+  },
+  {
+   "id": "F19",
+   "spouses": [
+    "I114",
+    "I83"
+   ],
+   "children": [
+    "I79",
+    "I80",
+    "I81",
+    "I82",
+    "I84"
+   ],
+   "married": "1883"
+  },
+  {
+   "id": "F2",
+   "spouses": [
+    "I119",
+    "I129"
+   ],
+   "children": [
+    "I128",
+    "I130",
+    "I131",
+    "I132"
+   ],
+   "married": "1954"
+  },
+  {
+   "id": "F20",
+   "spouses": [
+    "I156",
+    "I81"
+   ],
+   "children": [],
+   "married": "1918"
+  },
+  {
+   "id": "F21",
+   "spouses": [
+    "I102",
+    "I146"
+   ],
+   "children": [
+    "I140",
+    "I141",
+    "I142",
+    "I143",
+    "I144",
+    "I145",
+    "I147",
+    "I148"
+   ],
+   "married": "1872"
+  },
+  {
+   "id": "F22",
+   "spouses": [
+    "I142",
+    "I204"
+   ],
+   "children": [],
+   "married": "1916"
+  },
+  {
+   "id": "F23",
+   "spouses": [
+    "I145",
+    "I57"
+   ],
+   "children": [],
+   "married": "1912"
+  },
+  {
+   "id": "F24",
+   "spouses": [
+    "I41"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F25",
+   "spouses": [
+    "I111",
+    "I41"
+   ],
+   "children": [
+    "I34",
+    "I35",
+    "I36",
+    "I37",
+    "I38",
+    "I39",
+    "I40",
+    "I42"
+   ],
+   "married": "1882"
+  },
+  {
+   "id": "F26",
+   "spouses": [
+    "I42",
+    "I52"
+   ],
+   "children": [],
+   "married": "1906"
+  },
+  {
+   "id": "F27",
+   "spouses": [
+    "I10",
+    "I34"
+   ],
+   "children": [],
+   "married": "1920"
+  },
+  {
+   "id": "F28",
+   "spouses": [
+    "I39",
+    "I60"
+   ],
+   "children": [],
+   "married": "1928"
+  },
+  {
+   "id": "F29",
+   "spouses": [
+    "I40",
+    "I9"
+   ],
+   "children": [],
+   "married": "1931"
+  },
+  {
+   "id": "F3",
+   "spouses": [
+    "I128",
+    "I163"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F30",
+   "spouses": [
+    "I175",
+    "I59"
+   ],
+   "children": [
+    "I58"
+   ],
+   "married": null
+  },
+  {
+   "id": "F31",
+   "spouses": [
+    "I74",
+    "I77"
+   ],
+   "children": [
+    "I75"
+   ],
+   "married": null
+  },
+  {
+   "id": "F32",
+   "spouses": [
+    "I58",
+    "I75"
+   ],
+   "children": [
+    "I76"
+   ],
+   "married": null
+  },
+  {
+   "id": "F33",
+   "spouses": [
+    "I123",
+    "I76"
+   ],
+   "children": [
+    "I100",
+    "I105",
+    "I110",
+    "I115"
+   ],
+   "married": "1887"
+  },
+  {
+   "id": "F34",
+   "spouses": [
+    "I49",
+    "I55"
+   ],
+   "children": [
+    "I47"
+   ],
+   "married": null
+  },
+  {
+   "id": "F35",
+   "spouses": [
+    "I115",
+    "I47"
+   ],
+   "children": [
+    "I48"
+   ],
+   "married": "1927"
+  },
+  {
+   "id": "F36",
+   "spouses": [
+    "I150",
+    "I48"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F37",
+   "spouses": [
+    "I149",
+    "I32"
+   ],
+   "children": [
+    "I30"
+   ],
+   "married": null
+  },
+  {
+   "id": "F38",
+   "spouses": [
+    "I110",
+    "I30"
+   ],
+   "children": [
+    "I28",
+    "I29",
+    "I31"
+   ],
+   "married": "1924"
+  },
+  {
+   "id": "F39",
+   "spouses": [
+    "I31",
+    "I54"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F4",
+   "spouses": [
+    "I131",
+    "I151"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F40",
+   "spouses": [
+    "I29",
+    "I46"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F41",
+   "spouses": [
+    "I157",
+    "I28"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F42",
+   "spouses": [
+    "I1",
+    "I208"
+   ],
+   "children": [
+    "I207"
+   ],
+   "married": null
+  },
+  {
+   "id": "F43",
+   "spouses": [
+    "I207",
+    "I65"
+   ],
+   "children": [
+    "I67"
+   ],
+   "married": null
+  },
+  {
+   "id": "F44",
+   "spouses": [
+    "I2",
+    "I50"
+   ],
+   "children": [
+    "I51"
+   ],
+   "married": null
+  },
+  {
+   "id": "F45",
+   "spouses": [
+    "I51",
+    "I67"
+   ],
+   "children": [
+    "I63"
+   ],
+   "married": "1857"
+  },
+  {
+   "id": "F46",
+   "spouses": [
+    "I161",
+    "I71"
+   ],
+   "children": [
+    "I73"
+   ],
+   "married": null
+  },
+  {
+   "id": "F47",
+   "spouses": [
+    "I64",
+    "I73"
+   ],
+   "children": [
+    "I72"
+   ],
+   "married": "1854"
+  },
+  {
+   "id": "F48",
+   "spouses": [
+    "I63",
+    "I72"
+   ],
+   "children": [
+    "I66"
+   ],
+   "married": "1889"
+  },
+  {
+   "id": "F49",
+   "spouses": [
+    "I169",
+    "I20"
+   ],
+   "children": [
+    "I19"
+   ],
+   "married": "1753"
+  },
+  {
+   "id": "F5",
+   "spouses": [
+    "I179",
+    "I182"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F50",
+   "spouses": [
+    "I165",
+    "I203"
+   ],
+   "children": [
+    "I202"
+   ],
+   "married": null
+  },
+  {
+   "id": "F51",
+   "spouses": [
+    "I152",
+    "I202"
+   ],
+   "children": [
+    "I154"
+   ],
+   "married": "1765"
+  },
+  {
+   "id": "F52",
+   "spouses": [
+    "I154",
+    "I19"
+   ],
+   "children": [
+    "I25"
+   ],
+   "married": "1789"
+  },
+  {
+   "id": "F53",
+   "spouses": [
+    "I138",
+    "I45"
+   ],
+   "children": [
+    "I137"
+   ],
+   "married": null
+  },
+  {
+   "id": "F54",
+   "spouses": [
+    "I137",
+    "I205"
+   ],
+   "children": [
+    "I206"
+   ],
+   "married": null
+  },
+  {
+   "id": "F55",
+   "spouses": [
+    "I206",
+    "I25"
+   ],
+   "children": [
+    "I23"
+   ],
+   "married": null
+  },
+  {
+   "id": "F56",
+   "spouses": [
+    "I23",
+    "I56"
+   ],
+   "children": [
+    "I17"
+   ],
+   "married": null
+  },
+  {
+   "id": "F57",
+   "spouses": [
+    "I133",
+    "I174"
+   ],
+   "children": [
+    "I173"
+   ],
+   "married": null
+  },
+  {
+   "id": "F58",
+   "spouses": [
+    "I17",
+    "I173"
+   ],
+   "children": [
+    "I16",
+    "I26"
+   ],
+   "married": null
+  },
+  {
+   "id": "F59",
+   "spouses": [
+    "I197",
+    "I26"
+   ],
+   "children": [
+    "I24"
+   ],
+   "married": "1917"
+  },
+  {
+   "id": "F6",
+   "spouses": [
+    "I101",
+    "I194"
+   ],
+   "children": [
+    "I191",
+    "I192",
+    "I193",
+    "I195"
+   ],
+   "married": null
+  },
+  {
+   "id": "F60",
+   "spouses": [
+    "I134",
+    "I162"
+   ],
+   "children": [
+    "I135"
+   ],
+   "married": null
+  },
+  {
+   "id": "F61",
+   "spouses": [
+    "I135",
+    "I155"
+   ],
+   "children": [
+    "I136"
+   ],
+   "married": null
+  },
+  {
+   "id": "F62",
+   "spouses": [
+    "I136",
+    "I16"
+   ],
+   "children": [
+    "I18",
+    "I22"
+   ],
+   "married": "1928"
+  },
+  {
+   "id": "F63",
+   "spouses": [
+    "I18",
+    "I33"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F64",
+   "spouses": [
+    "I167",
+    "I18"
+   ],
+   "children": [
+    "I166"
+   ],
+   "married": null
+  },
+  {
+   "id": "F65",
+   "spouses": [
+    "I136",
+    "I6"
+   ],
+   "children": [
+    "I7",
+    "I8"
+   ],
+   "married": null
+  },
+  {
+   "id": "F66",
+   "spouses": [
+    "I186",
+    "I27"
+   ],
+   "children": [
+    "I183",
+    "I184",
+    "I185",
+    "I187",
+    "I188",
+    "I189",
+    "I190"
+   ],
+   "married": "1918"
+  },
+  {
+   "id": "F67",
+   "spouses": [
+    "I12",
+    "I196"
+   ],
+   "children": [
+    "I11",
+    "I13"
+   ],
+   "married": null
+  },
+  {
+   "id": "F68",
+   "spouses": [
+    "I172",
+    "I94"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F69",
+   "spouses": [
+    "I107",
+    "I43"
+   ],
+   "children": [],
+   "married": "1944"
+  },
+  {
+   "id": "F7",
+   "spouses": [
+    "I13",
+    "I98"
+   ],
+   "children": [
+    "I106",
+    "I124",
+    "I89"
+   ],
+   "married": null
+  },
+  {
+   "id": "F70",
+   "spouses": [
+    "I164",
+    "I22"
+   ],
+   "children": [],
+   "married": null
+  },
+  {
+   "id": "F71",
+   "spouses": [
+    "I139",
+    "I61"
+   ],
+   "children": [
+    "I64"
+   ],
+   "married": null
+  },
+  {
+   "id": "F72",
+   "spouses": [
+    "I62"
+   ],
+   "children": [
+    "I61",
+    "I65"
+   ],
+   "married": null
+  },
+  {
+   "id": "F73",
+   "spouses": [
+    "I21"
+   ],
+   "children": [
+    "I20"
+   ],
+   "married": null
+  },
+  {
+   "id": "F74",
+   "spouses": [
+    "I153"
+   ],
+   "children": [
+    "I152"
+   ],
+   "married": null
+  },
+  {
+   "id": "F8",
+   "spouses": [
+    "I104",
+    "I22"
+   ],
+   "children": [
+    "I122",
+    "I90",
+    "I94"
+   ],
+   "married": null
+  },
+  {
+   "id": "F9",
+   "spouses": [
+    "I125",
+    "I185"
+   ],
+   "children": [
+    "I108",
+    "I112",
+    "I113",
+    "I116",
+    "I118",
+    "I126",
+    "I86",
+    "I93",
+    "I95",
+    "I96",
+    "I97"
+   ],
+   "married": null
+  }
+ ],
+ "links": [
+  {
+   "family": "F0",
+   "lines": [
+    "fitzgerald-I62",
+    "kennedy-I120"
+   ],
+   "spouses": [
+    "I105",
+    "I66"
+   ],
+   "married": "1914"
+  },
+  {
+   "family": "F1",
+   "lines": [
+    "kennedy-I120",
+    "shriver-I177"
+   ],
+   "spouses": [
+    "I177",
+    "I99"
+   ],
+   "married": "1953"
+  },
+  {
+   "family": "F17",
+   "lines": [
+    "kennedy-I120",
+    "murphy-I160"
+   ],
+   "spouses": [
+    "I121",
+    "I158"
+   ],
+   "married": "1849"
+  },
+  {
+   "family": "F18",
+   "lines": [
+    "kane-I85",
+    "murphy-I159"
+   ],
+   "spouses": [
+    "I159",
+    "I85"
+   ],
+   "married": null
+  },
+  {
+   "family": "F19",
+   "lines": [
+    "kane-I85",
+    "kennedy-I120"
+   ],
+   "spouses": [
+    "I114",
+    "I83"
+   ],
+   "married": "1883"
+  },
+  {
+   "family": "F2",
+   "lines": [
+    "kennedy-I120",
+    "lawford-I129"
+   ],
+   "spouses": [
+    "I119",
+    "I129"
+   ],
+   "married": "1954"
+  },
+  {
+   "family": "F20",
+   "lines": [
+    "kane-I85",
+    "metcalf-I156"
+   ],
+   "spouses": [
+    "I156",
+    "I81"
+   ],
+   "married": "1918"
+  },
+  {
+   "family": "F21",
+   "lines": [
+    "kennedy-I120",
+    "mahoney-I146"
+   ],
+   "spouses": [
+    "I102",
+    "I146"
+   ],
+   "married": "1872"
+  },
+  {
+   "family": "F22",
+   "lines": [
+    "mahoney-I146",
+    "twomey-I204"
+   ],
+   "spouses": [
+    "I142",
+    "I204"
+   ],
+   "married": "1916"
+  },
+  {
+   "family": "F23",
+   "lines": [
+    "farley-I57",
+    "mahoney-I146"
+   ],
+   "spouses": [
+    "I145",
+    "I57"
+   ],
+   "married": "1912"
+  },
+  {
+   "family": "F25",
+   "lines": [
+    "caulfield-I41",
+    "kennedy-I120"
+   ],
+   "spouses": [
+    "I111",
+    "I41"
+   ],
+   "married": "1882"
+  },
+  {
+   "family": "F26",
+   "lines": [
+    "caulfield-I41",
+    "crawford-I52"
+   ],
+   "spouses": [
+    "I42",
+    "I52"
+   ],
+   "married": "1906"
+  },
+  {
+   "family": "F27",
+   "lines": [
+    "baker-I10",
+    "caulfield-I41"
+   ],
+   "spouses": [
+    "I10",
+    "I34"
+   ],
+   "married": "1920"
+  },
+  {
+   "family": "F28",
+   "lines": [
+    "caulfield-I41",
+    "finkfelt-I60"
+   ],
+   "spouses": [
+    "I39",
+    "I60"
+   ],
+   "married": "1928"
+  },
+  {
+   "family": "F29",
+   "lines": [
+    "baker-I9",
+    "caulfield-I41"
+   ],
+   "spouses": [
+    "I40",
+    "I9"
+   ],
+   "married": "1931"
+  },
+  {
+   "family": "F31",
+   "lines": [
+    "hassett-I74",
+    "hickey-I77"
+   ],
+   "spouses": [
+    "I74",
+    "I77"
+   ],
+   "married": null
+  },
+  {
+   "family": "F32",
+   "lines": [
+    "field-I58",
+    "hickey-I77"
+   ],
+   "spouses": [
+    "I58",
+    "I75"
+   ],
+   "married": null
+  },
+  {
+   "family": "F33",
+   "lines": [
+    "hickey-I77",
+    "kennedy-I120"
+   ],
+   "spouses": [
+    "I123",
+    "I76"
+   ],
+   "married": "1887"
+  },
+  {
+   "family": "F35",
+   "lines": [
+    "connelly-I47",
+    "kennedy-I120"
+   ],
+   "spouses": [
+    "I115",
+    "I47"
+   ],
+   "married": "1927"
+  },
+  {
+   "family": "F36",
+   "lines": [
+    "connelly-I47",
+    "mccarthy-I150"
+   ],
+   "spouses": [
+    "I150",
+    "I48"
+   ],
+   "married": null
+  },
+  {
+   "family": "F38",
+   "lines": [
+    "burke-I30",
+    "kennedy-I120"
+   ],
+   "spouses": [
+    "I110",
+    "I30"
+   ],
+   "married": "1924"
+  },
+  {
+   "family": "F39",
+   "lines": [
+    "burke-I30",
+    "devine-I54"
+   ],
+   "spouses": [
+    "I31",
+    "I54"
+   ],
+   "married": null
+  },
+  {
+   "family": "F43",
+   "lines": [
+    "fitzgerald-I62",
+    "wilmouth-I207"
+   ],
+   "spouses": [
+    "I207",
+    "I65"
+   ],
+   "married": null
+  },
+  {
+   "family": "F45",
+   "lines": [
+    "cox-I51",
+    "fitzgerald-I62"
+   ],
+   "spouses": [
+    "I51",
+    "I67"
+   ],
+   "married": "1857"
+  },
+  {
+   "family": "F47",
+   "lines": [
+    "fitzgerald-I62",
+    "hannon-I73"
+   ],
+   "spouses": [
+    "I64",
+    "I73"
+   ],
+   "married": "1854"
+  },
+  {
+   "family": "F48",
+   "lines": [
+    "fitzgerald-I62",
+    "hannon-I73"
+   ],
+   "spouses": [
+    "I63",
+    "I72"
+   ],
+   "married": "1889"
+  },
+  {
+   "family": "F49",
+   "lines": [
+    "bouvier-I20",
+    "repelin-I169"
+   ],
+   "spouses": [
+    "I169",
+    "I20"
+   ],
+   "married": "1753"
+  },
+  {
+   "family": "F50",
+   "lines": [
+    "paulin-I165",
+    "trintignant-I203"
+   ],
+   "spouses": [
+    "I165",
+    "I203"
+   ],
+   "married": null
+  },
+  {
+   "family": "F51",
+   "lines": [
+    "mercier-I153",
+    "trintignant-I203"
+   ],
+   "spouses": [
+    "I152",
+    "I202"
+   ],
+   "married": "1765"
+  },
+  {
+   "family": "F52",
+   "lines": [
+    "bouvier-I20",
+    "mercier-I153"
+   ],
+   "spouses": [
+    "I154",
+    "I19"
+   ],
+   "married": "1789"
+  },
+  {
+   "family": "F53",
+   "lines": [
+    "clifford-I45",
+    "lindsay-I138"
+   ],
+   "spouses": [
+    "I138",
+    "I45"
+   ],
+   "married": null
+  },
+  {
+   "family": "F54",
+   "lines": [
+    "lindsay-I138",
+    "vernou-I205"
+   ],
+   "spouses": [
+    "I137",
+    "I205"
+   ],
+   "married": null
+  },
+  {
+   "family": "F55",
+   "lines": [
+    "bouvier-I20",
+    "vernou-I205"
+   ],
+   "spouses": [
+    "I206",
+    "I25"
+   ],
+   "married": null
+  },
+  {
+   "family": "F56",
+   "lines": [
+    "bouvier-I20",
+    "ewing-I56"
+   ],
+   "spouses": [
+    "I23",
+    "I56"
+   ],
+   "married": null
+  },
+  {
+   "family": "F57",
+   "lines": [
+    "leaman-I133",
+    "sergeant-I174"
+   ],
+   "spouses": [
+    "I133",
+    "I174"
+   ],
+   "married": null
+  },
+  {
+   "family": "F58",
+   "lines": [
+    "bouvier-I20",
+    "sergeant-I174"
+   ],
+   "spouses": [
+    "I17",
+    "I173"
+   ],
+   "married": null
+  },
+  {
+   "family": "F59",
+   "lines": [
+    "bouvier-I20",
+    "stone-I197"
+   ],
+   "spouses": [
+    "I197",
+    "I26"
+   ],
+   "married": "1917"
+  },
+  {
+   "family": "F60",
+   "lines": [
+    "lee-I134",
+    "norton-I162"
+   ],
+   "spouses": [
+    "I134",
+    "I162"
+   ],
+   "married": null
+  },
+  {
+   "family": "F61",
+   "lines": [
+    "lee-I134",
+    "merritt-I155"
+   ],
+   "spouses": [
+    "I135",
+    "I155"
+   ],
+   "married": null
+  },
+  {
+   "family": "F62",
+   "lines": [
+    "bouvier-I20",
+    "lee-I134"
+   ],
+   "spouses": [
+    "I136",
+    "I16"
+   ],
+   "married": "1928"
+  },
+  {
+   "family": "F66",
+   "lines": [
+    "brannack-I27",
+    "skakel-I186"
+   ],
+   "spouses": [
+    "I186",
+    "I27"
+   ],
+   "married": "1918"
+  },
+  {
+   "family": "F69",
+   "lines": [
+    "cavendish-I43",
+    "kennedy-I120"
+   ],
+   "spouses": [
+    "I107",
+    "I43"
+   ],
+   "married": "1944"
+  },
+  {
+   "family": "F70",
+   "lines": [
+    "bouvier-I20",
+    "onassis-I164"
+   ],
+   "spouses": [
+    "I164",
+    "I22"
+   ],
+   "married": null
+  },
+  {
+   "family": "F71",
+   "lines": [
+    "fitzgerald-I62",
+    "linnehan-I139"
+   ],
+   "spouses": [
+    "I139",
+    "I61"
+   ],
+   "married": null
+  },
+  {
+   "family": "F8",
+   "lines": [
+    "bouvier-I20",
+    "kennedy-I120"
+   ],
+   "spouses": [
+    "I104",
+    "I22"
+   ],
+   "married": null
+  },
+  {
+   "family": "F9",
+   "lines": [
+    "kennedy-I120",
+    "skakel-I186"
+   ],
+   "spouses": [
+    "I125",
+    "I185"
+   ],
+   "married": null
+  }
+ ],
+ "places": [
+  {
+   "id": "22209-arlington-county-va-usa",
+   "name": "22209, Arlington County, VA, USA",
+   "within": "arlington-county-va-usa",
+   "events": 0
+  },
+  {
+   "id": "48109-washtenaw-county-mi-usa",
+   "name": "48109, Washtenaw County, MI, USA",
+   "within": "washtenaw-county-mi-usa",
+   "events": 0
+  },
+  {
+   "id": "allegheny-county-pa-usa",
+   "name": "Allegheny County, PA, USA",
+   "within": "pa-usa",
+   "events": 0
+  },
+  {
+   "id": "angleterre-england",
+   "name": "Angleterre, England",
+   "within": "england",
+   "events": 0
+  },
+  {
+   "id": "ann-arbor-48109-washtenaw-county-mi-usa",
+   "name": "Ann Arbor, 48109, Washtenaw County, MI, USA",
+   "within": "48109-washtenaw-county-mi-usa",
+   "events": 3
+  },
+  {
+   "id": "ardeche-france",
+   "name": "Ardeche, France",
+   "within": "france",
+   "events": 0
+  },
+  {
+   "id": "arlington-22209-arlington-county-va-usa",
+   "name": "Arlington, 22209, Arlington County, VA, USA",
+   "within": "22209-arlington-county-va-usa",
+   "events": 2
+  },
+  {
+   "id": "arlington-county-va-usa",
+   "name": "Arlington County, VA, USA",
+   "within": "va-usa",
+   "events": 0
+  },
+  {
+   "id": "barnstable-county-ma-usa",
+   "name": "Barnstable County, MA, USA",
+   "within": "ma-usa",
+   "events": 0
+  },
+  {
+   "id": "bayonne-hudson-county-nj-usa",
+   "name": "Bayonne, Hudson County, NJ, USA",
+   "within": "hudson-county-nj-usa",
+   "events": 2
+  },
+  {
+   "id": "belgium",
+   "name": "Belgium",
+   "within": null,
+   "events": 0
+  },
+  {
+   "id": "boston-suffolk-county-ma-usa",
+   "name": "Boston, Suffolk County, MA, USA",
+   "within": "suffolk-county-ma-usa",
+   "events": 42
+  },
+  {
+   "id": "brookline-norfolk-county-ma-usa",
+   "name": "Brookline, Norfolk County, MA, USA",
+   "within": "norfolk-county-ma-usa",
+   "events": 12
+  },
+  {
+   "id": "ca-usa",
+   "name": "CA, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "cambridge-middlesex-county-ma-usa",
+   "name": "Cambridge, Middlesex County, MA, USA",
+   "within": "middlesex-county-ma-usa",
+   "events": 4
+  },
+  {
+   "id": "carroll-county-md-usa",
+   "name": "Carroll County, MD, USA",
+   "within": "md-usa",
+   "events": 0
+  },
+  {
+   "id": "chatsworth-derbyshire-angleterre-england",
+   "name": "Chatsworth, Derbyshire, Angleterre, England",
+   "within": "derbyshire-angleterre-england",
+   "events": 1
+  },
+  {
+   "id": "chelsea-suffolk-county-ma-usa",
+   "name": "Chelsea, Suffolk County, MA, USA",
+   "within": "suffolk-county-ma-usa",
+   "events": 2
+  },
+  {
+   "id": "chicago-cook-county-il-usa",
+   "name": "Chicago, Cook County, IL, USA",
+   "within": "cook-county-il-usa",
+   "events": 2
+  },
+  {
+   "id": "concord-middlesex-county-ma-usa",
+   "name": "Concord, Middlesex County, MA, USA",
+   "within": "middlesex-county-ma-usa",
+   "events": 1
+  },
+  {
+   "id": "cook-county-il-usa",
+   "name": "Cook County, IL, USA",
+   "within": "il-usa",
+   "events": 0
+  },
+  {
+   "id": "cork-cork-county-munster-province-ireland",
+   "name": "Cork, Cork County, Munster Province, Ireland",
+   "within": "cork-county-munster-province-ireland",
+   "events": 1
+  },
+  {
+   "id": "cork-county-munster-province-ireland",
+   "name": "Cork County, Munster Province, Ireland",
+   "within": "munster-province-ireland",
+   "events": 0
+  },
+  {
+   "id": "county-wexford-ireland",
+   "name": "County Wexford, Ireland",
+   "within": "ireland",
+   "events": 0
+  },
+  {
+   "id": "county-wexford-leinster-ireland",
+   "name": "County Wexford, Leinster, Ireland",
+   "within": "leinster-ireland",
+   "events": 0
+  },
+  {
+   "id": "dallas-county-tx-usa",
+   "name": "Dallas County, TX, USA",
+   "within": "tx-usa",
+   "events": 0
+  },
+  {
+   "id": "dallas-dallas-county-tx-usa",
+   "name": "Dallas, Dallas County, TX, USA",
+   "within": "dallas-county-tx-usa",
+   "events": 1
+  },
+  {
+   "id": "dc-usa",
+   "name": "DC, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "derbyshire-angleterre-england",
+   "name": "Derbyshire, Angleterre, England",
+   "within": "angleterre-england",
+   "events": 0
+  },
+  {
+   "id": "dorchester-suffolk-county-ma-usa",
+   "name": "Dorchester, Suffolk County, MA, USA",
+   "within": "suffolk-county-ma-usa",
+   "events": 1
+  },
+  {
+   "id": "du-page-county-il-usa",
+   "name": "Du Page County, IL, USA",
+   "within": "il-usa",
+   "events": 0
+  },
+  {
+   "id": "dunganstown-county-wexford-ireland",
+   "name": "Dunganstown, County Wexford, Ireland",
+   "within": "county-wexford-ireland",
+   "events": 2
+  },
+  {
+   "id": "east-boston-suffolk-county-ma-usa",
+   "name": "East Boston, Suffolk County, MA, USA",
+   "within": "suffolk-county-ma-usa",
+   "events": 56
+  },
+  {
+   "id": "east-hampton-long-island-ny-usa",
+   "name": "East Hampton, Long Island, NY, USA",
+   "within": "long-island-ny-usa",
+   "events": 1
+  },
+  {
+   "id": "easthampton-hampshire-county-ma-usa",
+   "name": "Easthampton, Hampshire County, MA, USA",
+   "within": "hampshire-county-ma-usa",
+   "events": 3
+  },
+  {
+   "id": "england",
+   "name": "England",
+   "within": null,
+   "events": 0
+  },
+  {
+   "id": "essex-county-ma-usa",
+   "name": "Essex County, MA, USA",
+   "within": "ma-usa",
+   "events": 0
+  },
+  {
+   "id": "falmouth-barnstable-county-ma-usa",
+   "name": "Falmouth, Barnstable County, MA, USA",
+   "within": "barnstable-county-ma-usa",
+   "events": 1
+  },
+  {
+   "id": "fl-usa",
+   "name": "FL, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "france",
+   "name": "France",
+   "within": null,
+   "events": 2
+  },
+  {
+   "id": "gard-france",
+   "name": "Gard, France",
+   "within": "france",
+   "events": 0
+  },
+  {
+   "id": "grenoble-isere-france",
+   "name": "Grenoble, Isere, France",
+   "within": "isere-france",
+   "events": 1
+  },
+  {
+   "id": "hampshire-county-ma-usa",
+   "name": "Hampshire County, MA, USA",
+   "within": "ma-usa",
+   "events": 0
+  },
+  {
+   "id": "heppen-belgium",
+   "name": "Heppen, Belgium",
+   "within": "belgium",
+   "events": 1
+  },
+  {
+   "id": "hudson-county-nj-usa",
+   "name": "Hudson County, NJ, USA",
+   "within": "nj-usa",
+   "events": 0
+  },
+  {
+   "id": "hull-plymouth-county-ma-usa",
+   "name": "Hull, Plymouth County, MA, USA",
+   "within": "plymouth-county-ma-usa",
+   "events": 1
+  },
+  {
+   "id": "hyannis-ma-usa",
+   "name": "Hyannis, MA, USA",
+   "within": "ma-usa",
+   "events": 1
+  },
+  {
+   "id": "hyannis-port-barnstable-county-ma-usa",
+   "name": "Hyannis Port, Barnstable County, MA, USA",
+   "within": "barnstable-county-ma-usa",
+   "events": 2
+  },
+  {
+   "id": "il-usa",
+   "name": "IL, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "ireland",
+   "name": "Ireland",
+   "within": null,
+   "events": 9
+  },
+  {
+   "id": "isere-france",
+   "name": "Isere, France",
+   "within": "france",
+   "events": 0
+  },
+  {
+   "id": "jefferson-county-wi-usa",
+   "name": "Jefferson County, WI, USA",
+   "within": "wi-usa",
+   "events": 0
+  },
+  {
+   "id": "jefferson-jefferson-county-wi-usa",
+   "name": "Jefferson, Jefferson County, WI, USA",
+   "within": "jefferson-county-wi-usa",
+   "events": 1
+  },
+  {
+   "id": "leinster-ireland",
+   "name": "Leinster, Ireland",
+   "within": "ireland",
+   "events": 0
+  },
+  {
+   "id": "liverpool-england",
+   "name": "Liverpool, England",
+   "within": "england",
+   "events": 1
+  },
+  {
+   "id": "loch-garman-county-wexford-leinster-ireland",
+   "name": "Loch Garman, County Wexford, Leinster, Ireland",
+   "within": "county-wexford-leinster-ireland",
+   "events": 1
+  },
+  {
+   "id": "london-england",
+   "name": "London, England",
+   "within": "england",
+   "events": 2
+  },
+  {
+   "id": "long-island-ny-usa",
+   "name": "Long Island, NY, USA",
+   "within": "ny-usa",
+   "events": 0
+  },
+  {
+   "id": "los-angeles-county-ca-usa",
+   "name": "Los Angeles County, CA, USA",
+   "within": "ca-usa",
+   "events": 0
+  },
+  {
+   "id": "los-angeles-los-angeles-county-ca-usa",
+   "name": "Los Angeles, Los Angeles County, CA, USA",
+   "within": "los-angeles-county-ca-usa",
+   "events": 2
+  },
+  {
+   "id": "los-olivos-santa-barbara-county-ca-usa",
+   "name": "Los Olivos, Santa Barbara County, CA, USA",
+   "within": "santa-barbara-county-ca-usa",
+   "events": 1
+  },
+  {
+   "id": "lynn-essex-county-ma-usa",
+   "name": "Lynn, Essex County, MA, USA",
+   "within": "essex-county-ma-usa",
+   "events": 5
+  },
+  {
+   "id": "ma-usa",
+   "name": "MA, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "malden-middlesex-county-ma-usa",
+   "name": "Malden, Middlesex County, MA, USA",
+   "within": "middlesex-county-ma-usa",
+   "events": 15
+  },
+  {
+   "id": "martha-s-vineyard-ma-usa",
+   "name": "Martha's Vineyard, MA, USA",
+   "within": "ma-usa",
+   "events": 1
+  },
+  {
+   "id": "mckeesport-allegheny-county-pa-usa",
+   "name": "McKeesport, Allegheny County, PA, USA",
+   "within": "allegheny-county-pa-usa",
+   "events": 1
+  },
+  {
+   "id": "md-usa",
+   "name": "MD, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "medford-middlesex-county-ma-usa",
+   "name": "Medford, Middlesex County, MA, USA",
+   "within": "middlesex-county-ma-usa",
+   "events": 1
+  },
+  {
+   "id": "mi-usa",
+   "name": "MI, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "middlesex-county-ma-usa",
+   "name": "Middlesex County, MA, USA",
+   "within": "ma-usa",
+   "events": 0
+  },
+  {
+   "id": "munster-province-ireland",
+   "name": "Munster Province, Ireland",
+   "within": "ireland",
+   "events": 0
+  },
+  {
+   "id": "new-york-city-ny-usa",
+   "name": "New York City, NY, USA",
+   "within": "ny-usa",
+   "events": 10
+  },
+  {
+   "id": "nj-usa",
+   "name": "NJ, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "norfolk-county-ma-usa",
+   "name": "Norfolk County, MA, USA",
+   "within": "ma-usa",
+   "events": 0
+  },
+  {
+   "id": "ny-usa",
+   "name": "NY, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "ok-usa",
+   "name": "OK, USA",
+   "within": "usa",
+   "events": 2
+  },
+  {
+   "id": "pa-usa",
+   "name": "PA, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "palm-beach-county-fl-usa",
+   "name": "Palm Beach County, FL, USA",
+   "within": "fl-usa",
+   "events": 0
+  },
+  {
+   "id": "palm-beach-palm-beach-county-fl-usa",
+   "name": "Palm Beach, Palm Beach County, FL, USA",
+   "within": "palm-beach-county-fl-usa",
+   "events": 1
+  },
+  {
+   "id": "plymouth-county-ma-usa",
+   "name": "Plymouth County, MA, USA",
+   "within": "ma-usa",
+   "events": 0
+  },
+  {
+   "id": "pont-saint-esprit-gard-france",
+   "name": "Pont-Saint-Esprit, Gard, France",
+   "within": "gard-france",
+   "events": 1
+  },
+  {
+   "id": "revere-suffolk-county-ma-usa",
+   "name": "Revere, Suffolk County, MA, USA",
+   "within": "suffolk-county-ma-usa",
+   "events": 7
+  },
+  {
+   "id": "saint-bauzile-ardeche-france",
+   "name": "Saint-Bauzile, Ardeche, France",
+   "within": "ardeche-france",
+   "events": 1
+  },
+  {
+   "id": "saint-johns-county-fl-usa",
+   "name": "Saint Johns County, FL, USA",
+   "within": "fl-usa",
+   "events": 0
+  },
+  {
+   "id": "santa-barbara-county-ca-usa",
+   "name": "Santa Barbara County, CA, USA",
+   "within": "ca-usa",
+   "events": 0
+  },
+  {
+   "id": "saratoga-county-ny-usa",
+   "name": "Saratoga County, NY, USA",
+   "within": "ny-usa",
+   "events": 0
+  },
+  {
+   "id": "saratoga-springs-saratoga-county-ny-usa",
+   "name": "Saratoga Springs, Saratoga County, NY, USA",
+   "within": "saratoga-county-ny-usa",
+   "events": 1
+  },
+  {
+   "id": "saugus-essex-county-ma-usa",
+   "name": "Saugus, Essex County, MA, USA",
+   "within": "essex-county-ma-usa",
+   "events": 1
+  },
+  {
+   "id": "st-augustine-saint-johns-county-fl-usa",
+   "name": "St. Augustine, Saint Johns County, FL, USA",
+   "within": "saint-johns-county-fl-usa",
+   "events": 2
+  },
+  {
+   "id": "suffolk-angleterre-england",
+   "name": "Suffolk, Angleterre, England",
+   "within": "angleterre-england",
+   "events": 0
+  },
+  {
+   "id": "suffolk-county-ma-usa",
+   "name": "Suffolk County, MA, USA",
+   "within": "ma-usa",
+   "events": 0
+  },
+  {
+   "id": "the-air-suffolk-angleterre-england",
+   "name": "the air, Suffolk, Angleterre, England",
+   "within": "suffolk-angleterre-england",
+   "events": 1
+  },
+  {
+   "id": "town-of-acton-middlesex-county-ma-usa",
+   "name": "Town of Acton, Middlesex County, MA, USA",
+   "within": "middlesex-county-ma-usa",
+   "events": 3
+  },
+  {
+   "id": "tx-usa",
+   "name": "TX, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "usa",
+   "name": "USA",
+   "within": null,
+   "events": 0
+  },
+  {
+   "id": "va-usa",
+   "name": "VA, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "washington-dc-usa",
+   "name": "Washington, DC, USA",
+   "within": "dc-usa",
+   "events": 4
+  },
+  {
+   "id": "washtenaw-county-mi-usa",
+   "name": "Washtenaw County, MI, USA",
+   "within": "mi-usa",
+   "events": 0
+  },
+  {
+   "id": "west-roxbury-suffolk-county-ma-usa",
+   "name": "West Roxbury, Suffolk County, MA, USA",
+   "within": "suffolk-county-ma-usa",
+   "events": 1
+  },
+  {
+   "id": "westminster-carroll-county-md-usa",
+   "name": "Westminster, Carroll County, MD, USA",
+   "within": "carroll-county-md-usa",
+   "events": 1
+  },
+  {
+   "id": "weymouth-norfolk-county-ma-usa",
+   "name": "Weymouth, Norfolk County, MA, USA",
+   "within": "norfolk-county-ma-usa",
+   "events": 1
+  },
+  {
+   "id": "wi-usa",
+   "name": "WI, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "winfield-du-page-county-il-usa",
+   "name": "Winfield, Du Page County, IL, USA",
+   "within": "du-page-county-il-usa",
+   "events": 1
+  },
+  {
+   "id": "winthrop-suffolk-county-ma-usa",
+   "name": "Winthrop, Suffolk County, MA, USA",
+   "within": "suffolk-county-ma-usa",
+   "events": 6
+  }
+ ]
+}

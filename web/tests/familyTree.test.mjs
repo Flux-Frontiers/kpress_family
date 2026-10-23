@@ -121,3 +121,31 @@ test("an unknown person or line is refused", () => {
   assert.throws(() => hourglassTree(index, "nobody"), /no such person/);
   assert.throws(() => lineTree(index, "nobody-I0"), /no such line/);
 });
+
+test("the default focal person has the fullest hourglass, both halves", () => {
+  const { richestFocal } = require(`${build}/familyTree.js`);
+  const focal = richestFocal(index);
+  const tree = hourglassTree(index, focal);
+  const below = tree.people.filter((p) => p.generation < 0).length;
+  const above = tree.people.filter((p) => p.generation >= 0).length - 1;
+  assert.ok(below > 0 && above > 0, `${focal}: ${below} below, ${above} above`);
+  // No one in the family has a fuller smaller half.
+  for (const id of index.person.keys()) {
+    const t = hourglassTree(index, id);
+    const b = t.people.filter((p) => p.generation < 0).length;
+    const a = t.people.filter((p) => p.generation >= 0).length - 1;
+    assert.ok(Math.min(b, a) <= Math.min(below, above), `${id} is fuller than ${focal}`);
+  }
+});
+
+test("every marriage between two lines with trees becomes a link between those trees", () => {
+  globalThis.window ??= { localStorage: { getItem: () => null, setItem() {} } };
+  const { getForest } = require(`${build}/forest.js`);
+  const { richestFocal } = require(`${build}/familyTree.js`);
+  const f = getForest(catalog, richestFocal(index));
+  assert.equal(f.links.length, catalog.links.length);
+  for (const link of f.links) {
+    const expected = catalog.links.find((l) => l.family === link.family).lines.slice().sort();
+    assert.deepEqual([f.trees[link.a].book.slug, f.trees[link.b].book.slug].sort(), expected);
+  }
+});

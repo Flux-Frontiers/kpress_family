@@ -16,14 +16,21 @@
 #   make web-preview   -- production build, served like web-dev
 #   make web-kill      -- stop every running Vite dev or preview server
 #
+# A family (web/public/family, never committed):
+#   make family FAMILY_REPO=<dir>  -- genkg export-web from a genealogy_kg store
+#                                     built with the living-person filter on
+#
 # The Swift kit (app/KnowledgePressKit):
 #   make kit-build     -- swift build
 #   make kit-test      -- swift test; set GUTENBERG_PACKS to a built book
 #                         corpus to run the corpus suites, which skip without it
 
 KIT_DIR := app/KnowledgePressKit
+GENEALOGY_KG_DIR ?= ../genealogy_kg
+FAMILY_REPO ?=
+FAMILY_CUTOFF ?= 100
 
-.PHONY: web-install web-dev web-test web-build web-preview web-kill kit-build kit-test
+.PHONY: web-install web-dev web-test web-build web-preview web-kill kit-build kit-test family
 
 web-install:
 	cd web && npm install
@@ -53,3 +60,10 @@ kit-build:
 
 kit-test:
 	cd $(KIT_DIR) && swift test
+
+# The export refuses a store that was not built with at least this cutoff.
+family:
+	@test -n "$(FAMILY_REPO)" || { echo "set FAMILY_REPO to a genkg store directory"; exit 1; }
+	cd $(GENEALOGY_KG_DIR) && env -u VIRTUAL_ENV -u POETRY_ACTIVE poetry run genkg export-web \
+		--repo $(abspath $(FAMILY_REPO)) --out $(abspath web/public/family) \
+		--living-cutoff $(FAMILY_CUTOFF) --force

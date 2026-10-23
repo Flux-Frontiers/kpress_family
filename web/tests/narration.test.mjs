@@ -1,3 +1,4 @@
+import { orchardArgs } from "./orchard.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -20,7 +21,7 @@ test("authors and titles are spoken without the catalog's disambiguators", () =>
 
 test("every grove's narration names it, counts its books and reads cleanly", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   for (const g of f.groves) {
     const n = g.narration;
     assert.ok(n.startsWith(`${g.label}:`), `${g.genre}: ${n}`);
@@ -28,18 +29,13 @@ test("every grove's narration names it, counts its books and reads cleanly", () 
     assert.ok(n.endsWith("."), `${g.genre}: ${n}`);
     assert.ok(!/Unknown| — |\s\s/.test(n), `${g.genre}: ${n}`);
   }
-  const diaries = f.groves.find((g) => g.genre === "diaries");
-  assert.match(diaries.narration, /The entries run from \d{4} to \d{4}\./);
-  // A grove with anonymous books names its authors as a sample, not as the authors.
-  const sacred = f.groves.find((g) => g.genre === "sacred-texts");
-  assert.match(sacred.narration, /including work by/);
 });
 
 test("the tour holds at a grove for the dwell and for as long as the narration runs", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
   const { sim, teleportSim, stepVehicle } = require(`${process.env.FOREST_TEST_BUILD}/sim.js`);
   const { DWELL, planTour, steerTour, tourStop } = require(`${process.env.FOREST_TEST_BUILD}/tour.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   teleportSim(f.home.x, f.home.z, f.home.yaw);
   const tour = planTour(f, sim.x, sim.z, sim.yaw);
   const hz = 30;

@@ -1,36 +1,38 @@
+import { orchardArgs } from "./orchard.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 globalThis.window ??= { localStorage: { getItem: () => null, setItem() {} } };
 
-test("the corpus redwood: height from the corpus, one limb per book, pipe-model trunk", () => {
+test("the home tree: the focal person's hourglass at the hub, every root inside the glass pit", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const { REDWOOD_HEIGHT_PER_LOG2 } = require(`${process.env.FOREST_TEST_BUILD}/corpusTree.js`);
-  const f = getForest();
+  const [family, focal] = orchardArgs();
+  const f = getForest(family, focal);
   const c = f.corpusTree;
-  const total = f.trees.reduce((s, t) => s + t.book.chunks, 0);
-  assert.equal(c.totalChunks, total);
-  assert.equal(c.limbs, f.trees.length);
-  assert.ok(Math.abs(c.height - REDWOOD_HEIGHT_PER_LOG2 * Math.log2(1 + total)) < 1e-9);
-  const tallest = Math.max(...f.trees.map((t) => t.height));
-  assert.ok(c.height > 2 * tallest, `redwood ${c.height.toFixed(0)} m against ${tallest.toFixed(0)} m`);
-  // The flare stays on the hub plaza with room for the spokes to start around it.
-  assert.ok(c.baseRadius + 2.75 < 9, `flare ${c.baseRadius.toFixed(2)} m`);
-  assert.ok(c.bark.count > 0 && c.foliage.count > c.limbs);
-  // Every spray hangs in the crown, not on the bole or out over the groves.
-  for (let i = 0; i < c.foliage.count; i++) {
-    const [x, y, z] = [c.foliage.pos[i * 3], c.foliage.pos[i * 3 + 1], c.foliage.pos[i * 3 + 2]];
-    assert.ok(y > c.height * 0.25 && y < c.height * 1.05, `spray ${i} at ${y.toFixed(1)} m`);
-    assert.ok(Math.hypot(x, z) < 20, `spray ${i} reaches ${Math.hypot(x, z).toFixed(1)} m`);
+  assert.equal(c.focal, focal);
+  assert.ok(c.bark.count > 0 && c.foliage.count > 0);
+  // Every root is inside the pit, under the glass; the canopy is above ground.
+  const pos = c.bark.pos;
+  for (let i = 0; i < c.bark.count; i++) {
+    const x = pos[i * 3], y = pos[i * 3 + 1], z = pos[i * 3 + 2];
+    if (y < 0) {
+      assert.ok(Math.hypot(x, z) < c.pitRadius, `root at ${Math.hypot(x, z).toFixed(1)} m, pit ${c.pitRadius.toFixed(1)} m`);
+      assert.ok(-y < c.pitDepth, `root ${(-y).toFixed(1)} m deep, pit ${c.pitDepth.toFixed(1)} m`);
+    }
   }
+  // The hub plaza rings the pit; the cart is kept off the trunk only, and drives over the glass.
+  const hub = f.plazas.find((p) => p.x === 0 && p.z === 0);
+  assert.ok(hub.r > c.pitRadius, `hub ${hub.r.toFixed(1)} m, pit ${c.pitRadius.toFixed(1)} m`);
+  assert.ok(c.baseRadius < c.pitRadius / 2);
+  assert.equal(f.obstacles[0].r, c.baseRadius);
 });
 
 test("exhibits stand in roadside glades: clear of trunks, off the road, apart from the hub", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
   const { EXHIBITS, exhibitApproach } = require(`${process.env.FOREST_TEST_BUILD}/exhibits.js`);
   const { forwardOf } = require(`${process.env.FOREST_TEST_BUILD}/sim.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   assert.equal(f.exhibits.length, EXHIBITS.length, "every exhibit found a glade");
   for (const e of f.exhibits) {
     assert.ok(Math.hypot(e.x, e.z) >= 30, `${e.id} sits under the redwood`);
@@ -53,7 +55,7 @@ test("exhibits stand in roadside glades: clear of trunks, off the road, apart fr
 test("wind rotors turn over their own plaza: overhead of the cart, never out over the road", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
   const { rotorEnvelope, PLINTH_TOP } = require(`${process.env.FOREST_TEST_BUILD}/windRotors.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   for (const id of ["helix", "darrieus", "savonius", "dna", "mast"]) {
     const e = f.exhibits.find((x) => x.id === id);
     assert.ok(e, `${id} placed`);
@@ -69,7 +71,7 @@ test("wind rotors turn over their own plaza: overhead of the cart, never out ove
 
 test("exhibits stand at the end of side spokes off the rings, spread round the forest", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   const rings = f.roadLines.filter((l) => l.kind === "ring").map((l) => Math.hypot(...l.pts[0]));
   const spurs = f.roadLines.filter((l) => l.kind === "spur");
   assert.equal(spurs.length, f.exhibits.length);

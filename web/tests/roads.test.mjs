@@ -1,3 +1,4 @@
+import { orchardArgs } from "./orchard.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -6,7 +7,7 @@ globalThis.window ??= { localStorage: { getItem: () => null, setItem() {} } };
 
 test("hub and spoke: circular ring roads through every grove stop, straight spokes from the hub", () => {
   const { getForest, HUB_PLAZA_R } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   const rings = f.roadLines.filter((l) => l.kind === "ring");
   assert.ok(rings.length >= 1 && rings.length <= 2, `${rings.length} rings`);
   for (const ring of rings) {
@@ -24,7 +25,9 @@ test("hub and spoke: circular ring roads through every grove stop, straight spok
   assert.ok(spokes.length >= 3 && spokes.length <= 6, `${spokes.length} spokes`);
   for (const s of spokes) {
     const [x0, z0] = s.pts[0], [x1, z1] = s.pts[s.pts.length - 1];
-    assert.ok(Math.abs(Math.hypot(x0, z0) - (HUB_PLAZA_R - 1)) < 1e-6, "a spoke starts at the hub plaza");
+    // The hub plaza grows to ring the glass pit; HUB_PLAZA_R is its floor.
+    const hub = f.plazas.find((p) => p.x === 0 && p.z === 0).r;
+    assert.ok(hub >= HUB_PLAZA_R && Math.abs(Math.hypot(x0, z0) - (hub - 1)) < 1e-6, "a spoke starts at the hub plaza");
     assert.ok(Math.abs(Math.hypot(x1, z1) - outer) < 1e-6, "a spoke runs out to the outer ring");
     assert.ok(Math.abs(x0 * z1 - z0 * x1) < 1e-6 * Math.hypot(x1, z1), "a spoke runs straight out from the hub");
   }
@@ -49,7 +52,7 @@ test("a ribbon shares vertices between pieces and closes on itself", () => {
 
 test("compact layout: groves never overlap, trees keep driving room, the hub stays clear", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   for (let i = 0; i < f.groves.length; i++) {
     const a = f.groves[i];
     assert.ok(Math.hypot(a.x, a.z) - a.radius >= 18 - 1e-6, `${a.genre} crowds the hub`);
@@ -73,7 +76,7 @@ test("compact layout: groves never overlap, trees keep driving room, the hub sta
 
 test("every road keeps the cart clear of every trunk, the redwood and every exhibit", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   // Centreline clearance = half the widest road (1.7) + the cart's radius (1.05).
   for (const line of f.roadLines) {
     for (const [x, z] of line.pts) {
@@ -91,7 +94,7 @@ test("every road keeps the cart clear of every trunk, the redwood and every exhi
 test("home stands clear of the hub plaza's redwood and plaque, facing the redwood", () => {
   const { getForest, HUB_PLAZA_R, HUB_PLAQUE_DIST } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
   const { forwardOf } = require(`${process.env.FOREST_TEST_BUILD}/sim.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   const { x, z, yaw } = f.home;
   const d = Math.hypot(x, z);
   assert.ok(d > f.corpusTree.baseRadius + 1.05 && d > HUB_PLAZA_R && d > HUB_PLAQUE_DIST + 3, `home ${d.toFixed(1)} m from the hub`);
@@ -102,7 +105,7 @@ test("home stands clear of the hub plaza's redwood and plaque, facing the redwoo
 
 test("the ring goes round the hub, never across it", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   // A leg between two near stops on opposite sides once ran 7.5 m from the redwood.
   const minR = Math.min(...f.ringPath.map((p) => Math.hypot(p.x, p.z)));
   assert.ok(minR >= 17, `ring passes ${minR.toFixed(1)} m from the hub's centre`);
@@ -110,7 +113,7 @@ test("the ring goes round the hub, never across it", () => {
 
 test("grove signposts stand off the road, on their grove's side, clear of trunks", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   const segDist = (x, z, s) => {
     const dx = s.bx - s.ax, dz = s.bz - s.az;
     const t = Math.max(0, Math.min(1, ((x - s.ax) * dx + (z - s.az) * dz) / (dx * dx + dz * dz || 1)));

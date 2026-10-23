@@ -1,10 +1,12 @@
-import { BOOKS, type Book } from "./catalog";
-import { growCorpusTree, type CorpusTree } from "./corpusTree";
+import type { Book } from "./catalogTypes";
 import { EXHIBITS, placeExhibits, type Exhibit } from "./exhibits";
-import { GROW_VERSION, cellKey3, emitBark, emitLeaves, growTree, type BarkBuffers, type GrownTree } from "./growTree";
+import { indexCatalog, UNKNOWN_LINE, type FamilyCatalog, type FamilyLine } from "./familyCatalog";
+import { homeTree, lineBook, lineGrown, speciesForSurname, type HomeTree } from "./familyForest";
+import { hourglassTree, lineTree } from "./familyTree";
+import { GROW_VERSION, cellKey3, emitBark, emitLeaves, type BarkBuffers, type GrownTree } from "./growTree";
 import { sunflower, wheelLayout } from "./math";
 import { groveNarration } from "./narration";
-import { SPECIES, speciesFor } from "./species";
+import { SPECIES } from "./species";
 
 export const GENRE_PALETTE = [
   "#c45c4a",
@@ -119,8 +121,13 @@ export type Chunk = {
  */
 export type RoadLine = { kind: "spoke" | "ring" | "spur"; pts: [number, number][]; closed: boolean };
 
+/** A marriage between two lines: an arc between their trees. */
+export type ForestLink = { family: string; a: number; b: number; married: string | null };
+
 export type Forest = {
   trees: TreeSite[];
+  /** Marriages between lines, by index into trees. */
+  links: ForestLink[];
   groves: Grove[];
   /** Straight pieces of every road line, for clearance tests. */
   roads: RoadSeg[];
@@ -157,8 +164,8 @@ export type Forest = {
   /** On the hub plaza behind the redwood's plaque, facing the redwood. */
   home: { x: number; z: number; yaw: number };
   worldRadius: number;
-  /** The corpus redwood at the hub: one limb per book. */
-  corpusTree: CorpusTree;
+  /** The home hourglass at the hub: the focal person's ancestors and descendants, over the glass pit. */
+  corpusTree: HomeTree;
   /** Set pieces in roadside glades. */
   exhibits: Exhibit[];
   /** Discs the cart cannot drive into besides trunks: the redwood and each exhibit's plinth. */
@@ -174,10 +181,16 @@ function cellKey(cx: number, cz: number): string {
   return cx + ":" + cz;
 }
 
-export function getForest(leafMultiplier = 1): Forest {
-  const key = `${GROW_VERSION}:${leafMultiplier}`;
+/**
+ * The orchard for a family, focused on one person; cached per family and focal.
+ *
+ * :param family: As `genkg export-web` wrote it.
+ * :param focal: The home tree's trunk person.
+ */
+export function getForest(family: FamilyCatalog, focal: string, leafMultiplier = 1): Forest {
+  const key = `${GROW_VERSION}:${leafMultiplier}:${family.meta.generated}:${family.meta.counts.people}:${focal}`;
   if (cached && cachedVersion === key) return cached;
-  cached = buildForest(leafMultiplier);
+  cached = buildForest(family, focal, leafMultiplier);
   cachedVersion = key;
   return cached;
 }
@@ -344,24 +357,37 @@ function roundTurns(path: [number, number][], r: number): [number, number][] {
   return out.filter((p, k) => k === 0 || Math.hypot(p[0] - out[k - 1]![0], p[1] - out[k - 1]![1]) > 1e-6);
 }
 
-function buildForest(leafMultiplier: number): Forest {
-  const byGenre = new Map<string, Book[]>();
-  for (const b of BOOKS) {
-    const list = byGenre.get(b.genre) ?? [];
-    list.push(b);
-    byGenre.set(b.genre, list);
+// leafMultiplier stays in the cache key: the tufts are fixed per person.
+function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: number): Forest {
+  const index = indexCatalog(family);
+  // One grove per surname, holding each of its lines (a surname can found
+  // several unconnected lines). The unknown line grows no tree.
+  const byGenre = new Map<string, FamilyLine[]>();
+  for (const line of family.lines) {
+    if (line.id === UNKNOWN_LINE || !line.members.length) continue;
+    const list = byGenre.get(line.grove) ?? [];
+    list.push(line);
+    byGenre.set(line.grove, list);
   }
   const genres = [...byGenre.keys()];
   const nGenres = genres.length;
+  const booksBy = new Map(genres.map((g) => [g, byGenre.get(g)!.map((line) => lineBook(index, line))]));
   // Trees packed as tight as their crowns allow (shyLayout); groves on a
-  // hub-and-spoke wheel around the redwood (wheelLayout).
+  // hub-and-spoke wheel around the home tree (wheelLayout).
   const bookInner = 6.5;
-  const grownBy = genres.map((g) => byGenre.get(g)!.map((book) =>
-    growTree({ slug: book.slug, genre: book.genre, nChunks: book.chunks, leafScale: leafMultiplier, periods: book.periods })));
+  const grownBy = genres.map((g) => byGenre.get(g)!.map((line) => lineGrown(lineTree(index, line.id), line.id)));
   const layouts = grownBy.map((g) => shyLayout(g, bookInner));
   const groveRadius = (outer: number) => Math.max(14, outer) + 6;
+
+  // The home hourglass, and a hub wide enough for its glass pit and its crown.
+  const home = hourglassTree(index, focal);
+  const corpusTree = homeTree(home, focal, family.lines.length);
+  let crownReach = 0;
+  for (const person of home.people) if (person.y > 0) crownReach = Math.max(crownReach, Math.hypot(person.x, person.z));
+  const hubPlazaR = Math.max(HUB_PLAZA_R, corpusTree.pitRadius + 2);
+  const hubClear = Math.max(HUB_CLEAR, hubPlazaR + 8, crownReach + 6);
   const wheel = wheelLayout(layouts.map((l) => groveRadius(l.outer)), {
-    hub: HUB_CLEAR, setback: GROVE_SETBACK, gap: GROVE_GAP, lane: SPOKE_LANE, spokes: MAX_SPOKES,
+    hub: hubClear, setback: GROVE_SETBACK, gap: GROVE_GAP, lane: SPOKE_LANE, spokes: MAX_SPOKES,
   });
   // Turn the wheel so a spoke runs out behind home: the drive starts on the road.
   const turn = HUB_PLAQUE_DIR - (wheel.spokes[0] ?? HUB_PLAQUE_DIR);
@@ -380,7 +406,7 @@ function buildForest(leafMultiplier: number): Forest {
   const leafTree: number[] = [];
 
   genres.forEach((genre, gi) => {
-    const books = byGenre.get(genre)!;
+    const books = booksBy.get(genre)!;
     const c = groveCenters[gi]!;
     const bookOuter = Math.max(14, layouts[gi]!.outer);
     const spots = layouts[gi]!.pts;
@@ -395,7 +421,7 @@ function buildForest(leafMultiplier: number): Forest {
       bookCount: books.length,
       narration: groveNarration(books[0]?.genreLabel ?? genre, books),
     });
-    const species = speciesFor(genre);
+    const species = speciesForSurname(books[0]?.genreLabel ?? genre);
     const bark: BarkBuffers = { pos: [], normal: [], uv: [], index: [] };
     const chunkLeafStart = leafPos.length / 3;
 
@@ -486,7 +512,7 @@ function buildForest(leafMultiplier: number): Forest {
     });
   };
   const lastRing = wheel.rings[wheel.rings.length - 1]!;
-  const roadLines: RoadLine[] = wheel.spokes.map((a) => ({ kind: "spoke", pts: spokeLine(a, HUB_PLAZA_R - 1, lastRing), closed: false }));
+  const roadLines: RoadLine[] = wheel.spokes.map((a) => ({ kind: "spoke", pts: spokeLine(a, hubPlazaR - 1, lastRing), closed: false }));
   wheel.rings.forEach((_, t) => roadLines.push({ kind: "ring", pts: lap(t, tourSpoke), closed: true }));
 
   // The tour loop: each ring in turn, joined by the first spoke, out and back.
@@ -512,7 +538,6 @@ function buildForest(leafMultiplier: number): Forest {
   }
   const circuit = [...stopIndex.entries()].sort((a, b) => a[1] - b[1]).map(([wp]) => wp);
 
-  const corpusTree = growCorpusTree(trees);
   const STOP_R = 4;
   // Each exhibit at the end of a spur off a ring, clear of the stops' signposts and the junctions.
   const exhibits = placeExhibits({
@@ -533,7 +558,7 @@ function buildForest(leafMultiplier: number): Forest {
     }
   }
   const plazas = [
-    { x: 0, z: 0, r: HUB_PLAZA_R },
+    { x: 0, z: 0, r: hubPlazaR },
     ...circuit.map((wp) => ({ x: wp.x, z: wp.z, r: STOP_R })),
     // Where a spoke crosses a ring.
     ...wheel.spokes.flatMap((a) => wheel.rings.map((R) => ({ x: R * Math.cos(a), z: R * Math.sin(a), r: JUNCTION_R }))),
@@ -576,8 +601,15 @@ function buildForest(leafMultiplier: number): Forest {
     return { x, z, yaw: Math.atan2(-(nx - x), -(nz - z)), genre: nextGenre[i]!, label: labelOf.get(nextGenre[i]!)! };
   });
 
+  const treeOfLine = new Map(trees.map((t, i) => [t.book.slug, i]));
+  const links: ForestLink[] = family.links.flatMap((l) => {
+    const [a, b] = l.lines.map((id) => treeOfLine.get(id));
+    return a === undefined || b === undefined ? [] : [{ family: l.family, a, b, married: l.married }];
+  });
+
   return {
     trees,
+    links,
     groves,
     roads,
     roadLines,

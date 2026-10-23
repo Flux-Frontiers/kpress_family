@@ -1,3 +1,4 @@
+import { orchardArgs } from "./orchard.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -29,7 +30,8 @@ function driveTour(f, x, z, yaw) {
   const faced = new Map();
   let onRoad = false, worst = 0;
   const hz = 30;
-  for (let i = 0; i < 900 * hz; i++) {
+  // 900 s drove the book forest's ten groves; a family has a grove per surname.
+  for (let i = 0; i < 900 * Math.max(1, Math.ceil(f.circuit.length / 10)) * hz; i++) {
     const c = steerTour(tour, sim.x, sim.z, sim.yaw, sim.speed, 1 / hz);
     stepVehicle(f, c.throttle, c.steer, false, 1 / hz, { brake: c.brake });
     const sign = f.signs.find((sg) => sg.genre === c.genre);
@@ -51,7 +53,7 @@ function driveTour(f, x, z, yaw) {
 test("the guided tour keeps to the road, from home and from the hub end of a spoke, stopping at every grove", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
   const { DWELL } = require(`${process.env.FOREST_TEST_BUILD}/tour.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   const spoke = f.roadLines.filter((l) => l.kind === "spoke").sort((a, b) => b.pts.length - a.pts.length)[0];
   const [sx, sz] = spoke.pts[0], [nx, nz] = spoke.pts[3];
   const starts = [
@@ -79,7 +81,7 @@ test("the guided tour keeps to the road, from home and from the hub end of a spo
 
 test("the tour loop turns smoothly: no corner sharper than 40 degrees between samples", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   const p = f.ringPath, n = p.length;
   let worst = 0;
   for (let k = 0; k < n; k++) {

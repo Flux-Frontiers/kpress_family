@@ -1,3 +1,4 @@
+import { orchardArgs } from "./orchard.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -139,7 +140,7 @@ test("no tree's wood passes through another's, within or across groves", () => {
   globalThis.window ??= { localStorage: { getItem: () => null, setItem() {} } };
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
   const { growTree } = require(`${process.env.FOREST_TEST_BUILD}/growTree.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   const wood = f.trees.map((t) => {
     const g = growTree({ slug: t.book.slug, genre: t.book.genre, nChunks: t.book.chunks, periods: t.book.periods });
     const { nodes, radii, n } = g.skeleton;

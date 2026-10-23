@@ -1,3 +1,4 @@
+import { orchardArgs } from "./orchard.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
@@ -19,13 +20,14 @@ test("every catalog genre maps to a species on purpose, and every species has it
 test("each grove is one render chunk: one species, its trees' bark, a contiguous leaf range", () => {
   globalThis.window ??= { localStorage: { getItem: () => null, setItem() {} } };
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const { speciesFor } = require(`${process.env.FOREST_TEST_BUILD}/species.js`);
-  const forest = getForest();
+  const { speciesForSurname } = require(`${process.env.FOREST_TEST_BUILD}/familyForest.js`);
+  const forest = getForest(...orchardArgs());
   assert.equal(forest.chunks.length, forest.groves.length);
   const used = forest.chunks.map(() => 0);
   for (const t of forest.trees) {
     const chunk = forest.chunks[t.chunk];
-    assert.equal(t.species, speciesFor(t.book.genre));
+    // A grove is a surname; its species is fixed by the name.
+    assert.equal(t.species, speciesForSurname(t.book.genreLabel));
     assert.equal(chunk.species, t.species, `${t.book.slug}: grove species differs`);
     assert.equal(chunk.genre, t.book.genre);
     assert.ok(t.woodStart + t.woodCount <= chunk.bark.count);
