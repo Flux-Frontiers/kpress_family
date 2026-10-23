@@ -139,10 +139,14 @@ test("trunks rise plumb to their first fork instead of leaning toward one side",
 test("no tree's wood passes through another's, within or across groves", () => {
   globalThis.window ??= { localStorage: { getItem: () => null, setItem() {} } };
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const { growTree } = require(`${process.env.FOREST_TEST_BUILD}/growTree.js`);
-  const f = getForest(...orchardArgs());
+  const { indexCatalog } = require(`${process.env.FOREST_TEST_BUILD}/familyCatalog.js`);
+  const { lineTree } = require(`${process.env.FOREST_TEST_BUILD}/familyTree.js`);
+  const [family, focal] = orchardArgs();
+  const f = getForest(family, focal);
+  const index = indexCatalog(family);
+  // The wood the orchard draws: each line's hourglass layout, as forest.ts placed it.
   const wood = f.trees.map((t) => {
-    const g = growTree({ slug: t.book.slug, genre: t.book.genre, nChunks: t.book.chunks, periods: t.book.periods });
+    const g = lineTree(index, t.line.slug);
     const { nodes, radii, n } = g.skeleton;
     const pts = [];
     let reach = 0;
@@ -160,7 +164,7 @@ test("no tree's wood passes through another's, within or across groves", () => {
         if (Math.hypot(p[0] - b.t.x, p[2] - b.t.z) > b.reach + 1) continue;
         for (const q of b.pts) {
           const gap = Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]) - p[3] - q[3];
-          assert.ok(gap > 0.3, `${a.t.book.slug} and ${b.t.book.slug} touch (gap ${gap.toFixed(2)} m)`);
+          assert.ok(gap > 0.3, `${a.t.line.slug} and ${b.t.line.slug} touch (gap ${gap.toFixed(2)} m)`);
         }
       }
     }

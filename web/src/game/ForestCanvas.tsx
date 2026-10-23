@@ -39,7 +39,7 @@ export function ForestCanvas({ forest }: { forest: Forest }) {
         else {
           // Clicking a tree pins its card, silent mode or not; clicking open ground clears it.
           const tree = picker.current?.(e);
-          if (tree) s.pinTree(tree.book.slug);
+          if (tree) s.pinTree(tree.line.slug);
           else s.dismissNearby();
         }
       }}

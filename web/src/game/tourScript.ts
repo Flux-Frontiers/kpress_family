@@ -7,11 +7,11 @@
  */
 
 /** The greeting. */
-export const TOUR_WELCOME = "Welcome to the Knowledge Press, a library grown as a forest.";
+export const TOUR_WELCOME = "Welcome to the Knowledge Press: The Family, a family grown as an orchard.";
 
 /** How the forest is made. */
 export const TOUR_ABOUT =
-  "Each of its {books} books is a tree, taller the longer it is, and the trees gather into {groves} groves by genre.";
+  "Each of its {books} family lines is a tree of parents and children, gathered into {groves} groves by surname.";
 
 /** How to take over. */
 export const TOUR_TIPS = "You can take over at any time: just turn or brake.";
@@ -21,7 +21,7 @@ export const TOUR_WELCOME_BACK = "Welcome back. Off around the ring we go.";
 
 /** Said once, when the cart has visited every grove and turns for home. */
 export const TOUR_LAP_DONE =
-  "That was every grove on the ring. Now back to the redwood, where the tour ends.";
+  "That was every grove on the ring. Now back to the home tree, where the tour ends.";
 
 /** Said when the rider takes the wheel, or the tour hands it back at the redwood. */
 export const TOUR_FAREWELL = "You have the wheel. Ride the ring again any time.";

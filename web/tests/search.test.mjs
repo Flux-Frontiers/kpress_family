@@ -3,13 +3,14 @@ import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 
-const book = (slug, title) => ({ slug, title, author: "", genre: "g", genreLabel: "G", tags: [], excerpt: "" });
-const tree = (slug, title, x, z) => ({ book: book(slug, title), x, z, trunkRadius: 0.6 });
+// A line's lantern text is its members' names, places and years, lower-cased.
+const line = (slug, title) => ({ slug, title, search: title.toLowerCase() });
+const tree = (slug, title, x, z) => ({ line: line(slug, title), x, z, trunkRadius: 0.6 });
 
 test("search results come nearest first and skip non-matches", () => {
   const { searchTrees } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
   const forest = { trees: [tree("far", "Fire Far", 100, 0), tree("none", "Ice", 1, 0), tree("near", "Fire Near", 10, 0)] };
-  assert.deepEqual(searchTrees(forest, "fire", 0, 0).map((t) => t.book.slug), ["near", "far"]);
+  assert.deepEqual(searchTrees(forest, "fire", 0, 0).map((t) => t.line.slug), ["near", "far"]);
   assert.deepEqual(searchTrees(forest, "  ", 0, 0), []);
 });
 

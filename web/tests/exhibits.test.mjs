@@ -37,7 +37,7 @@ test("exhibits stand in roadside glades: clear of trunks, off the road, apart fr
   for (const e of f.exhibits) {
     assert.ok(Math.hypot(e.x, e.z) >= 30, `${e.id} sits under the redwood`);
     for (const t of f.trees) {
-      assert.ok(Math.hypot(t.x - e.x, t.z - e.z) - t.trunkRadius >= e.treeClearance - 1e-6, `${e.id} crowds ${t.book.slug}`);
+      assert.ok(Math.hypot(t.x - e.x, t.z - e.z) - t.trunkRadius >= e.treeClearance - 1e-6, `${e.id} crowds ${t.line.slug}`);
     }
     // The plaza reaches the road it faces.
     const toRoad = Math.hypot(e.roadX - e.x, e.roadZ - e.z);
@@ -89,7 +89,7 @@ test("exhibits stand at the end of side spokes off the rings, spread round the f
     assert.ok(Math.hypot(e.roadX - px, e.roadZ - pz) >= 1.7 + 7 - 1e-6, `${e.id} spur is a stub`);
     // Clear of every trunk.
     for (const t of f.trees) {
-      assert.ok(segDist(t.x, t.z, px, pz, e.roadX, e.roadZ) - t.trunkRadius >= 2.75 - 1e-6, `${e.id} spur runs into ${t.book.slug}`);
+      assert.ok(segDist(t.x, t.z, px, pz, e.roadX, e.roadZ) - t.trunkRadius >= 2.75 - 1e-6, `${e.id} spur runs into ${t.line.slug}`);
     }
     // Only the spur reaches the plaza: every other road passes well clear.
     for (const r of f.roads) {

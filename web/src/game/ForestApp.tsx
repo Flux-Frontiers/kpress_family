@@ -9,6 +9,7 @@ import { installControlsTest } from "./controlsTest";
 import { treeFromSearch } from "./deepLink";
 import { commonFrame, portraitPose, shotSlug, treeExtent, type Extent, type Frame } from "./portrait";
 import { indexCatalog, loadFamilyCatalog, type FamilyCatalog } from "./familyCatalog";
+import { FAMILY_BASE } from "./FamilyReader";
 import { richestFocal } from "./familyTree";
 import { getForest, treeApproach, type Forest } from "./forest";
 import { GROW_VERSION } from "./growTree";
@@ -19,8 +20,6 @@ import { resetSim } from "./sim";
 import { unlockSpeechOnGesture } from "./speech";
 import { useGame } from "./store";
 
-/** Where `make family` puts the export; never committed. */
-const FAMILY_BASE = `${import.meta.env.BASE_URL}family/`;
 
 export function ForestApp() {
   const [mounted, setMounted] = useState(false);
@@ -108,11 +107,11 @@ export function ForestApp() {
     const first = shotSlug(window.location.search);
     if (!forest || !first) return;
     const extentOf = (slug: string) => {
-      const t = forest.trees.find((tr) => tr.book.slug === slug);
+      const t = forest.trees.find((tr) => tr.line.slug === slug);
       return t ? treeExtent(forest.chunks[t.chunk]!.bark.pos, t.woodStart, t.woodCount, t.x, t.z) : null;
     };
     const aim = (slug: string, frame?: Frame): boolean => {
-      const tree = forest.trees.findIndex((t) => t.book.slug === slug);
+      const tree = forest.trees.findIndex((t) => t.line.slug === slug);
       if (tree < 0) return false;
       window.__shotReady = false;
       const t = forest.trees[tree]!;
@@ -221,7 +220,7 @@ export function ForestApp() {
         <StartScreen
           ready={Boolean(forest)}
           growing={!forest}
-          opensAt={linked?.book.title}
+          opensAt={linked?.line.title}
           onEnter={(tour) => {
             if (forest) {
               resetSim(forest);
@@ -230,9 +229,9 @@ export function ForestApp() {
               if (tour) useGame.getState().toggleCircuit();
               else if (linked) {
                 const st = useGame.getState();
-                st.pickSearch(linked.book.slug);
-                st.pinTree(linked.book.slug);
-                st.requestJump(treeApproach(linked, forest.home.x, forest.home.z), linked.book.title);
+                st.pickSearch(linked.line.slug);
+                st.pinTree(linked.line.slug);
+                st.requestJump(treeApproach(linked, forest.home.x, forest.home.z), linked.line.title);
               }
             }
           }}

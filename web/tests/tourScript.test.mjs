@@ -11,7 +11,7 @@ const FACTS = { books: 253, groves: 19 };
 test("the welcome fills in the forest's numbers and leaves no placeholder", () => {
   const { tourIntro } = script();
   const text = tourIntro(FACTS, false).join(" ");
-  assert.match(text, /\b253 books\b/);
+  assert.match(text, /\b253 family lines\b/);
   assert.match(text, /\b19 groves\b/);
   assert.doesNotMatch(text, /[{}]/);
 });
@@ -59,7 +59,7 @@ test("the numbers in the welcome are the real forest's", () => {
   const { tourIntro } = script();
   const f = getForest(...orchardArgs());
   const text = tourIntro({ books: f.trees.length, groves: f.groves.length }, false).join(" ");
-  assert.ok(f.trees.length > 0 && text.includes(`${f.trees.length} books`), `${f.trees.length} trees`);
+  assert.ok(f.trees.length > 0 && text.includes(`${f.trees.length} family lines`), `${f.trees.length} trees`);
   assert.ok(text.includes(`${f.groves.length} groves`));
 });
 

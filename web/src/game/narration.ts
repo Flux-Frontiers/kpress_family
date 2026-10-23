@@ -1,4 +1,4 @@
-import type { Book } from "./catalogTypes";
+import type { LineCard } from "./familyForest";
 
 /**
  * What the guided tour says at each grove: a short summary generated from the
@@ -61,43 +61,27 @@ function list(items: string[]): string {
 }
 
 /**
- * The grove's summary, a few sentences to show and to speak.
+ * The grove's summary, a few sentences to show and to speak: how many lines
+ * bear the surname, how many people were born into them, the years they span,
+ * and who founded the largest.
  *
- * :param label: The grove's name, e.g. "American Literature".
- * :param books: The grove's books.
+ * :param label: The surname.
+ * :param lines: The grove's lines.
  */
-export function groveNarration(label: string, books: Book[]): string {
-  if (!books.length) return `${label}.`;
-  // Authors in order of how much of the grove they wrote.
-  const weight = new Map<string, number>();
-  for (const b of books) {
-    const name = spokenAuthor(b.author);
-    if (name) weight.set(name, (weight.get(name) ?? 0) + b.chunks);
-  }
-  const authors = [...weight.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([name]) => name);
-  const longest = [...books].sort((a, b) => b.chunks - a.chunks || a.title.localeCompare(b.title))[0]!;
-  const longestBy = spokenAuthor(longest.author);
-  const longestTitle = spokenTitle(longest.title, longest.author);
+export function groveNarration(label: string, lines: LineCard[]): string {
+  if (!lines.length) return `${label}.`;
+  const people = lines.reduce((n, l) => n + l.members, 0);
+  const largest = [...lines].sort((a, b) => b.members - a.members || a.slug.localeCompare(b.slug))[0]!;
+  const years = lines.flatMap((l) => (l.span ? l.span.split("-").map(Number) : [])).filter((y) => Number.isInteger(y) && y > 0);
   const out: string[] = [];
-
-  if (books.length === 1) {
-    out.push(`${label}: one book, ${longestTitle}${longestBy ? `, by ${longestBy}` : ""}.`);
-  } else {
-    const named = authors.slice(0, 3);
-    const more = authors.length - named.length;
-    const names = list(more > 0 ? [...named, `${more} more ${more === 1 ? "author" : "authors"}`] : named);
-    // "by" only when every book has a known author; otherwise the named ones are a sample.
-    const anonymous = books.some((b) => !spokenAuthor(b.author));
-    const by = !named.length ? "" : anonymous ? `, including work by ${names}` : ` by ${names}`;
-    out.push(`${label}: ${books.length} books${by}.`);
-    out.push(`The longest is ${longestTitle}${longestBy ? `, by ${longestBy}` : ""}.`);
-  }
-
-  // Diaries carry their entries' years.
-  const years = books.flatMap((b) => (b.periods ?? []).map((p) => Number(p.label))).filter((y) => Number.isInteger(y) && y > 0);
+  const born = people === 1 ? "one person" : `${people} people`;
+  out.push(lines.length === 1
+    ? `${label}: ${born} born a ${label}.`
+    : `${label}: ${lines.length} lines, ${born} born a ${label}.`);
   if (years.length) {
     const lo = Math.min(...years), hi = Math.max(...years);
-    out.push(lo === hi ? `The entries date from ${lo}.` : `The entries run from ${lo} to ${hi}.`);
+    out.push(lo === hi ? `Born in ${lo}.` : `Born from ${lo} to ${hi}.`);
   }
+  out.push(`${lines.length === 1 ? "The line" : "The largest line"} begins with ${largest.founders}.`);
   return out.join(" ");
 }

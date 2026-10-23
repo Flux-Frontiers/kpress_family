@@ -1,4 +1,3 @@
-import { bookBySlug } from "./catalog";
 import { useEffect, useRef, useState } from "react";
 import { setTouchAxes, stickAxes } from "./input";
 import { useGame } from "./store";
@@ -30,8 +29,8 @@ export function TouchControls() {
         </button>
         <button type="button" disabled={!nearbySlug || nearbyDist >= 6.8}
           className="min-h-14 min-w-14 rounded-full border border-border bg-primary px-4 text-sm font-medium text-primary-fg disabled:opacity-40"
-          onClick={() => { if (nearbySlug && nearbyDist < 6.8) collect(nearbySlug, bookBySlug(nearbySlug)?.title ?? "Book"); }}>
-          {pressed ? "In press" : "Read"}
+          onClick={() => { if (nearbySlug && nearbyDist < 6.8) collect(nearbySlug, "this line"); }}>
+          {pressed ? "In album" : "Add"}
         </button>
       </div>
     </div>

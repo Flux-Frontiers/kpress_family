@@ -2,14 +2,14 @@ import { Bell, BellOff, BookOpen, Camera, Check, Clock, Compass, Ellipsis, Eye, 
 import { useEffect, useMemo, useState } from "react";
 import { COARSE_POINTER } from "./Environment";
 import { exhibitApproach, type Exhibit } from "./exhibits";
-import { bookMatchesQuery, groveApproach, searchTrees, treeApproach, type Forest, type Grove, type TreeSite } from "./forest";
+import { lineMatchesQuery, groveApproach, searchTrees, treeApproach, type Forest, type Grove, type TreeSite } from "./forest";
 import { GenreGlyph } from "./GenreGlyph";
 import { SPECIES, speciesFor } from "./species";
 import { QUESTS, questProgress } from "./quests";
 import { saveScreenshot } from "./screenshot";
 import { SEASONS } from "./seasons";
 import { wrapAngle, yawToward } from "./sim";
-import { ReaderPanel } from "./Reader";
+import { FamilyReader } from "./FamilyReader";
 import { LiveMootPlayer, MootList, MootPlayer } from "./MootOverlay";
 import { READ_RANGE, useGame, type PlaqueText } from "./store";
 import type { TimeMode } from "./sky";
@@ -65,7 +65,7 @@ export function HUD({ forest }: { forest: Forest }) {
   const plaque = useGame((s) => s.plaque);
   const readingSlug = useGame((s) => s.readingSlug);
   const openReader = useGame((s) => s.openReader);
-  const reading = readingSlug ? forest.trees.find((t) => t.book.slug === readingSlug) : undefined;
+  const reading = readingSlug ? forest.trees.find((t) => t.line.slug === readingSlug) : undefined;
   const mootsOpen = useGame((s) => s.mootsOpen);
   const mootId = useGame((s) => s.mootId);
   const liveMoot = useGame((s) => s.liveMoot);
@@ -80,10 +80,10 @@ export function HUD({ forest }: { forest: Forest }) {
 
   // Silent mode keeps every card from popping up on its own; a tree the player picked still shows.
   const shownSlug = pinnedSlug ?? (silent ? null : cardSlug);
-  const nearby = shownSlug ? forest.trees.find((t) => t.book.slug === shownSlug) : undefined;
-  const showBook = Boolean(nearby && (pinnedSlug || nearby.book.slug !== nearbyDismissed));
+  const nearby = shownSlug ? forest.trees.find((t) => t.line.slug === shownSlug) : undefined;
+  const showBook = Boolean(nearby && (pinnedSlug || nearby.line.slug !== nearbyDismissed));
   const bookDist = nearby ? Math.hypot(nearby.x - x, nearby.z - z) : Infinity;
-  const pressed = nearby ? library.includes(nearby.book.slug) : false;
+  const pressed = nearby ? library.includes(nearby.line.slug) : false;
   // The redwood's card shows on the hub plaza; once closed it stays closed until the cart leaves.
   const hubDist = Math.hypot(x, z);
   const [redwoodClosed, setRedwoodClosed] = useState(false);
@@ -100,7 +100,7 @@ export function HUD({ forest }: { forest: Forest }) {
     return searchTrees(forest, query, x, z);
   }, [forest, query]);
   const matches = results.length;
-  const picked = searchPick ? results.find((t) => t.book.slug === searchPick) : undefined;
+  const picked = searchPick ? results.find((t) => t.line.slug === searchPick) : undefined;
 
   const bearing = selected
     ? wrapAngle(yawToward(x, z, selected.x, selected.z) - yaw)
@@ -169,7 +169,7 @@ export function HUD({ forest }: { forest: Forest }) {
                 type="button"
                 onClick={() => { jumpHome(forest); (document.activeElement as HTMLElement | null)?.blur(); }}
                 className="grid size-11 place-items-center rounded-md border border-border bg-surface"
-                aria-label="Home: back to the corpus redwood" title="Home · H"
+                aria-label="Home: back to the home tree" title="Home · H"
               >
                 <House className="size-4" strokeWidth={1.75} />
               </button>
@@ -180,8 +180,8 @@ export function HUD({ forest }: { forest: Forest }) {
                   "inline-flex min-h-11 items-center gap-2 rounded-md border px-3 text-sm " +
                   (browsing ? "border-primary bg-primary text-primary-fg" : "border-border bg-surface")
                 }
-                aria-label={`Browse the groves, every book and your press (${library.length} collected)`}
-                title="Groves · G, Books · B, Press · L"
+                aria-label={`Browse the groves, every line and your album (${library.length} collected)`}
+                title="Groves · G, Lines · B, Album · L"
               >
                 <Library className="size-4" strokeWidth={1.75} />
                 <span className="hidden sm:inline">Browse</span>
@@ -271,7 +271,7 @@ export function HUD({ forest }: { forest: Forest }) {
                 />
               </p>
             ) : (
-              <p className="mt-1 text-xs text-faint">Tap a grove for its books</p>
+              <p className="mt-1 text-xs text-faint">Tap a grove for its lines</p>
             )}
           </div>
         </div>
@@ -289,7 +289,7 @@ export function HUD({ forest }: { forest: Forest }) {
                 if (e.key === "Enter" && results[0]) jumpToTree(results[0]);
                 if (e.key === "Escape") e.currentTarget.blur();
               }}
-              placeholder="Query the forest — freedom, fire, stoic…"
+              placeholder="Search names, places, years: boston 1917"
               className="min-h-7 w-full bg-transparent text-sm text-fg outline-none placeholder:text-faint"
             />
             {query ? (
@@ -302,19 +302,19 @@ export function HUD({ forest }: { forest: Forest }) {
           {query.trim() ? (
             <p className="px-1 text-xs text-muted sm:rounded-sm sm:bg-surface/80 sm:py-0.5">
               {matches} tree{matches === 1 ? "" : "s"} answering
-              {picked ? ` · lantern points to ${picked.book.title}` : selected ? "" : " · lantern points to the nearest"}
+              {picked ? ` · lantern points to ${picked.line.title}` : selected ? "" : " · lantern points to the nearest"}
             </p>
           ) : null}
           {query.trim() && matches && !picked ? (
             <ul className="max-h-[40vh] overflow-auto rounded-md border border-border bg-surface/95 sm:max-h-72">
               {results.slice(0, 30).map((t) => (
-                <li key={t.book.slug}>
+                <li key={t.line.slug}>
                   <button type="button" onClick={() => jumpToTree(t)}
                     className="flex min-h-11 w-full items-center gap-3 px-3 py-1.5 text-left hover:bg-bg">
                     <span className="size-2.5 shrink-0 rounded-full" style={{ background: t.color }} />
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm leading-snug">{t.book.title}</span>
-                      <span className="block truncate text-xs text-muted">{t.book.author} · {t.book.genreLabel}</span>
+                      <span className="block truncate text-sm leading-snug">{t.line.title}</span>
+                      <span className="block truncate text-xs text-muted">{t.line.founders} · {t.line.surname}</span>
                     </span>
                     <span className="shrink-0 text-xs text-muted tabular-nums">{Math.round(Math.hypot(t.x - x, t.z - z))} m</span>
                     <span className="shrink-0 text-xs text-primary">Jump</span>
@@ -355,16 +355,16 @@ export function HUD({ forest }: { forest: Forest }) {
                 <X className="size-5" strokeWidth={1.75} />
               </button>
               <p className="text-xs tracking-wide text-muted uppercase">The hub</p>
-              <h2 className="font-display mt-0.5 text-xl leading-tight sm:text-2xl">The Corpus Redwood</h2>
+              <h2 className="font-display mt-0.5 text-xl leading-tight sm:text-2xl">{forest.corpusTree.focalName}</h2>
               <p className="text-sm text-muted tabular-nums">
-                {forest.corpusTree.limbs} books · {forest.corpusTree.totalChunks.toLocaleString("en-US")} chunks · {Math.round(forest.corpusTree.height)} m
+                {forest.corpusTree.totalChunks.toLocaleString("en-US")} people · {forest.trees.length} lines · {Math.round(forest.corpusTree.height)} m
               </p>
               <p className="card-extra mt-2 hidden text-sm leading-relaxed text-fg/90 sm:block">
-                One limb per book, each reaching toward its own tree. Browse them all and jump to any one.
+                The home tree: ancestors as roots under the glass, descendants as the crown. Browse every line and jump to any one.
               </p>
               <button type="button" onClick={toggleCatalog}
                 className="mt-3 min-h-11 rounded-md bg-primary px-4 text-sm text-primary-fg">
-                Browse every book · B
+                Browse every line · B
               </button>
             </article>
           ) : showBook && nearby ? (
@@ -373,32 +373,32 @@ export function HUD({ forest }: { forest: Forest }) {
                 type="button"
                 onClick={dismissNearby}
                 className="absolute top-1.5 right-1.5 grid size-11 place-items-center rounded-md text-muted"
-                aria-label="Dismiss book"
+                aria-label="Dismiss"
               >
                 <X className="size-5" strokeWidth={1.75} />
               </button>
-              <p className="text-xs tracking-wide text-muted uppercase">{nearby.book.genreLabel}</p>
-              <h2 className="font-display mt-0.5 text-xl leading-tight sm:text-2xl">{nearby.book.title}</h2>
-              <p className="text-sm text-muted">{nearby.book.author}</p>
+              <p className="text-xs tracking-wide text-muted uppercase">{nearby.line.surname}</p>
+              <h2 className="font-display mt-0.5 text-xl leading-tight sm:text-2xl">{nearby.line.title}</h2>
+              <p className="text-sm text-muted">{nearby.line.founders}</p>
               <p className="card-extra mt-1 hidden text-xs text-faint tabular-nums sm:block">
-                {nearby.book.chunks.toLocaleString()} chunks · trunk r {nearby.trunkRadius.toFixed(2)}
+                {nearby.line.members.toLocaleString()} {nearby.line.members === 1 ? "person" : "people"}{nearby.line.span ? ` · ${nearby.line.span}` : ""}
               </p>
-              <p className="card-extra mt-2 hidden text-sm leading-relaxed text-fg/90 sm:block">{nearby.book.excerpt}</p>
+              <p className="card-extra mt-2 hidden text-sm leading-relaxed text-fg/90 sm:block">{nearby.line.summary}</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {pressed ? (
                   <p className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-primary/60 px-4 text-sm text-fg">
-                    <Check className="size-4 text-primary" strokeWidth={2} /> In your press
+                    <Check className="size-4 text-primary" strokeWidth={2} /> In your album
                   </p>
                 ) : (
                   <button type="button" disabled={bookDist >= READ_RANGE}
-                    onClick={() => collect(nearby.book.slug, nearby.book.title)}
+                    onClick={() => collect(nearby.line.slug, nearby.line.title)}
                     className="min-h-11 rounded-md bg-primary px-4 text-sm text-primary-fg disabled:bg-bg disabled:text-muted">
-                    {bookDist < READ_RANGE ? "Read into the press · E" : `Move closer · ${Math.ceil(bookDist)} m`}
+                    {bookDist < READ_RANGE ? "Add to the album · E" : `Move closer · ${Math.ceil(bookDist)} m`}
                   </button>
                 )}
-                <button type="button" onClick={() => openReader(nearby.book.slug)}
+                <button type="button" onClick={() => openReader(nearby.line.slug)}
                   className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-border px-4 text-sm text-fg">
-                  <BookOpen className="size-4" strokeWidth={1.75} /> Open the book
+                  <BookOpen className="size-4" strokeWidth={1.75} /> Open the records
                 </button>
                 {godEye ? (
                   <button type="button" onClick={() => flyToTree(nearby)}
@@ -439,7 +439,7 @@ export function HUD({ forest }: { forest: Forest }) {
         </div>
 
         <p className="key-hints absolute bottom-3 left-1/2 hidden -translate-x-1/2 text-xs text-faint sm:block">
-          WASD drive · Drag or arrows look · Space brake · E read · B books · C camera · Esc settings · ? about
+          WASD drive · Drag or arrows look · Space brake · E album · B lines · C camera · Esc settings · ? about
         </p>
       </>)}
 
@@ -451,7 +451,7 @@ export function HUD({ forest }: { forest: Forest }) {
 
       {browsing ? <BrowsePanel forest={forest} /> : null}
       {plaque ? <PlaquePanel plaque={plaque} /> : null}
-      {reading ? <ReaderPanel key={reading.book.slug} book={reading.book} /> : null}
+      {reading ? <FamilyReader key={reading.line.slug} line={reading.line} /> : null}
       {mootsOpen ? <MootList /> : null}
       {mootId && liveMoot ? <LiveMootPlayer key={mootId} request={liveMoot} forest={forest} />
         : mootId ? <MootPlayer key={mootId} id={mootId} forest={forest} /> : null}
@@ -486,9 +486,9 @@ function jumpToGrove(g: Grove) {
 function jumpToTree(t: TreeSite) {
   const s = useGame.getState();
   s.selectGrove(null);
-  s.pickSearch(t.book.slug);
-  s.pinTree(t.book.slug);
-  s.requestJump(treeApproach(t, s.x, s.z), t.book.title);
+  s.pickSearch(t.line.slug);
+  s.pinTree(t.line.slug);
+  s.requestJump(treeApproach(t, s.x, s.z), t.line.title);
   (document.activeElement as HTMLElement | null)?.blur();
 }
 
@@ -496,8 +496,8 @@ function jumpToTree(t: TreeSite) {
 function flyToTree(t: TreeSite) {
   const s = useGame.getState();
   s.selectGrove(null);
-  s.pinTree(t.book.slug);
-  s.flyTo(treeApproach(t, s.x, s.z), t.book.title);
+  s.pinTree(t.line.slug);
+  s.flyTo(treeApproach(t, s.x, s.z), t.line.title);
 }
 
 function jumpHome(forest: Forest) {
@@ -528,7 +528,7 @@ function Minimap({ forest, x, z, yaw, pins, picked }: {
         type="button"
         className="absolute size-2 rounded-full bg-fg/70"
         style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
-        aria-label="Home: back to the corpus redwood"
+        aria-label="Home: back to the home tree"
         onClick={() => jumpHome(forest)}
       />
       {forest.exhibits.map((e) => {
@@ -559,24 +559,24 @@ function Minimap({ forest, x, z, yaw, pins, picked }: {
               transform: "translate(-50%, -50%)",
               boxShadow: on ? `0 0 0 2px var(--color-fg)` : "none",
             }}
-            title={`${g.label}: its books`}
-            aria-label={`${g.label}: list its books`}
+            title={`${g.label}: its lines`}
+            aria-label={`${g.label}: list its lines`}
             onClick={() => useGame.getState().openCatalog(g.genre)}
           />
         );
       })}
       {pins.slice(0, 200).map((t) => {
         const c = to(t.x, t.z);
-        const on = t.book.slug === picked;
+        const on = t.line.slug === picked;
         return (
-          <button key={t.book.slug} type="button" onClick={() => jumpToTree(t)}
+          <button key={t.line.slug} type="button" onClick={() => jumpToTree(t)}
             className="absolute rounded-full border border-bg bg-primary"
             style={{ left: c.left, top: c.top, width: on ? 10 : 6, height: on ? 10 : 6, transform: "translate(-50%, -50%)", zIndex: on ? 2 : 1 }}
-            title={`Jump to ${t.book.title}`} aria-label={`Jump to ${t.book.title}`} />
+            title={`Jump to ${t.line.title}`} aria-label={`Jump to ${t.line.title}`} />
         );
       })}
-      {picked && pins.some((t) => t.book.slug === picked) ? (() => {
-        const t = pins.find((p) => p.book.slug === picked)!;
+      {picked && pins.some((t) => t.line.slug === picked) ? (() => {
+        const t = pins.find((p) => p.line.slug === picked)!;
         const c = to(t.x, t.z);
         return <MapPin className="pointer-events-none absolute size-4 text-primary" strokeWidth={2}
           style={{ left: c.left, top: c.top, transform: "translate(-50%, -100%)", zIndex: 3 }} aria-hidden />;
@@ -593,7 +593,7 @@ function Minimap({ forest, x, z, yaw, pins, picked }: {
   );
 }
 
-/** The groves, every book and the press as tabs of one panel; G, B and L open their tabs. */
+/** The groves, every line and the album as tabs of one panel; G, B and L open their tabs. */
 function BrowsePanel({ forest }: { forest: Forest }) {
   const atlasOpen = useGame((s) => s.atlasOpen);
   const libraryOpen = useGame((s) => s.libraryOpen);
@@ -699,7 +699,7 @@ function GrovesTab({ forest }: { forest: Forest }) {
 
 function PressTab({ forest }: { forest: Forest }) {
   const library = useGame((s) => s.library);
-  const collected = forest.trees.filter((t) => library.includes(t.book.slug));
+  const collected = forest.trees.filter((t) => library.includes(t.line.slug));
 
   return (<>
     <p className="mt-2 text-sm text-muted">
@@ -707,25 +707,25 @@ function PressTab({ forest }: { forest: Forest }) {
     </p>
     <ul className="mt-3 min-h-0 flex-1 space-y-2 overflow-auto">
       {collected.length === 0 ? (
-        <li className="text-sm text-faint">Drive to a tree and press E.</li>
+        <li className="text-sm text-faint">Drive to a tree and press E to add its line.</li>
       ) : (
         collected.map((t) => (
-          <li key={t.book.slug} className="flex items-start justify-between gap-3 border-b border-border pb-2">
+          <li key={t.line.slug} className="flex items-start justify-between gap-3 border-b border-border pb-2">
             <div>
-              <p className="font-medium leading-snug">{t.book.title}</p>
+              <p className="font-medium leading-snug">{t.line.title}</p>
               <p className="text-xs text-muted">
-                {t.book.author} · {t.book.genreLabel}
+                {t.line.founders} · {t.line.surname}
               </p>
             </div>
             <div className="flex shrink-0 gap-3">
-              <button type="button" className="text-xs text-primary" onClick={() => useGame.getState().openReader(t.book.slug)}>
+              <button type="button" className="text-xs text-primary" onClick={() => useGame.getState().openReader(t.line.slug)}>
                 Open
               </button>
               <button
                 type="button"
                 className="text-xs text-primary"
                 onClick={() => {
-                  const g = forest.groves.find((gr) => gr.genre === t.book.genre);
+                  const g = forest.groves.find((gr) => gr.genre === t.line.grove);
                   if (g) jumpToGrove(g);
                 }}
               >
@@ -745,7 +745,7 @@ function PressTab({ forest }: { forest: Forest }) {
   </>);
 }
 
-/** Every book in the corpus, grouped by grove: filter, then jump to its tree. */
+/** Every line in the family, grouped by grove: filter, then jump to its tree. */
 function BooksTab({ forest }: { forest: Forest }) {
   const library = useGame((s) => s.library);
   const genre = useGame((s) => s.catalogGenre);
@@ -757,8 +757,8 @@ function BooksTab({ forest }: { forest: Forest }) {
     .map((g) => ({
       grove: g,
       trees: forest.trees
-        .filter((t) => t.book.genre === g.genre && (!q || bookMatchesQuery(t.book, q)))
-        .sort((a, b) => a.book.title.localeCompare(b.book.title)),
+        .filter((t) => t.line.grove === g.genre && (!q || lineMatchesQuery(t.line, q)))
+        .sort((a, b) => a.line.title.localeCompare(b.line.title)),
     }))
     .filter((s) => s.trees.length);
   const shown = sections.reduce((n, s) => n + s.trees.length, 0);
@@ -773,12 +773,12 @@ function BooksTab({ forest }: { forest: Forest }) {
         </button>
         <button type="button" onClick={() => useGame.getState().openCatalog(null)}
           className="min-h-11 rounded-md border border-border bg-bg px-4 text-sm">
-          All {forest.trees.length} books
+          All {forest.trees.length} lines
         </button>
       </div>
     </>) : (
       <p className="mt-2 text-sm text-muted tabular-nums">
-        {q ? `${shown} of ${forest.trees.length}` : `${forest.trees.length} books`} · {forest.corpusTree.totalChunks.toLocaleString("en-US")} chunks. Pick one to jump to its tree.
+        {q ? `${shown} of ${forest.trees.length}` : `${forest.trees.length} lines`} · {forest.trees.reduce((n, t) => n + t.line.members, 0).toLocaleString("en-US")} people. Pick one to jump to its tree.
       </p>
     )}
     <label className="mt-3 flex items-center gap-2 rounded-md border border-border bg-bg px-3 py-2">
@@ -796,7 +796,7 @@ function BooksTab({ forest }: { forest: Forest }) {
       />
     </label>
     <div className="mt-3 min-h-0 flex-1 overflow-auto">
-      {sections.length === 0 ? <p className="px-1 text-sm text-faint">No book matches.</p> : null}
+      {sections.length === 0 ? <p className="px-1 text-sm text-faint">No line matches.</p> : null}
       {sections.map(({ grove, trees }) => (
         <section key={grove.genre} className="mb-3">
           <h3 className="sticky top-0 bg-surface px-1 py-1 text-xs tracking-wide text-muted uppercase">
@@ -811,13 +811,13 @@ function BooksTab({ forest }: { forest: Forest }) {
           </h3>
           <ul>
             {trees.map((t) => (
-              <li key={t.book.slug}>
+              <li key={t.line.slug}>
                 <button type="button" onClick={() => jumpToTree(t)}
                   className="flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-1.5 text-left hover:bg-bg">
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm leading-snug">{t.book.title}</span>
+                    <span className="block truncate text-sm leading-snug">{t.line.title}</span>
                     <span className="block truncate text-xs text-muted">
-                      {t.book.author} · {t.book.chunks.toLocaleString("en-US")} chunks{library.includes(t.book.slug) ? " · in the press" : ""}
+                      {t.line.founders} · {t.line.members.toLocaleString("en-US")} {t.line.members === 1 ? "person" : "people"}{library.includes(t.line.slug) ? " · in the album" : ""}
                     </span>
                   </span>
                   <span className="shrink-0 text-xs text-primary">Jump</span>

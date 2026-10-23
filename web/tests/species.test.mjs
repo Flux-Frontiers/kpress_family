@@ -27,9 +27,9 @@ test("each grove is one render chunk: one species, its trees' bark, a contiguous
   for (const t of forest.trees) {
     const chunk = forest.chunks[t.chunk];
     // A grove is a surname; its species is fixed by the name.
-    assert.equal(t.species, speciesForSurname(t.book.genreLabel));
-    assert.equal(chunk.species, t.species, `${t.book.slug}: grove species differs`);
-    assert.equal(chunk.genre, t.book.genre);
+    assert.equal(t.species, speciesForSurname(t.line.surname));
+    assert.equal(chunk.species, t.species, `${t.line.slug}: grove species differs`);
+    assert.equal(chunk.genre, t.line.grove);
     assert.ok(t.woodStart + t.woodCount <= chunk.bark.count);
     assert.ok(t.leafStart >= chunk.leafStart && t.leafStart + t.leafCount <= chunk.leafStart + chunk.leafCount);
     // The chunk's radius must hold the trunk, or distance culling could drop a visible tree.
