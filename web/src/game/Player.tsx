@@ -6,7 +6,7 @@ import { cartLoad, NEUTRAL_SPINE } from "./cartLoad";
 import { EXPOSURE } from "./Environment";
 import { atGroveStop, treesNear, type Forest } from "./forest";
 import { addDragLook, resetInput, sampleActions, setDragging } from "./input";
-import { flightPose, FOLLOW_BACK, FOLLOW_UP, forestGodLimits, godPose, groundPose, resetGodView, type Vec3 } from "./godEye";
+import { crownFrame, flightPose, FOLLOW_BACK, FOLLOW_UP, forestGodLimits, godPose, groundPose, resetGodView, type Vec3 } from "./godEye";
 import { clamp } from "./math";
 import { forwardOf, sim, stepVehicle, teleportSim } from "./sim";
 import { hush, speak, speaking } from "./speech";
@@ -46,6 +46,8 @@ export function Player({ forest, playing }: { forest: Forest; playing: boolean }
   const wasBlocked = useRef(false);
   // Camera tilt in radians, held between drives; Up/Down or the right stick.
   const pitch = useRef(0);
+  /** The follow camera's framing of a tall tree beside the cart (crownFrame), eased. */
+  const crown = useRef({ back: 0, rise: 0, tilt: 0 });
   /** Pan off the cart's heading, radians, left positive. */
   const look = useRef(0);
   const shotFrames = useRef({ portrait: null as unknown, n: 0 });
@@ -338,8 +340,20 @@ export function Player({ forest, playing }: { forest: Forest; playing: boolean }
       state.camera.position.copy(camPos);
       lookAt.set(sim.x + v.x * 10, sim.y + 1.65, sim.z + v.z * 10);
     } else {
-      const follow = preferences.camera === "high" ? 12 : FOLLOW_BACK;
-      const height = preferences.camera === "high" ? 10 : FOLLOW_UP;
+      // Beside a tall tree the chase camera backs off and tilts up to its crown.
+      let want = { back: 0, rise: 0, tilt: 0 };
+      if (preferences.camera === "follow") {
+        for (const t of treesNear(forest, sim.x, sim.z, 18)) {
+          const frame = crownFrame(Math.hypot(t.x - sim.x, t.z - sim.z), t.top, cam.fov);
+          if (frame.back > want.back) want = frame;
+        }
+      }
+      const ease = 1 - Math.exp(-1.5 * dt);
+      crown.current.back += (want.back - crown.current.back) * ease;
+      crown.current.rise += (want.rise - crown.current.rise) * ease;
+      crown.current.tilt += (want.tilt - crown.current.tilt) * ease;
+      const follow = preferences.camera === "high" ? 12 : FOLLOW_BACK + crown.current.back;
+      const height = preferences.camera === "high" ? 10 : FOLLOW_UP + crown.current.rise;
       camPos.set(sim.x - v.x * follow, sim.y + height, sim.z - v.z * follow);
       state.camera.position.lerp(camPos, 1 - Math.exp(-3.4 * dt));
       // Behind the cart, look level down the road; the high view looks down at the cart.
@@ -366,7 +380,7 @@ export function Player({ forest, playing }: { forest: Forest; playing: boolean }
     wasGod.current = playing && godEye && !flying;
     if (playing && !godEye && !flying) {
       // On a portrait screen the level chase view is half road and cart; rest it tilted up a little.
-      const rest = preferences.camera === "follow" && cam.aspect < 1 ? PORTRAIT_TILT : 0;
+      const rest = (preferences.camera === "follow" && cam.aspect < 1 ? PORTRAIT_TILT : 0) + (preferences.camera === "follow" ? crown.current.tilt : 0);
       lookAt.y += Math.hypot(lookAt.x - state.camera.position.x, lookAt.z - state.camera.position.z) * Math.tan(pitch.current + rest);
       cam.far = GROUND_FAR;
       cam.near = GROUND_NEAR;

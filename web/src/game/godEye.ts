@@ -15,6 +15,39 @@ export const FLIGHT_S = 2.4;
 export const FOLLOW_BACK = 6.5;
 export const FOLLOW_UP = 2.5;
 
+/** Near a tall tree the behind-the-cart camera backs off at most this far, m, and rises half as much. */
+const CROWN_BACK_MAX = 8;
+/** Trees farther than this from the cart, m, leave the camera alone; nearer than CROWN_FULL they take it fully. */
+const CROWN_REACH = 18;
+const CROWN_FULL = 8;
+/** Kept between the frame's edge and what must be in it, radians. */
+const FRAME_MARGIN = (4 * Math.PI) / 180;
+
+/**
+ * How the behind-the-cart camera frames a tree beside the cart: backed off,
+ * raised a little, and tilted up toward the crown, never so far that the cart
+ * leaves the bottom of the frame. Nothing for a tree no taller than the level
+ * view shows; all three fade in as the cart comes within reach.
+ *
+ * :param dist: Cart to trunk, horizontally, m.
+ * :param top: Height of the tree's crown, m.
+ * :param fov: The camera's vertical field of view, degrees.
+ * :returns: Extra metres back, extra metres up, and radians of upward tilt.
+ */
+export function crownFrame(dist: number, top: number, fov: number): { back: number; rise: number; tilt: number } {
+  const w = clamp((CROWN_REACH - dist) / (CROWN_REACH - CROWN_FULL), 0, 1);
+  const back = clamp((top - 8) * 0.3, 0, CROWN_BACK_MAX);
+  if (w === 0 || back === 0) return { back: 0, rise: 0, tilt: 0 };
+  const rise = back / 2;
+  const half = (fov * Math.PI) / 360;
+  const up = FOLLOW_UP + rise;
+  // The tilt that puts the crown top just inside the frame's upper edge...
+  const need = Math.atan2(top + 1 - up, dist + FOLLOW_BACK + back) - (half - FRAME_MARGIN);
+  // ...but no more than keeps the cart (its bed, 0.8 m up) above the lower edge.
+  const most = half - FRAME_MARGIN - Math.atan2(up - 0.8, FOLLOW_BACK + back);
+  return { back: w * back, rise: w * rise, tilt: w * clamp(need, 0, Math.max(0, most)) };
+}
+
 export type GroundCamera = "follow" | "high" | "cart";
 
 export type Vec3 = { x: number; y: number; z: number };

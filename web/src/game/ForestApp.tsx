@@ -74,6 +74,10 @@ export function ForestApp() {
     return () => worker.current?.terminate();
   }, []);
   useEffect(() => {
+    if (family) useGame.getState().keepLines(family.lines.map((l) => l.id));
+  }, [family]);
+
+  useEffect(() => {
     if (!family || !focal) return;
     const apply = (f: Forest) => {
       if (!placed.current) resetSim(f);

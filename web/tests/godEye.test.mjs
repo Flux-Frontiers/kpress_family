@@ -79,3 +79,24 @@ test("the follow pose sits behind the cart and looks down the road", () => {
   assert.ok(cam.z > 0 && look.z < 0);
   assert.equal(cam.y, look.y);
 });
+
+test("beside a tall tree the chase camera backs off, rises and tilts up, keeping the cart in frame", () => {
+  const { crownFrame, FOLLOW_BACK, FOLLOW_UP } = require(`${process.env.FOREST_TEST_BUILD}/godEye.js`);
+  const none = { back: 0, rise: 0, tilt: 0 };
+  // A one-person line, 6.5 m: the level view already shows it.
+  assert.deepEqual(crownFrame(5, 6.5, 58), none);
+  // A 34 m tree out of reach leaves the camera alone.
+  assert.deepEqual(crownFrame(25, 34, 58), none);
+  // Beside it: backed off, raised and tilted, within bounds.
+  const near = crownFrame(5, 34, 58);
+  assert.ok(near.back > 5 && near.back <= 8, `back ${near.back}`);
+  assert.equal(near.rise, near.back / 2);
+  assert.ok(near.tilt > 0, `tilt ${near.tilt}`);
+  // The cart's bed stays above the frame's lower edge.
+  const half = (58 * Math.PI) / 360;
+  const cartBelow = Math.atan2(FOLLOW_UP + near.rise - 0.8, FOLLOW_BACK + near.back);
+  assert.ok(near.tilt - half < -cartBelow, `cart at ${cartBelow}, tilt ${near.tilt}`);
+  // Easing in on the approach: halfway in, less than beside it.
+  const coming = crownFrame(13, 34, 58);
+  assert.ok(coming.back < near.back && coming.back > 0);
+});

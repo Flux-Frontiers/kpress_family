@@ -81,3 +81,13 @@ test("opening a book closes the side panels; closing it leaves them shut", () =>
   assert.equal(st().readingSlug, null);
   assert.equal(st().libraryOpen, false);
 });
+
+test("an album entry that names no line of this family is dropped", () => {
+  const { useGame } = require(`${process.env.FOREST_TEST_BUILD}/store.js`);
+  const st = () => useGame.getState();
+  st().emptyPress();
+  st().collect("kennedy-I120", "The Kennedy line");
+  st().collect("moby_dick", "Moby Dick");
+  st().keepLines(["kennedy-I120", "bouvier-I20"]);
+  assert.deepEqual(st().library, ["kennedy-I120"]);
+});
