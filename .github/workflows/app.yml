@@ -1,0 +1,49 @@
+name: App
+
+# Builds and tests the Swift kit. The iOS and macOS shells are not in this
+# repository yet (plan Phase 4), so there is no Xcode project to check.
+# Path-filtered to the app tree; macOS runners bill at 10x Linux minutes.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "!app/**.md"
+      - "Makefile"
+      - ".github/workflows/app.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "!app/**.md"
+      - "Makefile"
+      - ".github/workflows/app.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: app-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: Kit Build
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Toolchain
+        run: |
+          xcode-select -p
+          swift --version
+
+      - name: Build the Swift package
+        working-directory: app/KnowledgePressKit
+        run: swift build
+
+      # The corpus suites skip here: they need a built corpus through
+      # GUTENBERG_PACKS, which CI does not carry.
+      - name: Test the Swift package
+        working-directory: app/KnowledgePressKit
+        run: swift test

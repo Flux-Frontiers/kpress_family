@@ -1,0 +1,164 @@
+import { useEffect, useRef, useState } from "react";
+import { DEFAULT_MOOT_WORKER } from "./preferences";
+import { SEASON_ORDER, SEASONS, type SeasonName } from "./seasons";
+import { canSpeak, mootVoiceNames, onVoicesChanged, unlockSpeech } from "./speech";
+import { USER_GUIDE_URL } from "./links";
+import { useGame } from "./store";
+import { weather, weatherName } from "./weather";
+
+export function PauseOverlay() {
+  const paused = useGame((s) => s.paused);
+  const pause = useGame((s) => s.pause);
+  const prefs = useGame((s) => s.preferences);
+  const setPreferences = useGame((s) => s.setPreferences);
+  const season = useGame((s) => s.season);
+  const setSeason = useGame((s) => s.setSeason);
+  const resetSettings = useGame((s) => s.resetSettings);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const back = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (paused) {
+      dialog.current?.showModal();
+      // showModal focuses the first control, the pace menu, which phones then
+      // show as picked. React's autoFocus ran once at mount, while the dialog
+      // was closed, so it can't steer this; focus the way back instead.
+      back.current?.focus();
+    } else dialog.current?.close();
+  }, [paused]);
+
+  function resume() {
+    pause(false);
+    (document.activeElement as HTMLElement | null)?.blur();
+  }
+
+  return (
+    <dialog ref={dialog} aria-labelledby="settings-title" onCancel={(e) => { e.preventDefault(); resume(); }}
+      className="forest-settings m-auto max-h-[90dvh] w-[min(100%-2rem,30rem)] overflow-auto rounded-xl border border-border bg-surface p-6 text-fg shadow-2xl">
+      <p className="text-xs tracking-[0.2em] text-primary uppercase">Take a breath</p>
+      <h2 id="settings-title" className="mt-1 font-display text-3xl">Make the forest yours</h2>
+      <p className="mt-2 text-sm text-muted">Your cart is parked. These settings are saved on this device.</p>
+      <div className="my-5 grid gap-4 text-sm">
+        <label className="flex items-center justify-between gap-4">Driving pace
+          <select value={prefs.pace} onChange={(e) => setPreferences({ pace: e.target.value as typeof prefs.pace })} className="rounded-md border border-border bg-bg p-2">
+            <option value="gentle">Gentle exploration</option><option value="brisk">Brisk driving</option>
+          </select>
+        </label>
+        <label className="grid gap-2">Steering response · {prefs.sensitivity.toFixed(1)}×
+          <input type="range" min="0.5" max="1.5" step="0.1" value={prefs.sensitivity} onChange={(e) => setPreferences({ sensitivity: Number(e.target.value) })} />
+        </label>
+        <label className="flex items-center justify-between gap-4">Camera · C
+          <select value={prefs.camera} onChange={(e) => setPreferences({ camera: e.target.value as typeof prefs.camera })} className="rounded-md border border-border bg-bg p-2">
+            <option value="follow">Behind the cart</option><option value="high">High view</option><option value="cart">In the cart</option><option value="god">God's eye · the whole forest</option>
+          </select>
+        </label>
+        <label className="flex items-center justify-between gap-4">Wind & gentle cart motion
+          <input type="checkbox" checked={prefs.motion} onChange={(e) => setPreferences({ motion: e.target.checked })} />
+        </label>
+        <label className="flex items-center justify-between gap-4">Leaf complexity
+          <select value={prefs.leaves} onChange={(e) => setPreferences({ leaves: e.target.value as typeof prefs.leaves })} className="rounded-md border border-border bg-bg p-2">
+            <option value="low">Low · 1 in 10 chunks</option><option value="medium">Medium · 1 in 4</option>
+            <option value="high">High · 1 in 2</option><option value="ultra">Ultra · every chunk</option>
+          </select>
+        </label>
+        <label className="flex items-center justify-between gap-4">Read each grove aloud on the ring
+          <input type="checkbox" checked={prefs.narrate} onChange={(e) => {
+            setPreferences({ narrate: e.target.checked });
+            // Speech is only allowed from a tap, and this is one.
+            if (e.target.checked) unlockSpeech(true);
+          }} />
+        </label>
+        <label className="flex items-center justify-between gap-4">Read moots aloud
+          <input type="checkbox" checked={prefs.speakMoots} onChange={(e) => {
+            setPreferences({ speakMoots: e.target.checked });
+            if (e.target.checked) unlockSpeech(true);
+          }} />
+        </label>
+        {prefs.speakMoots && canSpeak() && <MootVoiceChoice />}
+        <label className="flex items-center justify-between gap-4">Silent mode · no pop-up cards
+          <input type="checkbox" checked={prefs.silent} onChange={(e) => setPreferences({ silent: e.target.checked })} />
+        </label>
+        <label className="flex items-center justify-between gap-4">Show geometry & frame rate
+          <input type="checkbox" checked={prefs.stats} onChange={(e) => setPreferences({ stats: e.target.checked })} />
+        </label>
+        <label className="flex items-center justify-between gap-4">Shadows & forest floor detail
+          <input type="checkbox" checked={prefs.detail} onChange={(e) => setPreferences({ detail: e.target.checked })} />
+        </label>
+      </div>
+      <h3 className="mb-3 text-xs tracking-[0.2em] text-primary uppercase">Environment</h3>
+      <div className="mb-5 grid gap-4 text-sm">
+        <label className="flex items-center justify-between gap-4">Season
+          <select value={season} onChange={(e) => setSeason(e.target.value as SeasonName)} className="rounded-md border border-border bg-bg p-2">
+            {SEASON_ORDER.map((name) => <option key={name} value={name}>{SEASONS[name].label}</option>)}
+          </select>
+        </label>
+        <label className="flex items-center justify-between gap-4">Fog
+          <select value={prefs.fog} onChange={(e) => setPreferences({ fog: e.target.value as typeof prefs.fog })} className="rounded-md border border-border bg-bg p-2">
+            <option value="clear">Clear</option><option value="light">Light</option>
+            <option value="normal">Normal</option><option value="heavy">Heavy</option>
+          </select>
+        </label>
+        <label className="flex items-center justify-between gap-4">
+          <span>Random weather<span className="block text-xs text-muted">Morning fog that burns off, and cloud{prefs.weather ? ` · now ${weatherName(weather).toLowerCase()}` : ""}</span></span>
+          <input type="checkbox" checked={prefs.weather} onChange={(e) => setPreferences({ weather: e.target.checked })} />
+        </label>
+      </div>
+      <h3 className="mb-3 text-xs tracking-[0.2em] text-primary uppercase">Live moots</h3>
+      <div className="mb-5 grid gap-4 text-sm">
+        <label className="grid gap-2">
+          <span>GutenbergKG worker<span className="block text-xs text-muted">Holds a new moot and makes each turn. See the Moots guide.</span></span>
+          <input type="url" value={prefs.mootWorker} spellCheck={false} placeholder={DEFAULT_MOOT_WORKER}
+            onChange={(e) => setPreferences({ mootWorker: e.target.value })} className="rounded-md border border-border bg-bg p-2" />
+        </label>
+        <label className="grid gap-2">
+          <span>Moot token<span className="block text-xs text-muted">Only if the worker sets MOOT_TOKEN</span></span>
+          <input type="password" value={prefs.mootToken} autoComplete="off"
+            onChange={(e) => setPreferences({ mootToken: e.target.value })} className="rounded-md border border-border bg-bg p-2" />
+        </label>
+      </div>
+      <div className="rounded-md bg-bg p-3 text-sm leading-relaxed text-muted">
+        <p><span className="text-fg">WASD</span> drive · <span className="text-fg">Drag</span> or <span className="text-fg">arrows</span> look around · <span className="text-fg">Space</span> brake</p>
+        <p><span className="text-fg">Shift</span> hurry · <span className="text-fg">E</span> read · <span className="text-fg">C</span> camera</p>
+        <p><span className="text-fg">G</span> groves · <span className="text-fg">B</span> books · <span className="text-fg">H</span> home · <span className="text-fg">Q</span> guided tour · <span className="text-fg">?</span> about</p>
+        <p className="mt-2 text-xs">Release the throttle to stop. You can turn in place. On a phone, the stick drives and a drag anywhere else looks. Gamepad: left stick to drive, right stick to look around, A to read, LT to brake, RT to hurry.</p>
+      </div>
+      <p className="mt-4 text-center text-sm text-muted">
+        <a href={USER_GUIDE_URL} target="_blank" rel="noopener" className="text-primary underline">Read the user guide</a>
+      </p>
+      <button type="button" className="mt-3 min-h-11 w-full rounded-md border border-border text-muted"
+        onClick={() => { if (window.confirm("Reset every setting on this device, including the tour welcome? Your press and visited groves are kept.")) resetSettings(); }}>
+        Reset all settings
+      </button>
+      <button ref={back} type="button" className="mt-5 min-h-11 w-full rounded-md bg-primary text-primary-fg" onClick={resume}>Back to the forest</button>
+    </dialog>
+  );
+}
+
+/**
+ * The two moot voices, each "Automatic" unless the listener picks one of this
+ * browser's English voices. The list fills in once the browser has loaded it.
+ */
+function MootVoiceChoice() {
+  const voices = useGame((s) => s.preferences.mootVoices);
+  const setPreferences = useGame((s) => s.setPreferences);
+  const [names, setNames] = useState(mootVoiceNames);
+  useEffect(() => onVoicesChanged(() => setNames(mootVoiceNames())), []);
+  const choose = (i: 0 | 1, name: string) => {
+    const next: [string, string] = [voices[0], voices[1]];
+    next[i] = name;
+    setPreferences({ mootVoices: next });
+  };
+  return (<>
+    {(["First tree's voice", "Second tree's voice"] as const).map((label, i) => (
+      <label key={label} className="flex items-center justify-between gap-4 pl-4 text-muted">{label}
+        <select value={voices[i]} onChange={(e) => choose(i as 0 | 1, e.target.value)}
+          className="max-w-48 rounded-md border border-border bg-bg p-2 text-fg">
+          <option value="">Automatic</option>
+          {/* A chosen voice this browser lacks stays listed, so the choice is visible. */}
+          {voices[i] && !names.includes(voices[i]) && <option value={voices[i]}>{voices[i]} (not here)</option>}
+          {names.map((n) => <option key={n} value={n}>{n}</option>)}
+        </select>
+      </label>
+    ))}
+  </>);
+}

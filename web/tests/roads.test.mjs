@@ -1,0 +1,133 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+globalThis.window ??= { localStorage: { getItem: () => null, setItem() {} } };
+
+test("hub and spoke: circular ring roads through every grove stop, straight spokes from the hub", () => {
+  const { getForest, HUB_PLAZA_R } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
+  const f = getForest();
+  const rings = f.roadLines.filter((l) => l.kind === "ring");
+  assert.ok(rings.length >= 1 && rings.length <= 2, `${rings.length} rings`);
+  for (const ring of rings) {
+    assert.ok(ring.closed);
+    const r = ring.pts.map(([x, z]) => Math.hypot(x, z));
+    assert.ok(Math.max(...r) - Math.min(...r) < 1e-6, "a ring road is a circle round the hub");
+  }
+  // Every stop is a sample of one ring, so the ring passes through it.
+  for (const wp of f.circuit) {
+    const d = Math.min(...rings.flatMap((ring) => ring.pts.map(([x, z]) => Math.hypot(x - wp.x, z - wp.z))));
+    assert.ok(d < 0.01, `no ring reaches the ${wp.genre} stop (${d.toFixed(2)} m)`);
+  }
+  const outer = Math.max(...rings.map((ring) => Math.hypot(...ring.pts[0])));
+  const spokes = f.roadLines.filter((l) => l.kind === "spoke");
+  assert.ok(spokes.length >= 3 && spokes.length <= 6, `${spokes.length} spokes`);
+  for (const s of spokes) {
+    const [x0, z0] = s.pts[0], [x1, z1] = s.pts[s.pts.length - 1];
+    assert.ok(Math.abs(Math.hypot(x0, z0) - (HUB_PLAZA_R - 1)) < 1e-6, "a spoke starts at the hub plaza");
+    assert.ok(Math.abs(Math.hypot(x1, z1) - outer) < 1e-6, "a spoke runs out to the outer ring");
+    assert.ok(Math.abs(x0 * z1 - z0 * x1) < 1e-6 * Math.hypot(x1, z1), "a spoke runs straight out from the hub");
+  }
+  // The tour loop names the grove it is heading for at every sample.
+  const genres = new Set(f.groves.map((g) => g.genre));
+  assert.ok(f.ringPath.every((wp) => genres.has(wp.genre)));
+});
+
+test("a ribbon shares vertices between pieces and closes on itself", () => {
+  const { ribbon, disc } = require(`${process.env.FOREST_TEST_BUILD}/roads.js`);
+  const out = { pos: [], uv: [], index: [] };
+  const square = { kind: "ring", pts: [[0, 0], [10, 0], [10, 10], [0, 10]], closed: true };
+  ribbon(square, 2, 0.05, out);
+  assert.equal(out.pos.length / 3, 8, "two edge vertices per centreline point, none duplicated");
+  assert.equal(out.index.length, 4 * 6, "a closed loop of four points has four quads");
+  assert.ok(out.index.every((i) => i < 8));
+  // Planar UVs: the same world point gets the same UV on any piece, so bricks line up across joins.
+  const d = { pos: [], uv: [], index: [] };
+  disc(5, 5, 2, 0.05, d);
+  assert.deepEqual(d.uv.slice(0, 2), [5 / 2.4, 5 / 2.4]);
+});
+
+test("compact layout: groves never overlap, trees keep driving room, the hub stays clear", () => {
+  const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
+  const f = getForest();
+  for (let i = 0; i < f.groves.length; i++) {
+    const a = f.groves[i];
+    assert.ok(Math.hypot(a.x, a.z) - a.radius >= 18 - 1e-6, `${a.genre} crowds the hub`);
+    for (let j = i + 1; j < f.groves.length; j++) {
+      const b = f.groves[j];
+      // Groves in one tier keep 8 m apart; across tiers a ring road runs between them.
+      assert.ok(Math.hypot(a.x - b.x, a.z - b.z) >= a.radius + b.radius + 2.8 - 1e-6, `${a.genre} and ${b.genre} overlap`);
+    }
+  }
+  for (let i = 0; i < f.trees.length; i++) {
+    for (let j = i + 1; j < f.trees.length; j++) {
+      const d = Math.hypot(f.trees[i].x - f.trees[j].x, f.trees[i].z - f.trees[j].z);
+      assert.ok(d >= 7.5, `${f.trees[i].book.slug} and ${f.trees[j].book.slug} are ${d.toFixed(1)} m apart`);
+    }
+  }
+  // Species crowns set the groves' size, so this only catches a runaway layout
+  // (301 m with the species habits; the sky dome follows the camera and the
+  // ground, minimap and cart bounds all scale with worldRadius).
+  assert.ok(f.worldRadius < 340, `world radius ${f.worldRadius.toFixed(0)} m`);
+});
+
+test("every road keeps the cart clear of every trunk, the redwood and every exhibit", () => {
+  const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
+  const f = getForest();
+  // Centreline clearance = half the widest road (1.7) + the cart's radius (1.05).
+  for (const line of f.roadLines) {
+    for (const [x, z] of line.pts) {
+      for (const t of f.trees) {
+        const c = Math.hypot(x - t.x, z - t.z) - t.trunkRadius;
+        assert.ok(c >= 2.75 - 0.05, `${line.kind} passes ${c.toFixed(2)} m from ${t.book.slug}`);
+      }
+      for (const o of f.obstacles) {
+        assert.ok(Math.hypot(x - o.x, z - o.z) - o.r >= 2.75 - 0.05, `${line.kind} clips the obstacle at ${o.x.toFixed(0)}, ${o.z.toFixed(0)}`);
+      }
+    }
+  }
+});
+
+test("home stands clear of the hub plaza's redwood and plaque, facing the redwood", () => {
+  const { getForest, HUB_PLAZA_R, HUB_PLAQUE_DIST } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
+  const { forwardOf } = require(`${process.env.FOREST_TEST_BUILD}/sim.js`);
+  const f = getForest();
+  const { x, z, yaw } = f.home;
+  const d = Math.hypot(x, z);
+  assert.ok(d > f.corpusTree.baseRadius + 1.05 && d > HUB_PLAZA_R && d > HUB_PLAQUE_DIST + 3, `home ${d.toFixed(1)} m from the hub`);
+  for (const t of f.trees) assert.ok(Math.hypot(x - t.x, z - t.z) > t.trunkRadius + 3, `home crowds ${t.book.slug}`);
+  const fw = forwardOf(yaw);
+  assert.ok((fw.x * -x + fw.z * -z) / d > 0.999, "home faces the redwood");
+});
+
+test("the ring goes round the hub, never across it", () => {
+  const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
+  const f = getForest();
+  // A leg between two near stops on opposite sides once ran 7.5 m from the redwood.
+  const minR = Math.min(...f.ringPath.map((p) => Math.hypot(p.x, p.z)));
+  assert.ok(minR >= 17, `ring passes ${minR.toFixed(1)} m from the hub's centre`);
+});
+
+test("grove signposts stand off the road, on their grove's side, clear of trunks", () => {
+  const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
+  const f = getForest();
+  const segDist = (x, z, s) => {
+    const dx = s.bx - s.ax, dz = s.bz - s.az;
+    const t = Math.max(0, Math.min(1, ((x - s.ax) * dx + (z - s.az) * dz) / (dx * dx + dz * dz || 1)));
+    return Math.hypot(x - s.ax - dx * t, z - s.az - dz * t);
+  };
+  assert.equal(f.signs.length, f.circuit.length);
+  for (const sign of f.signs) {
+    const g = f.groves.find((gr) => gr.genre === sign.genre);
+    const wp = f.circuit.find((w) => w.genre === sign.genre);
+    // Half the widest road (1.7) + the cart's radius (1.05) + half the board's depth.
+    const road = Math.min(...f.roads.map((s) => segDist(sign.x, sign.z, s)));
+    assert.ok(road >= 3, `${sign.genre} sign is ${road.toFixed(2)} m from a road`);
+    // On the grove's side of the road (where the road runs straight at the grove, either side is).
+    assert.ok((sign.x - wp.x) * (g.x - wp.x) + (sign.z - wp.z) * (g.z - wp.z) >= 0, `${sign.genre} sign is on the far side`);
+    for (const t of f.trees) {
+      const c = Math.hypot(sign.x - t.x, sign.z - t.z) - t.trunkRadius;
+      assert.ok(c >= 1.8, `${sign.genre} sign is ${c.toFixed(2)} m from ${t.book.slug}`);
+    }
+  }
+});

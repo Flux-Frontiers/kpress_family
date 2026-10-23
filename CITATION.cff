@@ -1,0 +1,43 @@
+cff-version: "1.2.0"
+message: "If you use this software, please cite it using the metadata below."
+type: software
+title: "The Knowledge Press: The Family"
+abstract: >
+  The Family is the second edition of The Knowledge Press. It reads a
+  GenealogyKG store built from a GEDCOM file: a browser-based 3-D orchard
+  of family trees, and an iPhone, iPad and Mac app that answers questions
+  about the family on the device. Built from The Knowledge Press (The
+  Forest), which reads a GutenbergKG corpus of books.
+authors:
+  - family-names: Suchanek
+    given-names: "Eric G., PhD"
+    orcid: "https://orcid.org/0009-0009-0891-1507"
+    email: suchanek@flux-frontiers.com
+    affiliation: "Flux-Frontiers"
+version: "0.1.0"
+license-url: "https://www.elastic.co/licensing/elastic-license"
+repository-code: "https://github.com/Flux-Frontiers/kpress_family"
+url: "https://github.com/Flux-Frontiers/kpress_family"
+keywords:
+  - knowledge-graph
+  - genealogy
+  - gedcom
+  - on-device-ai
+  - foundation-models
+  - swift
+  - three-js
+  - visualization
+references:
+  - type: software
+    title: "The Knowledge Press: Reading a GutenbergKG Corpus"
+    authors:
+      - family-names: Suchanek
+        given-names: "Eric G., PhD"
+    repository-code: "https://github.com/Flux-Frontiers/knowledge_press"
+    doi: "10.5281/zenodo.22969736"
+  - type: software
+    title: "GenealogyKG"
+    authors:
+      - family-names: Suchanek
+        given-names: "Eric G., PhD"
+    repository-code: "https://github.com/Flux-Frontiers/genealogy_kg"

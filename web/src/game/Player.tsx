@@ -1,0 +1,436 @@
+import { useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useMemo, useRef } from "react";
+import { Group, MathUtils, PerspectiveCamera, Vector3 } from "three";
+import { Cart, WHEEL_R } from "./Cart";
+import { cartLoad, NEUTRAL_SPINE } from "./cartLoad";
+import { EXPOSURE } from "./Environment";
+import { atGroveStop, treesNear, type Forest } from "./forest";
+import { addDragLook, resetInput, sampleActions, setDragging } from "./input";
+import { flightPose, FOLLOW_BACK, FOLLOW_UP, forestGodLimits, godPose, groundPose, resetGodView, type Vec3 } from "./godEye";
+import { clamp } from "./math";
+import { forwardOf, sim, stepVehicle, teleportSim } from "./sim";
+import { hush, speak, speaking } from "./speech";
+import { markTourHeard, TOUR_FAREWELL, TOUR_LAP_DONE, tourHeard, tourIntro } from "./tourScript";
+import { planTour, steerTour, tourState, tourStop } from "./tour";
+import { useGame } from "./store";
+
+const camPos = new Vector3();
+/** Within this of a picked tree, the cart has arrived (reading range plus a margin). */
+const TRAIL_ARRIVED = 9;
+const lookAt = new Vector3();
+/** Upward tilt, radians, the behind-the-cart camera rests at on a portrait screen. */
+const PORTRAIT_TILT = 0.14;
+/** Where the god's-eye camera looks, eased like its position so a zoom glides. */
+const godLook = new Vector3();
+/** The camera's clip planes at ground level (ForestCanvas), and the god's-eye near plane. */
+const GROUND_NEAR = 0.12;
+const GROUND_FAR = 560;
+const GOD_NEAR = 2;
+/** Radians of turn or tilt per pixel dragged across the forest. */
+const DRAG_LOOK = 0.0042;
+/** A press that moves farther than this, in pixels, is a drag, not a click. */
+const DRAG_CLICK = 6;
+/** The start screen's slow circle round the redwood: radius and eye height, m, and radians a second. */
+const ORBIT_R = 46;
+const ORBIT_UP = 8;
+const ORBIT_RATE = 0.03;
+/** The start screen's circle is this much brighter by day, and by START_NIGHT_LIFT more in full dark: behind the title, night reads as black otherwise. */
+const START_DAY_LIFT = 1.25;
+const START_NIGHT_LIFT = 1.0;
+
+export function Player({ forest, playing }: { forest: Forest; playing: boolean }) {
+  const group = useRef<Group>(null);
+  const wheelL = useRef<Group>(null);
+  const wheelR = useRef<Group>(null);
+  const poseAcc = useRef(0);
+  const wasBlocked = useRef(false);
+  // Camera tilt in radians, held between drives; Up/Down or the right stick.
+  const pitch = useRef(0);
+  /** Pan off the cart's heading, radians, left positive. */
+  const look = useRef(0);
+  const shotFrames = useRef({ portrait: null as unknown, n: 0 });
+  const lastMarked = useRef<string | null>(null);
+  /** The ring's end has been announced on this tour. */
+  const lapSaid = useRef(false);
+  /** The god's-eye view was on last frame. */
+  const wasGod = useRef(false);
+  /** A dive under way: where it left from, and how long it has been going. */
+  const flightFrom = useRef<{ cam: Vec3; look: Vec3 } | null>(null);
+  const flightT = useRef(0);
+  /** Last frame was the start screen's circle, so the first played frame puts the camera behind the cart. */
+  const wasStart = useRef(true);
+
+  const paused = useGame((s) => s.paused);
+  const collect = useGame((s) => s.collect);
+  const markGrove = useGame((s) => s.markGrove);
+  const setNearby = useGame((s) => s.setNearby);
+  const setPose = useGame((s) => s.setPose);
+  const library = useGame((s) => s.library);
+
+  // Each grove's color, by slug, so the cargo matches the trees it was pressed from.
+  const spineColors = useMemo(() => new Map(forest.trees.map((t) => [t.book.slug, t.color])), [forest]);
+  const load = useMemo(() => cartLoad(library, (slug) => spineColors.get(slug) ?? NEUTRAL_SPINE), [library, spineColors]);
+
+  const lanternColor = useMemo(() => "#f3e6c2", []);
+  const gl = useThree((s) => s.gl);
+  const playingRef = useRef(playing);
+  playingRef.current = playing;
+
+  // Drag anywhere on the forest to look around: no button, no stick. One pointer
+  // owns the look at a time; a new press always takes it, so a release that never
+  // arrived cannot leave it dead. Not in god's eye (the wheel and a pinch zoom
+  // there), during a dive, or with a panel open.
+  useEffect(() => {
+    const el = gl.domElement;
+    let drag: { id: number; x: number; y: number; moved: number } | null = null;
+    /** When the last drag that moved ended, ms; the click that follows it is not a click. */
+    let draggedAt = -Infinity;
+    const canLook = () => {
+      const g = useGame.getState();
+      return playingRef.current && !g.paused && !g.helpOpen && !g.flight && !g.portrait && g.preferences.camera !== "god";
+    };
+    const end = () => {
+      if (drag && drag.moved > DRAG_CLICK) draggedAt = performance.now();
+      drag = null;
+      setDragging(false);
+    };
+    const down = (e: PointerEvent) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      if (!canLook()) return;
+      drag = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: 0 };
+      setDragging(true);
+      try { el.setPointerCapture(e.pointerId); } catch { /* pointer already gone */ }
+    };
+    const move = (e: PointerEvent) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      drag.x = e.clientX;
+      drag.y = e.clientY;
+      drag.moved += Math.hypot(dx, dy);
+      if (canLook()) addDragLook(dx, dy);
+    };
+    const up = (e: PointerEvent) => { if (drag && e.pointerId === drag.id) end(); };
+    // A look that ends over a signpost or the redwood is not a click on it. Only
+    // the forest's own click, right after the drag: a touch drag sends no click
+    // at all, and the next tap on a button must not be lost.
+    const click = (e: MouseEvent) => {
+      if (performance.now() - draggedAt > 300 || !(e.target instanceof Node) || !el.contains(e.target)) return;
+      draggedAt = -Infinity;
+      e.stopPropagation();
+    };
+    const hidden = () => { if (document.hidden) end(); };
+    el.addEventListener("pointerdown", down);
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", up);
+    el.addEventListener("pointercancel", up);
+    el.addEventListener("lostpointercapture", up);
+    window.addEventListener("click", click, true);
+    window.addEventListener("blur", end);
+    document.addEventListener("visibilitychange", hidden);
+    return () => {
+      el.removeEventListener("pointerdown", down);
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerup", up);
+      el.removeEventListener("pointercancel", up);
+      el.removeEventListener("lostpointercapture", up);
+      window.removeEventListener("click", click, true);
+      window.removeEventListener("blur", end);
+      document.removeEventListener("visibilitychange", hidden);
+      end();
+    };
+  }, [gl]);
+
+  useFrame((state, delta) => {
+    const dt = Math.min(delta, 0.1);
+    const game = useGame.getState();
+    const { preferences, jump } = game;
+    const blocked = !playing || paused || game.helpOpen || game.libraryOpen || game.atlasOpen || game.catalogOpen || Boolean(game.plaque) || Boolean(game.readingSlug) || game.mootsOpen || Boolean(game.mootId) || Boolean(document.activeElement?.matches("input, textarea, select, [contenteditable=true]"));
+    if (blocked) {
+      sim.speed = sim.lat = sim.steering = 0;
+      if (!wasBlocked.current) resetInput();
+    }
+    wasBlocked.current = blocked;
+    if (jump) {
+      teleportSim(jump.x, jump.z, jump.yaw);
+      look.current = 0;
+      useGame.getState().clearJump();
+      if (game.flight) {
+        // A dive from god's eye: the cart is already there, and the camera flies down to it.
+        pitch.current = 0;
+        flightFrom.current = { cam: state.camera.position.clone(), look: lookAt.clone() };
+        flightT.current = 0;
+      } else {
+        const f = forwardOf(sim.yaw);
+        state.camera.position.set(sim.x - f.x * FOLLOW_BACK, sim.y + FOLLOW_UP, sim.z - f.z * FOLLOW_BACK);
+        lookAt.set(sim.x + f.x * 10, sim.y + FOLLOW_UP, sim.z + f.z * 10);
+        state.camera.lookAt(lookAt);
+      }
+    }
+
+    if (blocked) {
+      // Still keep camera on the cart while paused; a pause or a panel ends the narration.
+      // A playing moot speaks for itself (MootOverlay.tsx), so it is left alone.
+      if (speaking() && !game.mootId) hush();
+    } else {
+      const a = sampleActions();
+      let throttle = a.throttle;
+      let steer = a.steer;
+      let tourBrake = false;
+      const mode = useGame.getState().travelMode;
+      /** Show a tour caption for a while, and drop it once it has had its time (unless replaced). */
+      const note = (text: string) => {
+        game.setTourNote(text);
+        const ms = Math.max(8000, text.split(/\s+/).length * 400);
+        window.setTimeout(() => { if (useGame.getState().tourNote === text) useGame.getState().setTourNote(null); }, ms);
+      };
+      /** Show several lines in turn, each for about as long as it takes to say, while this tour lasts. */
+      const noteLines = (lines: string[]) => {
+        const tour = tourState.tour;
+        let at = 0;
+        for (const line of lines) {
+          window.setTimeout(() => {
+            if (tourState.tour === tour && !useGame.getState().tourStop) useGame.getState().setTourNote(line);
+          }, at);
+          at += Math.max(3000, line.split(/\s+/).length * 400);
+        }
+        window.setTimeout(() => { if (lines.includes(useGame.getState().tourNote ?? "")) useGame.getState().setTourNote(null); }, at);
+      };
+      const endTour = () => {
+        const wasTouring = Boolean(tourState.tour);
+        tourState.tour = null;
+        game.setTourNote(null);
+        if (game.tourStop) {
+          game.setTourStop(null);
+          hush();
+        }
+        // Taking the wheel is not a jump elsewhere: say goodbye.
+        if (wasTouring && !useGame.getState().jump && preferences.narrate && !preferences.silent) {
+          speak(TOUR_FAREWELL);
+        }
+      };
+      if (mode !== "circuit") endTour();
+      else if (forest.ringPath.length > 1) {
+        if (Math.abs(a.steer) > 0.38 || a.brake || a.throttle < 0) {
+          endTour();
+          useGame.getState().setTravelMode("free");
+          useGame.getState().setToast("Free drive");
+        } else {
+          if (!tourState.tour) {
+            tourState.tour = planTour(forest, sim.x, sim.z, sim.yaw);
+            lapSaid.current = false;
+            // Set off with the welcome: the whole background the first time, a line after that.
+            if (!preferences.silent) {
+              const lines = tourIntro({ books: forest.trees.length, groves: forest.groves.length }, tourHeard());
+              markTourHeard();
+              noteLines(lines);
+              if (preferences.narrate) lines.forEach((line, i) => speak(line, i > 0));
+            }
+          }
+          const c = steerTour(tourState.tour, sim.x, sim.z, sim.yaw, sim.speed, dt, speaking());
+          steer = c.steer;
+          if (throttle === 0) throttle = c.throttle;
+          tourBrake = c.brake;
+          // Pulled up at a grove: show its summary, and read it aloud if asked to.
+          const stop = tourStop(tourState.tour);
+          if (stop !== game.tourStop) {
+            game.setTourStop(stop);
+            if (stop) game.setTourNote(null);
+            const said = stop ? forest.groves.find((g) => g.genre === stop)?.narration : undefined;
+            // Queued, so a stop reached during the welcome waits for it.
+            if (said && preferences.narrate && !preferences.silent) speak(said, true);
+          }
+          // Every grove visited and the cart turning for home: say so once.
+          if (tourState.tour.laps > 0 && !lapSaid.current) {
+            lapSaid.current = true;
+            if (!preferences.silent) {
+              note(TOUR_LAP_DONE);
+              if (preferences.narrate) speak(TOUR_LAP_DONE, true);
+            }
+          }
+          useGame.getState().selectGrove(c.genre || null);
+          // Back at the redwood: the tour is over, and the cart is the rider's.
+          if (tourState.tour.done) {
+            endTour();
+            useGame.getState().setTravelMode("free");
+            useGame.getState().setToast("Tour over · back at the redwood");
+          }
+        }
+      }
+      stepVehicle(forest, throttle, steer, a.boost, dt, { ...preferences, brake: a.brake || tourBrake });
+      // A drag turns the view with the hand, as a mouse look does: right looks right, down looks down.
+      pitch.current = clamp(pitch.current + a.pitch * 1.1 * dt - a.dragY * DRAG_LOOK, -0.45, 0.75);
+      // Held arrows or a drag pan up to ~110° either way; let go, the view eases back ahead.
+      look.current = clamp(look.current + a.look * 1.6 * dt - a.dragX * DRAG_LOOK, -1.9, 1.9);
+      if (!a.look && !a.dragging) look.current *= Math.exp(-3 * dt);
+
+      if (a.interact) {
+        const near = treesNear(forest, sim.x, sim.z, 6.8);
+        let best = near[0];
+        let bestD = Infinity;
+        for (const t of near) {
+          const d = Math.hypot(t.x - sim.x, t.z - sim.z);
+          if (d < bestD) {
+            bestD = d;
+            best = t;
+          }
+        }
+        if (best && bestD < 6.8) collect(best.book.slug, best.book.title);
+      }
+    }
+
+    const f = forwardOf(sim.yaw);
+    // The camera faces the cart's heading turned by the look pan; the cart itself keeps f.
+    const v = forwardOf(sim.yaw + look.current);
+    const inCart = preferences.camera === "cart";
+    const godEye = preferences.camera === "god";
+    const cam = state.camera as PerspectiveCamera;
+    const flight = game.flight;
+    const flying = Boolean(flight && flightFrom.current);
+    if (playing && wasStart.current) {
+      // Leaving the start screen: land behind the cart rather than glide in from the circle.
+      wasStart.current = false;
+      state.gl.toneMappingExposure = EXPOSURE;
+      state.camera.position.set(sim.x - v.x * FOLLOW_BACK, sim.y + FOLLOW_UP, sim.z - v.z * FOLLOW_BACK);
+    }
+    if (!playing) {
+      // The start screen: the camera circles the redwood slowly behind the title,
+      // in today's season and sky. A tour left by Exit is over.
+      wasStart.current = true;
+      tourState.tour = null;
+      state.gl.toneMappingExposure = EXPOSURE * (START_DAY_LIFT + START_NIGHT_LIFT * (1 - game.sky.daylight));
+      const a = state.clock.elapsedTime * ORBIT_RATE;
+      state.camera.position.set(Math.sin(a) * ORBIT_R, ORBIT_UP, Math.cos(a) * ORBIT_R);
+      lookAt.set(0, forest.corpusTree.height * 0.3, 0);
+      cam.far = GROUND_FAR;
+      cam.near = GROUND_NEAR;
+    } else if (flight && flightFrom.current) {
+      flightT.current += dt;
+      const p = flightPose(flightFrom.current, groundPose(flight.to, sim.x, sim.y, sim.z, sim.yaw), flightT.current);
+      state.camera.position.set(p.cam.x, p.cam.y, p.cam.z);
+      lookAt.set(p.look.x, p.look.y, p.look.z);
+      // The clip planes come down with the camera, from god's eye's to the ground's.
+      cam.far = Math.max(GROUND_FAR, p.cam.y + forest.worldRadius * 2);
+      cam.near = clamp(p.cam.y * 0.01, GROUND_NEAR, GOD_NEAR);
+      if (p.done) {
+        flightFrom.current = null;
+        game.endFlight();
+      }
+    } else if (godEye) {
+      // Over the zoomed point (godEye.ts), the whole world in view until the wheel or a pinch says otherwise.
+      if (!wasGod.current) {
+        resetGodView(forestGodLimits(forest).max);
+        godLook.copy(lookAt);
+      }
+      const pose = godPose();
+      const k = 1 - Math.exp(-2.2 * dt);
+      camPos.set(pose.cam.x, pose.cam.y, pose.cam.z);
+      state.camera.position.lerp(camPos, k);
+      godLook.lerp(camPos.set(pose.look.x, pose.look.y, pose.look.z), k);
+      lookAt.copy(godLook);
+      // Push both clip planes out: at ground level's 0.12 m near plane the depth
+      // buffer cannot tell the roads from the ground a kilometre away.
+      cam.far = state.camera.position.length() + forest.worldRadius * 2;
+      cam.near = GOD_NEAR;
+    } else if (inCart) {
+      // A standing adult's eye level (1.65 m), gazing level over the lantern, so the
+      // horizon, plaques and plinths sit where they would on foot; tilt to look up.
+      // Rigid, no chase lag.
+      camPos.set(sim.x - v.x * 0.45, sim.y + 1.65, sim.z - v.z * 0.45);
+      state.camera.position.copy(camPos);
+      lookAt.set(sim.x + v.x * 10, sim.y + 1.65, sim.z + v.z * 10);
+    } else {
+      const follow = preferences.camera === "high" ? 12 : FOLLOW_BACK;
+      const height = preferences.camera === "high" ? 10 : FOLLOW_UP;
+      camPos.set(sim.x - v.x * follow, sim.y + height, sim.z - v.z * follow);
+      state.camera.position.lerp(camPos, 1 - Math.exp(-3.4 * dt));
+      // Behind the cart, look level down the road; the high view looks down at the cart.
+      const ahead = preferences.camera === "high" ? 2.6 : 10;
+      lookAt.set(sim.x + v.x * ahead, sim.y + (preferences.camera === "high" ? 1.4 : FOLLOW_UP), sim.z + v.z * ahead);
+    }
+    // A tree portrait (portrait.ts) overrides the chase camera entirely.
+    const portrait = game.portrait;
+    if (portrait) {
+      state.camera.position.set(...portrait.cam);
+      lookAt.set(...portrait.look);
+      cam.fov = portrait.fov;
+      cam.near = 1;
+      cam.far = GROUND_FAR * 2;
+      state.camera.lookAt(lookAt);
+      cam.updateProjectionMatrix();
+      const counter = shotFrames.current;
+      if (counter.portrait !== portrait) { counter.portrait = portrait; counter.n = 0; }
+      if (++counter.n === 45) window.__shotReady = true;
+      return;
+    }
+    // Tilt by raising or lowering the look point over its horizontal distance.
+    // Not on the start screen: god's eye set up there would skip its reset on entering.
+    wasGod.current = playing && godEye && !flying;
+    if (playing && !godEye && !flying) {
+      // On a portrait screen the level chase view is half road and cart; rest it tilted up a little.
+      const rest = preferences.camera === "follow" && cam.aspect < 1 ? PORTRAIT_TILT : 0;
+      lookAt.y += Math.hypot(lookAt.x - state.camera.position.x, lookAt.z - state.camera.position.z) * Math.tan(pitch.current + rest);
+      cam.far = GROUND_FAR;
+      cam.near = GROUND_NEAR;
+    }
+    state.camera.lookAt(lookAt);
+    const fovTarget = inCart ? 60 : 58;
+    cam.fov = MathUtils.lerp(cam.fov, fovTarget, 1 - Math.exp(-4 * dt));
+    cam.updateProjectionMatrix();
+
+    const g = group.current;
+    if (g) {
+      g.position.set(sim.x, sim.y, sim.z);
+      g.lookAt(sim.x + f.x, sim.y, sim.z + f.z);
+      if (preferences.motion) g.rotateZ(-sim.steering * Math.min(Math.abs(sim.speed), 12) * 0.003);
+    }
+    const spin = (sim.speed * dt) / WHEEL_R;
+    if (wheelL.current) wheelL.current.rotation.x += spin;
+    if (wheelR.current) wheelR.current.rotation.x += spin;
+
+    const near = treesNear(forest, sim.x, sim.z, 16);
+    let bestSlug: string | null = null;
+    let bestD = 16;
+    for (const t of near) {
+      const d = Math.hypot(t.x - sim.x, t.z - sim.z);
+      if (d < bestD) {
+        bestD = d;
+        bestSlug = t.book.slug;
+      }
+    }
+
+    // Standing at the stop the trail was leading to is arriving too: a jump lands there, outside the grove.
+    if (game.travelMode === "free" && game.selectedGrove && atGroveStop(forest, game.selectedGrove, sim.x, sim.z, TRAIL_ARRIVED)) {
+      game.selectGrove(null);
+    }
+
+    for (const grove of forest.groves) {
+      if (Math.hypot(grove.x - sim.x, grove.z - sim.z) < grove.radius) {
+        if (lastMarked.current !== grove.genre) {
+          lastMarked.current = grove.genre;
+          markGrove(grove.genre);
+        }
+        // Arrived at the grove the trail was leading to: put the lantern trail away.
+        if (game.travelMode === "free" && game.selectedGrove === grove.genre) game.selectGrove(null);
+      }
+    }
+
+    // Arrived at the tree the trail was leading to: put the trail and the query away.
+    if (game.searchPick) {
+      const t = forest.trees.find((tr) => tr.book.slug === game.searchPick);
+      if (!t || Math.hypot(t.x - sim.x, t.z - sim.z) < TRAIL_ARRIVED) game.setQuery("");
+    }
+
+    poseAcc.current += dt;
+    if (poseAcc.current > 0.08) {
+      poseAcc.current = 0;
+      setNearby(bestSlug, bestD, sim.speed);
+      setPose(sim.x, sim.z, sim.yaw, sim.speed);
+    }
+  });
+
+  return (
+    <group ref={group}>
+      <Cart lanternColor={lanternColor} wheelLeft={wheelL} wheelRight={wheelR} load={load} />
+    </group>
+  );
+}

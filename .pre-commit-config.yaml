@@ -1,0 +1,50 @@
+# Install once per clone: `pre-commit install`. There is no Python venv here,
+# so the hooks run on whatever pre-commit is on PATH (Homebrew or uv tool).
+# Before committing, `pre-commit run --all-files` and fix what it reports.
+#
+# The Swift package is left to app.yml: `swift test` is too slow for a
+# commit hook.
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+        exclude: '^web/tsconfig\.json$'  # JSONC
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.22
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline', '--exclude-files', 'package-lock\.json']
+
+  - repo: local
+    hooks:
+      # `npm run build` starts with `tsc --noEmit`; only the typecheck is
+      # worth running at commit time. Needs `make web-install` once.
+      - id: web-typecheck
+        name: web typecheck
+        entry: sh -c 'cd web && exec npx --no-install tsc --noEmit'
+        language: system
+        pass_filenames: false
+        files: '^web/(src/|tests/|scripts/|package(-lock)?\.json$|tsconfig\.json$)'
+      - id: web-test
+        name: web tests
+        entry: sh -c 'cd web && exec npm test'
+        language: system
+        pass_filenames: false
+        files: '^web/(src/|tests/|scripts/|package(-lock)?\.json$)'

@@ -1,0 +1,165 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #11151e;
+  --color-surface: #1a2030;
+  --color-fg: #e6e9ef;
+  --color-muted: #9aa4b8;
+  --color-faint: #6d7689;
+  --color-primary: #8fad86;
+  --color-primary-fg: #11151e;
+  --color-border: #3a4358;
+  --color-wood: #6b4a2e;
+  --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+    background: var(--color-bg);
+    color: var(--color-fg);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* The start screen over the live forest: dark at the foot where the title sits, clear above (after art_techno). */
+.start-screen {
+  background: linear-gradient(to top, rgb(17 21 30 / 0.78) 0%, rgb(17 21 30 / 0.45) 28%, rgb(17 21 30 / 0) 55%);
+}
+.start-screen h1 { text-shadow: 0 2px 24px rgb(0 0 0 / 0.55); }
+.start-screen p { text-shadow: 0 1px 2px rgb(0 0 0 / 0.7), 0 0 12px rgb(17 21 30 / 0.5); }
+.start-keys kbd {
+  display: inline-block;
+  min-width: 1.5rem;
+  margin-right: 2px;
+  padding: 1px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: rgb(26 32 48 / 0.8);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  text-align: center;
+}
+.forest-fade-in { animation: forest-fade-in 1.6s ease-out both; }
+@keyframes forest-fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+.start-wash {
+  background:
+    radial-gradient(1200px 600px at 70% -10%, color-mix(in oklab, var(--color-primary) 14%, transparent), transparent 60%),
+    radial-gradient(900px 500px at 10% 110%, color-mix(in oklab, var(--color-wood) 22%, transparent), transparent 55%),
+    var(--color-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.forest-settings::backdrop,
+.about::backdrop {
+  background: rgb(8 16 22 / 70%);
+  backdrop-filter: blur(8px);
+}
+
+/* About (About.tsx, NightSky.tsx): headings, the species list and the two-column key lists. */
+.about-body > * + * { margin-top: 0.75rem; }
+.about-body h3 {
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.about-body b, .about-body dt, .about-species span { color: var(--color-fg); font-weight: 600; }
+.about-body code { font-size: 0.8125rem; color: var(--color-fg); white-space: nowrap; }
+.about-species { display: grid; gap: 0.25rem; }
+.about-species li { display: flex; flex-wrap: wrap; gap: 0 0.5rem; }
+.about-species em { font-style: normal; }
+.about-keys { display: grid; gap: 0.5rem; }
+.about-keys > div { display: grid; grid-template-columns: 9rem 1fr; gap: 0.75rem; }
+@media (max-width: 479px) {
+  .about-keys > div { grid-template-columns: 1fr; gap: 0; }
+}
+
+input[type="range"], input[type="checkbox"] { accent-color: var(--color-primary); }
+button:focus-visible, select:focus-visible, input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+.touch-controls { display: none; }
+@media (pointer: coarse), (max-width: 639px) {
+  .touch-controls { display: flex; padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
+}
+
+/* Touch layouts (phones, tablets): the controls own the bottom ~8.5rem, so stack
+   search, then the book card, above them. */
+@media (pointer: coarse), (max-width: 639px) {
+  .search-dock {
+    position: absolute; left: 50%; right: auto; margin: 0;
+    translate: -50% 0; /* same property Tailwind's -translate-x-1/2 sets, so they cannot stack */
+    width: min(100% - 1.5rem, 22rem);
+    bottom: calc(8.75rem + env(safe-area-inset-bottom));
+    flex-direction: column-reverse;
+  }
+  /* Search sits below the card here, not beside it, so drop the desktop width cap. */
+  .book-dock { bottom: calc(12.5rem + env(safe-area-inset-bottom)); max-width: 32rem; }
+}
+
+/* Touch has the Guided tour button and Settings has the seasons, so the column
+   would only cover the forest; and there is no keyboard to hint at. Unlayered,
+   so these beat Tailwind's sm:flex and sm:block. */
+@media (pointer: coarse) {
+  .season-dock, .key-hints { display: none; }
+}
+
+/* A phone on its side (~375-430px tall): stacked above the controls, the card
+   rode up over the top bar. The search goes on the bottom edge between the
+   left stick (~8.5rem) and the right stick with its buttons (~15.5rem); the
+   card sits on the left above the left stick, without its excerpt. */
+@media (pointer: coarse) and (max-height: 500px) {
+  .search-dock {
+    left: 8.75rem; right: 15.75rem; translate: none;
+    width: auto; max-width: 22rem;
+    bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  }
+  .book-dock {
+    left: 0.75rem; right: auto; margin: 0;
+    width: min(22rem, 100% - 16rem); max-width: none;
+    bottom: calc(8.25rem + env(safe-area-inset-bottom));
+  }
+  .card-extra { display: none; }
+}
+
+/* Tablets, either orientation: from ~700px there is room between the joystick
+   (~124px) and the buttons (~172px) for the 22rem search bar, so it sits on the
+   bottom edge and the book card just above the joystick. Phones keep the stack. */
+@media (pointer: coarse) and (min-width: 700px) {
+  .search-dock { bottom: calc(1rem + env(safe-area-inset-bottom)); }
+  .book-dock { bottom: calc(8.75rem + env(safe-area-inset-bottom)); }
+}

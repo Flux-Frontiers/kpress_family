@@ -1,0 +1,207 @@
+const GAME_KEYS = new Set([
+  "KeyW",
+  "KeyA",
+  "KeyS",
+  "KeyD",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "Space",
+  "ShiftLeft",
+  "ShiftRight",
+]);
+
+export type Actions = {
+  throttle: number;
+  steer: number;
+  boost: boolean;
+  brake: boolean;
+  interact: boolean;
+  interactDown: boolean;
+  /** Camera tilt rate, -1 (down) to 1 (up). */
+  pitch: number;
+  /** Camera pan, -1 (right) to 1 (left), like steer; the view eases back to ahead on release. */
+  look: number;
+  /** Pixels dragged across the forest since the last frame, x right and y down. */
+  dragX: number;
+  dragY: number;
+  /** A drag is holding the view, so it does not ease back yet. */
+  dragging: boolean;
+};
+
+const keys = new Set<string>();
+let injectedKeys: string[] | null = null;
+let injectedSteer: number | null = null;
+let touchThrottle = 0;
+let touchSteer = 0;
+let dragX = 0;
+let dragY = 0;
+let dragging = false;
+let prevInteract = false;
+
+export function isInputTarget(target: EventTarget | null): boolean {
+  return target instanceof HTMLElement && Boolean(target.closest("input, textarea, select, button, a, [contenteditable='true'], [role='dialog']"));
+}
+
+function onKeyDown(e: KeyboardEvent) {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (isInputTarget(e.target)) return;
+  keys.add(e.code);
+  if (GAME_KEYS.has(e.code) || e.code === "KeyE") e.preventDefault();
+}
+
+function onKeyUp(e: KeyboardEvent) {
+  keys.delete(e.code);
+}
+
+export function resetInput() {
+  keys.clear();
+  touchThrottle = touchSteer = 0;
+  dragX = dragY = 0;
+  dragging = false;
+  prevInteract = false;
+  injectedKeys = null;
+  injectedSteer = null;
+}
+
+function onVisibilityChange() {
+  if (document.hidden) resetInput();
+}
+
+let bound = false;
+
+export function bindInput() {
+  if (bound || typeof window === "undefined") return () => undefined;
+  bound = true;
+  window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("keyup", onKeyUp);
+  window.addEventListener("blur", resetInput);
+  document.addEventListener("visibilitychange", onVisibilityChange);
+  document.addEventListener("focusin", resetInput);
+  return () => {
+    window.removeEventListener("keydown", onKeyDown);
+    window.removeEventListener("keyup", onKeyUp);
+    window.removeEventListener("blur", resetInput);
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    document.removeEventListener("focusin", resetInput);
+    bound = false;
+    resetInput();
+  };
+}
+
+export function setInjectedKeys(codes: string[] | null) {
+  injectedKeys = codes;
+}
+
+export function setInjectedSteer(v: number | null) {
+  injectedSteer = v;
+}
+
+/**
+ * On-screen stick position (x right, y down, each -1..1) to throttle and steer.
+ * A mostly sideways push is a pure turn: throttle only counts once it is at
+ * least 40% of the sideways push, so a thumb a little low on "right" does not
+ * creep the cart backward.
+ */
+export function stickAxes(x: number, y: number): { throttle: number; steer: number } {
+  const dead = (v: number) => (Math.abs(v) < 0.12 ? 0 : v);
+  const throttle = Math.abs(y) < 0.4 * Math.abs(x) ? 0 : dead(-y);
+  return { throttle, steer: dead(-x) };
+}
+
+export function setTouchAxes(throttle: number, steer: number) {
+  touchThrottle = throttle;
+  touchSteer = steer;
+}
+
+/** A drag across the forest moved by (dx, dy) pixels: it looks around. */
+export function addDragLook(dx: number, dy: number) {
+  dragX += dx;
+  dragY += dy;
+}
+
+/** Whether a drag is holding the view; once let go, the pan eases back to ahead. */
+export function setDragging(on: boolean) {
+  dragging = on;
+}
+
+function held(code: string): boolean {
+  if (injectedKeys) return injectedKeys.includes(code);
+  return keys.has(code);
+}
+
+function radialDeadzone(x: number, y: number, dz = 0.15): { x: number; y: number } {
+  const m = Math.hypot(x, y);
+  if (m < dz) return { x: 0, y: 0 };
+  const scale = (Math.min(m, 1) - dz) / (1 - dz) / m;
+  return { x: x * scale, y: y * scale };
+}
+
+function pollGamepad(actions: Actions) {
+  if (typeof navigator === "undefined" || !navigator.getGamepads) return;
+  const pads = navigator.getGamepads();
+  for (const pad of pads) {
+    if (!pad) continue;
+    const stick = radialDeadzone(pad.axes[0] ?? 0, pad.axes[1] ?? 0);
+    // Left stick Y: -1 is up → throttle +. Steer: stick left (−x) is A / +steer.
+    if (Math.abs(stick.y) > 0.02) actions.throttle += -stick.y;
+    if (Math.abs(stick.x) > 0.02) actions.steer += -stick.x;
+    if (pad.buttons[12]?.pressed) actions.throttle += 1;
+    if (pad.buttons[13]?.pressed) actions.throttle -= 1;
+    if (pad.buttons[14]?.pressed) actions.steer += 1;
+    if (pad.buttons[15]?.pressed) actions.steer -= 1;
+    if (pad.buttons[0]?.pressed) actions.interactDown = true;
+    if (pad.buttons[6]?.pressed) actions.brake = true;
+    if (pad.buttons[7] && pad.buttons[7].value > 0.4) actions.boost = true;
+    // Right stick looks around: Y up and down (-1 is up), X left and right (-1 is left).
+    const look = radialDeadzone(pad.axes[2] ?? 0, pad.axes[3] ?? 0);
+    actions.pitch += -look.y;
+    actions.look += -look.x;
+  }
+}
+
+export function sampleActions(): Actions {
+  const actions: Actions = {
+    throttle: 0,
+    steer: 0,
+    boost: false,
+    brake: false,
+    interact: false,
+    interactDown: false,
+    pitch: 0,
+    look: 0,
+    dragX,
+    dragY,
+    dragging,
+  };
+  dragX = dragY = 0;
+
+  if (held("KeyW")) actions.throttle += 1;
+  if (held("KeyS")) actions.throttle -= 1;
+  // Arrows look around; W/S drive, A/D steer.
+  if (held("ArrowUp")) actions.pitch += 1;
+  if (held("ArrowDown")) actions.pitch -= 1;
+  if (held("ArrowLeft")) actions.look += 1;
+  if (held("ArrowRight")) actions.look -= 1;
+  if (held("KeyA")) actions.steer += 1;
+  if (held("KeyD")) actions.steer -= 1;
+  if (held("ShiftLeft") || held("ShiftRight")) actions.boost = true;
+  if (held("KeyE")) actions.interactDown = true;
+  if (held("Space")) actions.brake = true;
+
+  actions.throttle += touchThrottle;
+  actions.steer += touchSteer;
+
+  pollGamepad(actions);
+
+  if (injectedSteer !== null) actions.steer = injectedSteer;
+
+  actions.throttle = Math.max(-1, Math.min(1, actions.throttle));
+  actions.steer = Math.max(-1, Math.min(1, actions.steer));
+  actions.pitch = Math.max(-1, Math.min(1, actions.pitch));
+  actions.look = Math.max(-1, Math.min(1, actions.look));
+  actions.interact = actions.interactDown && !prevInteract;
+  prevInteract = actions.interactDown;
+  return actions;
+}

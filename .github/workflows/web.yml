@@ -1,0 +1,45 @@
+name: Web
+
+# The web forest: typecheck, node tests and a production build. Path-filtered
+# to web/ so a kit-only change does not spend a runner here. Nothing is
+# published: there is no Pages deploy until the repository's visibility and
+# hosting are decided (plan Phase 3).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - "!web/**.md"
+      - ".github/workflows/web.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "web/**"
+      - "!web/**.md"
+      - ".github/workflows/web.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: web-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Web Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build

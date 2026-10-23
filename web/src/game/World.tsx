@@ -1,0 +1,332 @@
+import { useFrame } from "@react-three/fiber";
+import { useEffect, useMemo, useRef, type ComponentType } from "react";
+import { BufferAttribute, BufferGeometry, CanvasTexture, Color, type FogExp2, InstancedMesh, MeshStandardMaterial, Object3D, RepeatWrapping, SRGBColorSpace, TextureLoader } from "three";
+import { ForestFloor, FOG_DAY, FOG_NIGHT, Sky, Sunlight, textureAnisotropy, useGroundTexture } from "./Environment";
+import { MeteorSky } from "./MeteorSky";
+import { DAY_OVERRIDE } from "./daylight";
+import { FOG_SCALE } from "./preferences";
+
+/** Fog multiplier in the god's-eye view. */
+const GOD_EYE_FOG = 0.1;
+import type { Exhibit } from "./exhibits";
+import { bookMatchesQuery, groveApproach, groveByGenre, type Forest } from "./forest";
+import { disc, ribbon, type FlatMesh } from "./roads";
+import { CompassRose } from "./CompassRose";
+import { CorpusRedwood } from "./CorpusRedwood";
+import { Cart } from "./Cart";
+import { FlameOfKnowledge } from "./FlameOfKnowledge";
+import { GroveMarks } from "./GroveMarks";
+import { Mysterium } from "./Mysterium";
+import { Signposts } from "./Signposts";
+import { Sundial } from "./Sundial";
+import { SEASONS, type SeasonName } from "./seasons";
+import { sim } from "./sim";
+import { useGame } from "./store";
+import { tourAhead, tourState } from "./tour";
+import { fogMix, stepWeather, weather, weatherAt, weatherOverride } from "./weather";
+import { DarrieusSculpture, DnaSculpture, HelixSculpture, SavoniusSculpture, WeatherMast } from "./WindSculptures";
+
+const dummy = new Object3D();
+const gray = new Color();
+const CLEAR = { fogDensity: 0, cloud: 0, kind: "clear" as const };
+
+const EXHIBIT_VIEWS: Record<string, ComponentType<{ exhibit: Exhibit }>> = {
+  mysterium: Mysterium,
+  flame: FlameOfKnowledge,
+  helix: HelixSculpture,
+  darrieus: DarrieusSculpture,
+  savonius: SavoniusSculpture,
+  dna: DnaSculpture,
+  mast: WeatherMast,
+  sundial: Sundial,
+};
+const TRAIL_N = 20;
+
+export function World({ forest, season }: { forest: Forest; season: SeasonName }) {
+  const pal = SEASONS[season];
+  // Every colour eases from the season's night palette to the day look as the sun rises (sky.ts).
+  const sky = useGame((s) => s.sky);
+  const t = sky.daylight;
+  const skyColor = useMemo(() => new Color(pal.sky).lerp(new Color(DAY_OVERRIDE.sky), t), [t, pal.sky]);
+  // Sunrise and sunset warm the haze a little.
+  const fogColor = useMemo(
+    () => new Color(pal.fog).lerp(new Color(DAY_OVERRIDE.fog), t).lerp(new Color("#e3a07a"), sky.warmth * 0.45),
+    [t, sky.warmth, pal.fog],
+  );
+  const fogLevel = useGame((s) => s.preferences.fog);
+  // The god's-eye view looks across the whole forest, far past what the fog lets
+  // you see at ground level; thin it so the far groves are not fogged or culled.
+  const godEye = useGame((s) => s.preferences.camera === "god");
+  const fogDensity = (season === "winter" ? 0.0077 : 0.0105) * (1 + (DAY_OVERRIDE.fogDensityScale - 1) * t) * FOG_SCALE[fogLevel]
+    * (godEye ? GOD_EYE_FOG : 1);
+  const weatherOn = useGame((s) => s.preferences.weather);
+  const morning = sky.morning;
+  // What the weather adds to the fog is applied every frame, on the fog object itself,
+  // so a fog building or burning off never re-renders the forest.
+  const fog = useRef<FogExp2>(null);
+  const base = useRef({ density: fogDensity, color: fogColor, daylight: t });
+  base.current = { density: fogDensity, color: fogColor, daylight: t };
+  useFrame((_, dt) => {
+    const pinned = weatherOverride(window.location.search);
+    stepWeather(pinned ?? (weatherOn ? weatherAt(Date.now(), morning) : CLEAR), Math.min(dt, 5));
+    if (!fog.current) return;
+    const b = base.current;
+    const mix = fogMix(weather);
+    // Thick fog is gray-white, lit by the day, not the blue of the season's haze.
+    fog.current.density = b.density + weather.fogDensity;
+    fog.current.color.copy(b.color).lerp(gray.copy(FOG_NIGHT).lerp(FOG_DAY, b.daylight), mix);
+  });
+  const ambientColor = useMemo(() => new Color(pal.ambient).lerp(new Color(DAY_OVERRIDE.ambient), t), [t, pal.ambient]);
+  const hemiIntensity = 0.78 * (1 + (DAY_OVERRIDE.hemiIntensity - 1) * t);
+  const detail = useGame((s) => s.preferences.detail);
+  const groundTexture = useGroundTexture();
+  const groundColor = useMemo(() => {
+    const night = new Color(pal.ground);
+    const day = night.clone().offsetHSL(0, -0.08, DAY_OVERRIDE.groundLightness);
+    return night.lerp(day, t);
+  }, [t, pal.ground]);
+  const selectedGrove = useGame((s) => s.selectedGrove);
+  const query = useGame((s) => s.query);
+  const searchPick = useGame((s) => s.searchPick);
+  const travelMode = useGame((s) => s.travelMode);
+  const portrait = useGame((s) => s.portrait);
+
+  return (
+    <>
+      <color attach="background" args={[skyColor]} />
+      <fogExp2 ref={fog} attach="fog" args={[fogColor, fogDensity]} />
+      <hemisphereLight color={ambientColor} groundColor={groundColor} intensity={hemiIntensity} />
+      <Sunlight light={sky.light} detail={detail} />
+      <Sky sky={sky} season={season} />
+      <MeteorSky sky={sky} />
+      <directionalLight position={[-30, 20, -40]} intensity={0.2} color="#8aa0b8" />
+
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+        <circleGeometry args={[forest.worldRadius + 30, 64]} />
+        <meshStandardMaterial color={season === "winter" ? "#c8d1ce" : groundColor} map={groundTexture} bumpMap={groundTexture} bumpScale={0.09} roughness={0.96} metalness={0} />
+      </mesh>
+
+      {/* The gallery's scale figure: the cart parked side-on beside the trunk. */}
+      {portrait ? (
+        <group position={[forest.trees[portrait.tree]!.x + 3.2, 0, forest.trees[portrait.tree]!.z + 1.2]} rotation={[0, Math.PI / 2, 0]}>
+          <Cart light={false} />
+        </group>
+      ) : null}
+      {portrait ? null : <GroveGrounds forest={forest} ground={groundColor} winter={season === "winter"} />}
+      {portrait ? null : <Roads forest={forest} circuit={travelMode === "circuit"} />}
+      {detail && <ForestFloor forest={forest} season={season} />}
+      {portrait ? null : (<>
+        <LanternTrail forest={forest} selectedGrove={selectedGrove} query={query} searchPick={searchPick} />
+        <Signposts forest={forest} />
+        <CompassRose forest={forest} />
+        <GroveMarks forest={forest} />
+
+        {forest.groves.map((g) => {
+          const on = selectedGrove === g.genre;
+          return (
+            <group key={g.genre} position={[g.x, 0, g.z]}>
+              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.06, 0]}>
+                <ringGeometry args={[2.2, on ? 3.1 : 2.7, 20]} />
+                <meshBasicMaterial color={g.color} transparent opacity={on ? 0.92 : 0.55} />
+              </mesh>
+            </group>
+          );
+        })}
+
+        <CorpusRedwood forest={forest} season={season} />
+        {forest.exhibits.map((e) => {
+          const View = EXHIBIT_VIEWS[e.id];
+          return View ? <View key={e.id} exhibit={e} /> : null;
+        })}
+      </>)}
+
+    </>
+  );
+}
+
+function flatGeometry(m: FlatMesh) {
+  const g = new BufferGeometry();
+  g.setAttribute("position", new BufferAttribute(new Float32Array(m.pos), 3));
+  g.setAttribute("normal", new BufferAttribute(new Float32Array(m.pos.length).map((_, i) => (i % 3 === 1 ? 1 : 0)), 3));
+  g.setAttribute("uv", new BufferAttribute(new Float32Array(m.uv), 2));
+  g.setIndex(m.index);
+  g.computeBoundingSphere();
+  return g;
+}
+
+// CC0 herringbone brick from ambientCG; see public/textures/road/CREDITS.md.
+function brickMaterial() {
+  const loader = new TextureLoader();
+  const load = (map: string, srgb = false) => {
+    const tex = loader.load(`textures/road/brick_${map}.jpg`);
+    tex.wrapS = tex.wrapT = RepeatWrapping;
+    tex.anisotropy = textureAnisotropy(8);
+    if (srgb) tex.colorSpace = SRGBColorSpace;
+    return tex;
+  };
+  return new MeshStandardMaterial({ map: load("color", true), normalMap: load("normal"), roughness: 0.9, metalness: 0 });
+}
+
+/**
+ * Spokes and exhibit spurs sit lowest, the ring above them, junction plazas on top, so each join
+ * is covered by the next layer instead of z-fighting.
+ */
+function Roads({ forest, circuit }: { forest: Forest; circuit: boolean }) {
+  const geoms = useMemo(() => {
+    const spokes: FlatMesh = { pos: [], uv: [], index: [] };
+    const ring: FlatMesh = { pos: [], uv: [], index: [] };
+    for (const line of forest.roadLines) {
+      if (line.kind === "spoke") ribbon(line, 2.8, 0.035, spokes);
+      else if (line.kind === "spur") ribbon(line, 2.4, 0.035, spokes);
+      else ribbon(line, 3.4, 0.045, ring);
+    }
+    for (const p of forest.plazas) disc(p.x, p.z, p.r, 0.055, ring);
+    return { spokes: flatGeometry(spokes), ring: flatGeometry(ring) };
+  }, [forest]);
+  const materials = useMemo(() => {
+    const spoke = brickMaterial();
+    const ring = spoke.clone();
+    return { spoke, ring };
+  }, []);
+  useEffect(() => () => { geoms.spokes.dispose(); geoms.ring.dispose(); }, [geoms]);
+  useEffect(() => () => {
+    materials.spoke.map?.dispose();
+    materials.spoke.normalMap?.dispose();
+    materials.spoke.dispose();
+    materials.ring.dispose();
+  }, [materials]);
+  // Riding the ring warms it slightly so the tour's road reads as the lit path.
+  materials.ring.emissive.set(circuit ? "#8fad86" : "#000000");
+  materials.ring.emissiveIntensity = circuit ? 0.12 : 0;
+  return (
+    <group>
+      <mesh geometry={geoms.spokes} material={materials.spoke} receiveShadow />
+      <mesh geometry={geoms.ring} material={materials.ring} receiveShadow />
+    </group>
+  );
+}
+
+// Soft-edged disc alpha, shared by every grove's ground patch.
+function useRadialAlpha() {
+  const tex = useMemo(() => {
+    const c = document.createElement("canvas");
+    c.width = c.height = 128;
+    const ctx = c.getContext("2d")!;
+    const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    g.addColorStop(0, "#fff");
+    g.addColorStop(0.72, "#fff");
+    g.addColorStop(1, "#000");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 128, 128);
+    return new CanvasTexture(c);
+  }, []);
+  useEffect(() => () => tex.dispose(), [tex]);
+  return tex;
+}
+
+/** Each grove stands on its own tinted ground, fading out at the edge, so its extent reads at a glance. */
+function GroveGrounds({ forest, ground, winter }: { forest: Forest; ground: Color; winter: boolean }) {
+  const alpha = useRadialAlpha();
+  return (
+    <group>
+      {forest.groves.map((g) => {
+        const tint = new Color(winter ? "#c8d1ce" : ground).lerp(new Color(g.color), winter ? 0.25 : 0.4);
+        return (
+          <mesh key={g.genre} rotation={[-Math.PI / 2, 0, 0]} position={[g.x, 0.015, g.z]} receiveShadow>
+            <circleGeometry args={[g.radius + 3, 48]} />
+            <meshStandardMaterial color={tint} alphaMap={alpha} transparent opacity={0.6} depthWrite={false} roughness={1} />
+          </mesh>
+        );
+      })}
+    </group>
+  );
+}
+
+function LanternTrail({
+  forest,
+  selectedGrove,
+  query,
+  searchPick,
+}: {
+  forest: Forest;
+  selectedGrove: string | null;
+  query: string;
+  searchPick: string | null;
+}) {
+  const ref = useRef<InstancedMesh>(null);
+
+  const target = useMemo(() => {
+    if (selectedGrove) {
+      const g = groveByGenre(forest, selectedGrove);
+      if (g) {
+        const wp = groveApproach(g);
+        return { x: wp.x, z: wp.z, mode: "grove" as const };
+      }
+    }
+    const picked = searchPick ? forest.trees.find((t) => t.book.slug === searchPick) : undefined;
+    if (picked) return { x: picked.x, z: picked.z, mode: "grove" as const };
+    if (!query.trim()) return null;
+    return { mode: "query" as const, q: query };
+  }, [forest, selectedGrove, query, searchPick]);
+
+  useFrame(() => {
+    const mesh = ref.current;
+    if (!mesh) return;
+    // Riding the ring: light the road ahead, bend for bend, not a beeline to the next grove.
+    if (tourState.tour) {
+      tourAhead(tourState.tour, TRAIL_N, 2.5).forEach(([x, z], i) => {
+        dummy.position.set(x, 0.28, z);
+        dummy.scale.setScalar(0.16 + (i % 3 === 0 ? 0.06 : 0));
+        dummy.updateMatrix();
+        mesh.setMatrixAt(i, dummy.matrix);
+      });
+      mesh.instanceMatrix.needsUpdate = true;
+      mesh.count = TRAIL_N;
+      return;
+    }
+    let tx = 0;
+    let tz = 0;
+    if (!target) {
+      mesh.count = 0;
+      return;
+    }
+    if (target.mode === "grove") {
+      tx = target.x;
+      tz = target.z;
+    } else {
+      let bestD = Infinity;
+      let found = false;
+      for (const t of forest.trees) {
+        if (!bookMatchesQuery(t.book, target.q)) continue;
+        const d = Math.hypot(t.x - sim.x, t.z - sim.z);
+        if (d < bestD) {
+          bestD = d;
+          tx = t.x;
+          tz = t.z;
+          found = true;
+        }
+      }
+      // Standing at the nearest answer, the trail has nowhere to lead.
+      if (!found || bestD < 9) {
+        mesh.count = 0;
+        return;
+      }
+    }
+    for (let i = 0; i < TRAIL_N; i++) {
+      const t = (i + 1) / (TRAIL_N + 1);
+      dummy.position.set(sim.x + (tx - sim.x) * t, 0.28, sim.z + (tz - sim.z) * t);
+      dummy.scale.setScalar(0.16 + (i % 3 === 0 ? 0.06 : 0));
+      dummy.updateMatrix();
+      mesh.setMatrixAt(i, dummy.matrix);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+    mesh.count = TRAIL_N;
+  });
+
+  return (
+    <instancedMesh ref={ref} args={[undefined, undefined, TRAIL_N]} frustumCulled={false}>
+      <sphereGeometry args={[1, 8, 6]} />
+      <meshBasicMaterial color="#f3e6c2" transparent opacity={0.72} />
+    </instancedMesh>
+  );
+}

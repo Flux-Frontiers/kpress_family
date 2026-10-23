@@ -1,0 +1,425 @@
+import { create } from "zustand";
+import type { TimeOfDay } from "./daylight";
+import { effectiveTime, moonPhaseName, nextSunEvent, skyState, timeZonePlace, type Place, type SkyState, type TimeMode } from "./sky";
+import { seasonFor, type SeasonName } from "./seasons";
+import type { LiveRequest } from "./liveMoots";
+import { readPreferences, type Preferences } from "./preferences";
+import { resetInput } from "./input";
+import { clearTourHeard } from "./tourScript";
+import type { Portrait } from "./portrait";
+import type { GroundCamera } from "./godEye";
+
+const SAVE_KEY = "kpf-library-v1";
+const SAVE_VERSION = 1;
+
+type SaveBlob = {
+  version: number;
+  library: string[];
+  grovesVisited: string[];
+  /** The browser's location, rounded to 0.1 degree, once it has been given. */
+  place: Place | null;
+  preferences: Preferences;
+};
+
+const TIME_CYCLE: Record<TimeMode, TimeMode> = { live: "dawn", dawn: "day", day: "dusk", dusk: "night", night: "live" };
+
+function loadSave(): SaveBlob {
+  const defaults: SaveBlob = {
+    version: SAVE_VERSION,
+    library: [],
+    grovesVisited: [],
+    place: null,
+    preferences: readPreferences(),
+  };
+  if (typeof window === "undefined") return defaults;
+  try {
+    const raw = window.localStorage.getItem(SAVE_KEY);
+    if (!raw) return defaults;
+    const parsed = JSON.parse(raw) as Partial<SaveBlob>;
+    return {
+      ...defaults,
+      ...parsed,
+      version: SAVE_VERSION,
+      library: Array.isArray(parsed.library) ? parsed.library : [],
+      grovesVisited: Array.isArray(parsed.grovesVisited) ? parsed.grovesVisited : [],
+      place: parsed.place && Number.isFinite(parsed.place.lat) && Number.isFinite(parsed.place.lon) ? parsed.place : null,
+      preferences: readPreferences(parsed.preferences),
+    };
+  } catch {
+    return defaults;
+  }
+}
+
+function persist(s: {
+  library: string[];
+  grovesVisited: string[];
+  place: Place | null;
+  preferences: Preferences;
+}) {
+  try {
+    const blob: SaveBlob = {
+      version: SAVE_VERSION,
+      library: s.library,
+      grovesVisited: s.grovesVisited,
+      place: s.place,
+      preferences: s.preferences,
+    };
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify(blob));
+  } catch {
+    /* private mode / quota */
+  }
+}
+
+export type TravelMode = "free" | "circuit";
+
+export type JumpPose = {
+  x: number;
+  z: number;
+  yaw: number;
+};
+
+export type PlaqueText = { title: string; byline: string; body: string };
+
+export type GameStore = {
+  playing: boolean;
+  preferences: Preferences;
+  setPreferences: (patch: Partial<Preferences>) => void;
+  /**
+   * Put every setting back as on a first visit: the Pause preferences, the
+   * season and the clock (back to the date's season and Live), and the tour's
+   * full welcome. The press and the groves visited stay: they are progress.
+   */
+  resetSettings: () => void;
+  paused: boolean;
+  season: SeasonName;
+  /** Night or day as the sky now looks, derived from `sky`: what the lamps and glows switch on. */
+  timeOfDay: TimeOfDay;
+  timeMode: TimeMode;
+  place: Place | null;
+  sky: SkyState;
+  /** In live mode, the next sunrise or sunset. */
+  sunEvent: { kind: "sunrise" | "sunset"; at: Date } | null;
+  moonName: string;
+  query: string;
+  searchPick: string | null;
+  library: string[];
+  grovesVisited: string[];
+  nearbySlug: string | null;
+  nearbyDist: number;
+  nearbyDismissed: string | null;
+  /** The tree whose card popped up on its own: the cart slowed within reading range of it. */
+  cardSlug: string | null;
+  /** A tree the player picked (clicked, searched, catalog): its card shows even in silent mode. */
+  pinnedSlug: string | null;
+  questHintHidden: string | null;
+  speed: number;
+  x: number;
+  z: number;
+  yaw: number;
+  toast: string | null;
+  /** Last sampled render stats, when preferences.stats is on. */
+  stats: { tris: number; calls: number; fps: number } | null;
+  setStats: (stats: { tris: number; calls: number; fps: number } | null) => void;
+  libraryOpen: boolean;
+  helpOpen: boolean;
+  lastReadSlug: string | null;
+  selectedGrove: string | null;
+  atlasOpen: boolean;
+  /** The corpus catalog: every book, to jump to its tree. */
+  catalogOpen: boolean;
+  /** The genre the book list is narrowed to, when opened from a grove's marker. */
+  catalogGenre: string | null;
+  /** An exhibit plaque shown full size to read, after clicking it in the forest. */
+  plaque: PlaqueText | null;
+  /** The book open in the reader (Reader.tsx), by slug. */
+  readingSlug: string | null;
+  /** The list of saved moots (MootOverlay.tsx) is open. */
+  mootsOpen: boolean;
+  /** The moot playing in the moot overlay, by id; a live moot's is "live-<n>". */
+  mootId: string | null;
+  /** The live moot a worker is holding (liveMoots.ts), while mootId is its "live-<n>". */
+  liveMoot: LiveRequest | null;
+  /** The tree speaking in the moot, by slug, and its moot color: Trees.tsx rings it. */
+  mootSpeaker: { slug: string; color: string } | null;
+  /** Hide the HUD's buttons, cards and search, leaving the map and the driving controls. */
+  cleanView: boolean;
+  /** `?shot=`: a fixed camera on one tree, with no game on screen (portrait.ts). */
+  portrait: Portrait | null;
+  setPortrait: (portrait: Portrait | null) => void;
+  /** Hold the sky at a mode, without stepping through the others. */
+  setTimeMode: (mode: TimeMode) => void;
+  toggleCleanView: () => void;
+  travelMode: TravelMode;
+  /** The grove the tour is pulled up at (its caption shows), or null. */
+  tourStop: string | null;
+  /** What the tour is saying outside a grove stop (welcome, end of the ring): its caption, or null. */
+  tourNote: string | null;
+  jump: JumpPose | null;
+  play: () => void;
+  /** Back to the start screen: every panel closed, any tour ended, the camera circling the redwood. */
+  exit: () => void;
+  pause: (v?: boolean) => void;
+  setSeason: (s: SeasonName) => void;
+  /** Cycle the clock: live, then fixed day, then fixed night. */
+  toggleTimeOfDay: () => void;
+  /** Recompute the sky for the current moment; called every few seconds. */
+  tickSky: () => void;
+  setPlace: (place: Place) => void;
+  setQuery: (q: string) => void;
+  pickSearch: (slug: string | null) => void;
+  collect: (slug: string, title: string) => void;
+  /** Take every book out of the press. */
+  emptyPress: () => void;
+  markGrove: (genre: string) => void;
+  setNearby: (slug: string | null, dist: number, speed: number) => void;
+  pinTree: (slug: string | null) => void;
+  dismissNearby: () => void;
+  dismissQuestHint: (id: string) => void;
+  setPose: (x: number, z: number, yaw: number, speed: number) => void;
+  setToast: (msg: string | null) => void;
+  toggleLibrary: () => void;
+  toggleHelp: () => void;
+  setLastRead: (slug: string | null) => void;
+  selectGrove: (genre: string | null) => void;
+  toggleAtlas: () => void;
+  setAtlasOpen: (v: boolean) => void;
+  toggleCatalog: () => void;
+  setCatalogOpen: (v: boolean) => void;
+  openCatalog: (genre: string | null) => void;
+  openPlaque: (plaque: PlaqueText | null) => void;
+  openReader: (slug: string | null) => void;
+  openMoots: (open: boolean) => void;
+  playMoot: (id: string | null) => void;
+  /** Open the moot player on a new live moot. */
+  holdMoot: (request: LiveRequest) => void;
+  setMootSpeaker: (speaker: { slug: string; color: string } | null) => void;
+  setTravelMode: (m: TravelMode) => void;
+  setTourStop: (genre: string | null) => void;
+  setTourNote: (note: string | null) => void;
+  toggleCircuit: () => void;
+  requestJump: (pose: JumpPose, toast?: string) => void;
+  clearJump: () => void;
+  /** The ground camera last in use: where a dive from god's eye lands. */
+  groundCamera: GroundCamera;
+  /** A dive from god's eye down to the cart, under way (Player.tsx animates it). */
+  flight: { to: GroundCamera } | null;
+  /** Jump the cart to a pose and dive the god's-eye camera down to it. */
+  flyTo: (pose: JumpPose, toast?: string) => void;
+  endFlight: () => void;
+};
+
+const initial = loadSave();
+/** Numbers each live moot, so the player starts fresh for every one. */
+let liveMoots = 0;
+
+/**
+ * Each visit opens on the real season for the date and place, with the clock
+ * on Live; settings or the bar can change either until the page is reloaded.
+ */
+const autoSeason = (place: Place | null) => seasonFor(new Date(), place ?? timeZonePlace(new Date()));
+/** A season was picked this visit, so the place arriving later does not change it. */
+let seasonPicked = false;
+
+/** What the sky shows: the moment the mode picks, the sun and moon there, and what the HUD says of them. */
+function readSky(mode: TimeMode, place: Place | null, now = new Date()) {
+  const where = place ?? timeZonePlace(now);
+  const sky = skyState(effectiveTime(mode, now, where), where);
+  return {
+    sky,
+    timeOfDay: (sky.daylight < 0.3 ? "night" : "day") as TimeOfDay,
+    sunEvent: mode === "live" ? nextSunEvent(now, where) : null,
+    moonName: moonPhaseName(sky.moonPhase),
+  };
+}
+
+/** Distance from a trunk, m, within which a book can be read into the press. */
+export const READ_RANGE = 6.8;
+/** A nearby book's card pops up only below this cart speed, m/s. */
+const CARD_SPEED = 1.5;
+
+export const useGame = create<GameStore>((set, get) => ({
+  playing: false,
+  preferences: initial.preferences,
+  setPreferences: (patch) => {
+    const preferences = readPreferences({ ...get().preferences, ...patch });
+    set(preferences.camera === "god" ? { preferences } : { preferences, groundCamera: preferences.camera });
+    persist(get());
+  },
+  resetSettings: () => {
+    clearTourHeard();
+    seasonPicked = false;
+    set({ preferences: readPreferences(), groundCamera: "follow", season: autoSeason(get().place), timeMode: "live" });
+    set(readSky("live", get().place));
+    persist(get());
+  },
+  paused: false,
+  season: autoSeason(initial.place),
+  timeMode: "live",
+  place: initial.place,
+  ...readSky("live", initial.place),
+  query: "",
+  searchPick: null,
+  library: initial.library,
+  grovesVisited: initial.grovesVisited,
+  nearbySlug: null,
+  nearbyDist: 99,
+  nearbyDismissed: null,
+  cardSlug: null,
+  pinnedSlug: null,
+  questHintHidden: null,
+  speed: 0,
+  x: 0,
+  z: 0,
+  yaw: 0,
+  toast: null,
+  stats: null,
+  setStats: (stats) => set({ stats }),
+  libraryOpen: false,
+  helpOpen: false,
+  lastReadSlug: null,
+  selectedGrove: null,
+  atlasOpen: false,
+  catalogOpen: false,
+  catalogGenre: null,
+  plaque: null,
+  readingSlug: null,
+  mootsOpen: false,
+  mootId: null,
+  liveMoot: null,
+  mootSpeaker: null,
+  cleanView: false,
+  portrait: null,
+  setPortrait: (portrait) => set({ portrait }),
+  setTimeMode: (timeMode) => set({ timeMode, ...readSky(timeMode, get().place) }),
+  toggleCleanView: () => set({ cleanView: !get().cleanView }),
+  travelMode: "free",
+  tourStop: null,
+  tourNote: null,
+  jump: null,
+  play: () => set({ playing: true, paused: false }),
+  exit: () => {
+    resetInput();
+    set({
+      playing: false, paused: false, travelMode: "free", tourStop: null, tourNote: null,
+      libraryOpen: false, atlasOpen: false, catalogOpen: false, helpOpen: false, plaque: null, readingSlug: null,
+      mootsOpen: false, mootId: null, liveMoot: null, mootSpeaker: null,
+      jump: null, flight: null, query: "", searchPick: null, pinnedSlug: null, cardSlug: null, nearbySlug: null,
+      selectedGrove: null, toast: null, cleanView: false,
+    });
+  },
+  pause: (v) => {
+    resetInput();
+    set({ paused: v ?? !get().paused });
+  },
+  setSeason: (season) => {
+    seasonPicked = true;
+    set({ season });
+  },
+  toggleTimeOfDay: () => {
+    const timeMode = TIME_CYCLE[get().timeMode];
+    set({ timeMode, ...readSky(timeMode, get().place) });
+  },
+  tickSky: () => set(readSky(get().timeMode, get().place)),
+  setPlace: (place) => {
+    // A place in the other hemisphere turns the season half a year, unless one was picked.
+    set({ place, ...(seasonPicked ? {} : { season: autoSeason(place) }), ...readSky(get().timeMode, place) });
+    persist(get());
+  },
+  setQuery: (query) => set({ query, searchPick: null }),
+  pickSearch: (searchPick) => set({ searchPick }),
+  collect: (slug, title) => {
+    const lib = get().library;
+    if (lib.includes(slug)) {
+      set({ lastReadSlug: slug, toast: `Already in your press · ${title}` });
+      return;
+    }
+    const library = [...lib, slug];
+    set({ library, lastReadSlug: slug, toast: `Pressed · ${title}` });
+    persist({ ...get(), library });
+  },
+  emptyPress: () => {
+    set({ library: [], lastReadSlug: null });
+    persist(get());
+  },
+  markGrove: (genre) => {
+    const grovesVisited = get().grovesVisited;
+    if (grovesVisited.includes(genre)) return;
+    const next = [...grovesVisited, genre];
+    set({ grovesVisited: next });
+    persist({ ...get(), grovesVisited: next });
+  },
+  setNearby: (nearbySlug, nearbyDist, speed) => {
+    // Roads pass within 3 m of trunks, so distance alone would pop a card at
+    // every tree on the way. Pop one only when the cart slows within reading range,
+    // and drop it as soon as the cart leaves that range or another tree is nearer.
+    const inRange = nearbySlug !== null && nearbyDist < READ_RANGE;
+    const s = get();
+    if (nearbySlug !== s.nearbySlug) {
+      set({ nearbySlug, nearbyDist, nearbyDismissed: null, cardSlug: inRange && Math.abs(speed) < CARD_SPEED ? nearbySlug : null });
+      return;
+    }
+    const cardSlug = !inRange ? null : s.cardSlug ?? (Math.abs(speed) < CARD_SPEED ? nearbySlug : null);
+    set(cardSlug === s.cardSlug ? { nearbyDist } : { nearbyDist, cardSlug });
+  },
+  pinTree: (pinnedSlug) => set({ pinnedSlug }),
+  dismissNearby: () => {
+    const { nearbySlug, pinnedSlug } = get();
+    if (pinnedSlug) set({ pinnedSlug: null });
+    else if (nearbySlug) set({ nearbyDismissed: nearbySlug });
+  },
+  dismissQuestHint: (id) => set({ questHintHidden: id }),
+  setPose: (x, z, yaw, speed) => set({ x, z, yaw, speed }),
+  setToast: (toast) => set({ toast }),
+  toggleLibrary: () => set({ libraryOpen: !get().libraryOpen, atlasOpen: false, catalogOpen: false }),
+  toggleHelp: () => set({ helpOpen: !get().helpOpen }),
+  setLastRead: (lastReadSlug) => set({ lastReadSlug }),
+  selectGrove: (selectedGrove) => set({ selectedGrove }),
+  toggleAtlas: () => set({ atlasOpen: !get().atlasOpen, libraryOpen: false, catalogOpen: false }),
+  setAtlasOpen: (atlasOpen) => set({ atlasOpen }),
+  toggleCatalog: () => set({ catalogOpen: !get().catalogOpen, catalogGenre: null, atlasOpen: false, libraryOpen: false }),
+  openCatalog: (catalogGenre) => set({ catalogOpen: true, catalogGenre, atlasOpen: false, libraryOpen: false }),
+  setCatalogOpen: (catalogOpen) => set({ catalogOpen }),
+  openPlaque: (plaque) => set(plaque ? { plaque, catalogOpen: false, atlasOpen: false, libraryOpen: false } : { plaque: null }),
+  openReader: (readingSlug) => set(readingSlug ? { readingSlug, catalogOpen: false, atlasOpen: false, libraryOpen: false } : { readingSlug: null }),
+  openMoots: (mootsOpen) => set(mootsOpen ? { mootsOpen, catalogOpen: false, atlasOpen: false, libraryOpen: false } : { mootsOpen }),
+  playMoot: (mootId) => set(mootId ? { mootId, liveMoot: null, mootsOpen: false } : { mootId: null, liveMoot: null, mootSpeaker: null }),
+  holdMoot: (liveMoot) => set({ liveMoot, mootId: `live-${++liveMoots}`, mootsOpen: false }),
+  setMootSpeaker: (mootSpeaker) => set({ mootSpeaker }),
+  // Leaving the ring drops the grove it was pointing at, so the lantern trail goes with it.
+  setTravelMode: (travelMode) =>
+    set(travelMode === "free" && get().travelMode === "circuit" ? { travelMode, selectedGrove: null } : { travelMode }),
+  setTourStop: (tourStop) => { if (get().tourStop !== tourStop) set({ tourStop }); },
+  setTourNote: (tourNote) => { if (get().tourNote !== tourNote) set({ tourNote }); },
+  toggleCircuit: () => {
+    const next = get().travelMode === "circuit" ? "free" : "circuit";
+    set({
+      travelMode: next,
+      ...(next === "free" ? { selectedGrove: null } : {}),
+      toast: next === "circuit" ? "Riding the ring · steer to hop off" : "Free drive",
+    });
+  },
+  requestJump: (jump, toast) => {
+    resetInput();
+    set({
+      jump,
+      travelMode: "free",
+      atlasOpen: false,
+      libraryOpen: false,
+      catalogOpen: false,
+      toast: toast ?? null,
+    });
+  },
+  clearJump: () => set({ jump: null }),
+  groundCamera: initial.preferences.camera === "god" ? "follow" : initial.preferences.camera,
+  flight: null,
+  flyTo: (pose, toast) => {
+    get().requestJump(pose, toast);
+    set({ flight: { to: get().groundCamera } });
+  },
+  endFlight: () => {
+    const flight = get().flight;
+    if (!flight) return;
+    set({ flight: null });
+    get().setPreferences({ camera: flight.to });
+  },
+}));
