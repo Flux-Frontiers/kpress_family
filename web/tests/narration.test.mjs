@@ -19,13 +19,15 @@ test("authors and titles are spoken without the catalog's disambiguators", () =>
   assert.equal(spokenTitle("Etidorhpa; or, The End of Earth.", "John Uri Lloyd"), "Etidorhpa; or, The End of Earth");
 });
 
-test("every grove's narration names it, counts its books and reads cleanly", () => {
+test("every grove's narration names it, counts its people and reads cleanly", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
   const f = getForest(...orchardArgs());
   for (const g of f.groves) {
     const n = g.narration;
     assert.ok(n.startsWith(`${g.label}:`), `${g.genre}: ${n}`);
-    assert.ok(g.bookCount === 1 ? n.includes("one book") : n.includes(`${g.bookCount} books`), `${g.genre}: ${n}`);
+    const people = f.trees.filter((t) => t.line.grove === g.genre).reduce((k, t) => k + t.line.members, 0);
+    assert.ok(n.includes(people === 1 ? "one person born a" : `${people} people born a`), `${g.genre}: ${n}`);
+    if (g.bookCount > 1) assert.ok(n.includes(`${g.bookCount} lines`), `${g.genre}: ${n}`);
     assert.ok(n.endsWith("."), `${g.genre}: ${n}`);
     assert.ok(!/Unknown| — |\s\s/.test(n), `${g.genre}: ${n}`);
   }

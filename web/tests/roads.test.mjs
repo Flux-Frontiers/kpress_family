@@ -65,7 +65,7 @@ test("compact layout: groves never overlap, trees keep driving room, the hub sta
   for (let i = 0; i < f.trees.length; i++) {
     for (let j = i + 1; j < f.trees.length; j++) {
       const d = Math.hypot(f.trees[i].x - f.trees[j].x, f.trees[i].z - f.trees[j].z);
-      assert.ok(d >= 7.5, `${f.trees[i].book.slug} and ${f.trees[j].book.slug} are ${d.toFixed(1)} m apart`);
+      assert.ok(d >= 7.5, `${f.trees[i].line.slug} and ${f.trees[j].line.slug} are ${d.toFixed(1)} m apart`);
     }
   }
   // Species crowns set the groves' size, so this only catches a runaway layout
@@ -82,7 +82,7 @@ test("every road keeps the cart clear of every trunk, the redwood and every exhi
     for (const [x, z] of line.pts) {
       for (const t of f.trees) {
         const c = Math.hypot(x - t.x, z - t.z) - t.trunkRadius;
-        assert.ok(c >= 2.75 - 0.05, `${line.kind} passes ${c.toFixed(2)} m from ${t.book.slug}`);
+        assert.ok(c >= 2.75 - 0.05, `${line.kind} passes ${c.toFixed(2)} m from ${t.line.slug}`);
       }
       for (const o of f.obstacles) {
         assert.ok(Math.hypot(x - o.x, z - o.z) - o.r >= 2.75 - 0.05, `${line.kind} clips the obstacle at ${o.x.toFixed(0)}, ${o.z.toFixed(0)}`);
@@ -98,7 +98,7 @@ test("home stands clear of the hub plaza's redwood and plaque, facing the redwoo
   const { x, z, yaw } = f.home;
   const d = Math.hypot(x, z);
   assert.ok(d > f.corpusTree.baseRadius + 1.05 && d > HUB_PLAZA_R && d > HUB_PLAQUE_DIST + 3, `home ${d.toFixed(1)} m from the hub`);
-  for (const t of f.trees) assert.ok(Math.hypot(x - t.x, z - t.z) > t.trunkRadius + 3, `home crowds ${t.book.slug}`);
+  for (const t of f.trees) assert.ok(Math.hypot(x - t.x, z - t.z) > t.trunkRadius + 3, `home crowds ${t.line.slug}`);
   const fw = forwardOf(yaw);
   assert.ok((fw.x * -x + fw.z * -z) / d > 0.999, "home faces the redwood");
 });
@@ -130,7 +130,7 @@ test("grove signposts stand off the road, on their grove's side, clear of trunks
     assert.ok((sign.x - wp.x) * (g.x - wp.x) + (sign.z - wp.z) * (g.z - wp.z) >= 0, `${sign.genre} sign is on the far side`);
     for (const t of f.trees) {
       const c = Math.hypot(sign.x - t.x, sign.z - t.z) - t.trunkRadius;
-      assert.ok(c >= 1.8, `${sign.genre} sign is ${c.toFixed(2)} m from ${t.book.slug}`);
+      assert.ok(c >= 1.8, `${sign.genre} sign is ${c.toFixed(2)} m from ${t.line.slug}`);
     }
   }
 });

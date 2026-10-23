@@ -130,11 +130,10 @@ function sprayTexture() {
 }
 
 const REDWOOD_BODY =
-  "One tree for the whole library. It grows by the same rule as every book tree, doubled: " +
-  "3.4 m of height for each doubling of the corpus's chunks. It carries one limb per book, " +
-  "the biggest books lowest, and each limb reaches toward that book's own tree in the forest. " +
-  "The trunk is as thick as its limbs together: at any height its cross-section is the sum of " +
-  "theirs above it. Click the tree or press B to browse every book and jump to its tree.";
+  "The home tree is one person's whole family. Their ancestors are the roots, under the glass: " +
+  "parents one tier down, grandparents two, doubling as they go. Their descendants are the crown. " +
+  "Every limb is a parent and a child, and every limb is as thick as the family it carries. " +
+  "Click the tree or press B to browse every line and jump to its tree.";
 
 function pointer(on: boolean) {
   document.body.style.cursor = on ? "pointer" : "";
@@ -142,15 +141,15 @@ function pointer(on: boolean) {
 
 function RedwoodPlaque({ forest }: { forest: Forest }) {
   const c = forest.corpusTree;
-  const byline = `${c.limbs} books · ${c.totalChunks.toLocaleString("en-US")} chunks · ${Math.round(c.height)} m`;
+  const byline = `${c.totalChunks.toLocaleString("en-US")} people · ${forest.trees.length} lines · ${Math.round(c.height)} m`;
   const x = Math.cos(HUB_PLAQUE_DIR) * HUB_PLAQUE_DIST;
   const z = Math.sin(HUB_PLAQUE_DIR) * HUB_PLAQUE_DIST;
-  // Tapping the plaque lists every book, as tapping the tree does.
+  // Tapping the plaque lists every line, as tapping the tree does.
   return (
     <group position={[x, 0, z]} rotation={[0, Math.atan2(x, z), 0]}
       onClick={(e) => { e.stopPropagation(); useGame.getState().openCatalog(null); }}
       onPointerOver={() => pointer(true)} onPointerOut={() => pointer(false)}>
-      <Lectern title="The Corpus Redwood" byline={byline} body={REDWOOD_BODY} />
+      <Lectern title={c.focalName} byline={byline} body={REDWOOD_BODY} />
     </group>
   );
 }

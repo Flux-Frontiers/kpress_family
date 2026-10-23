@@ -1,12 +1,12 @@
 import type { TreeSite } from "./forest";
 
 /**
- * The tree a `?tree=<slug>` address names, or undefined. The slug is the
- * catalog's, the file name of the book's text, e.g. `?tree=hamlet`. An
- * unknown slug is ignored so the forest opens at home as usual.
+ * The tree a `?tree=<line id>` address names, or undefined, e.g.
+ * `?tree=kennedy-I120`; case does not matter. An unknown id is ignored so
+ * the orchard opens at home as usual.
  */
-export function treeFromSearch(search: string, trees: Pick<TreeSite, "book">[]): TreeSite | undefined {
+export function treeFromSearch(search: string, trees: Pick<TreeSite, "line">[]): TreeSite | undefined {
   const slug = new URLSearchParams(search).get("tree")?.trim().toLowerCase();
   if (!slug) return undefined;
-  return trees.find((t) => t.book.slug === slug) as TreeSite | undefined;
+  return trees.find((t) => t.line.slug.toLowerCase() === slug) as TreeSite | undefined;
 }

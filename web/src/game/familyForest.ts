@@ -3,11 +3,6 @@
 // each person, and the home hourglass becomes the hub tree (a CorpusTree) with
 // a glass pit sized to its roots.
 //
-// TEMPORARY until Phase 3 slice 3: each line also carries a Book-shaped
-// record, so the HUD, search and tour, which still speak in books, keep
-// working while the world is rebuilt under them.
-
-import type { Book } from "./catalogTypes";
 import type { CorpusTree } from "./corpusTree";
 import { REDWOOD_BARK } from "./corpusTree";
 import type { FamilyIndex, FamilyLine } from "./familyCatalog";
@@ -86,27 +81,64 @@ export function lineGrown(tree: FamilyTree, key: string): GrownTree {
   };
 }
 
-/** The Book-shaped stand-in a line wears until slice 3 (see the file header). */
-export function lineBook(index: FamilyIndex, line: FamilyLine): Book {
+/** What the HUD, search, reader and album know of a line's tree. */
+export type LineCard = {
+  /** The line id, as the catalog and `?tree=` name it. */
+  slug: string;
+  title: string;
+  surname: string;
+  /** The grove: the surname, case-folded. */
+  grove: string;
+  /** The founder and the founder's spouses, by name. */
+  founders: string;
+  members: number;
+  /** "1823-1963", or "" when no member has a birth year. */
+  span: string;
+  summary: string;
+  /** Member ids, founder first. */
+  people: string[];
+  /** Each member's name and years, founder first, for the reader's list. */
+  roster: { id: string; name: string; years: string }[];
+  /** Lower-cased names, birthplaces and years of every member, for the lantern. */
+  search: string;
+};
+
+/** A line's card: its people, by name, for every place the UI shows a tree. */
+export function lineCard(index: FamilyIndex, line: FamilyLine): LineCard {
   const founders = line.founders.map((id) => index.person.get(id)?.name ?? id).join(" & ");
-  const span = line.span ? `${line.span[0]}-${line.span[1]}` : "dates unknown";
+  const span = line.span ? `${line.span[0]}-${line.span[1]}` : "";
+  const placeName = new Map(index.catalog.places.map((p) => [p.id, p.name]));
+  const terms = [line.surname];
+  for (const id of line.members) {
+    const p = index.person.get(id);
+    if (!p || p.living) continue;
+    terms.push(p.name, p.born ?? "", p.died ?? "", p.birth_place ? placeName.get(p.birth_place) ?? "" : "");
+  }
+  const born = line.members.length === 1 ? "one person" : `${line.members.length} people`;
   return {
     slug: line.id,
     title: `The ${line.surname} line`,
-    book: line.id,
-    author: founders,
-    genre: line.grove,
-    genreLabel: line.surname,
-    chunks: line.members.length,
-    excerpt: `${line.members.length} born a ${line.surname}, ${span}.`,
-    tags: [],
+    surname: line.surname,
+    grove: line.grove,
+    founders,
+    members: line.members.length,
+    span,
+    summary: `${born} born a ${line.surname}${span ? `, ${span}` : ""}, from ${founders}.`,
+    people: line.members,
+    roster: line.members.map((id) => {
+      const p = index.person.get(id);
+      const years = p && !p.living && (p.born || p.died) ? `${p.born ?? "?"}-${p.died ?? ""}` : "";
+      return { id, name: p?.name ?? id, years };
+    }),
+    search: terms.filter(Boolean).join(" | ").toLowerCase(),
   };
 }
 
 /** The hub tree with the glass pit its roots need. */
 export type HomeTree = CorpusTree & {
-  /** The trunk person. */
+  /** The trunk person, by id and by name. */
   focal: string;
+  focalName: string;
   /** Radius of the glass floor and the pit under it, m. */
   pitRadius: number;
   /** Depth of the pit floor below ground, m. */
@@ -118,7 +150,7 @@ export type HomeTree = CorpusTree & {
  * kinship wood, a foliage spray per person, and a pit wide and deep enough to
  * show every root through the glass.
  */
-export function homeTree(tree: FamilyTree, focal: string, lines: number): HomeTree {
+export function homeTree(tree: FamilyTree, focal: string, lines: number, focalName = focal): HomeTree {
   const { nodes, radii, n } = tree.skeleton;
   let height = 0, reach = 0, depth = 0;
   for (let i = 0; i < n; i++) {
@@ -168,6 +200,7 @@ export function homeTree(tree: FamilyTree, focal: string, lines: number): HomeTr
     },
     foliage: { count, pos, scale, quat, shade },
     focal,
+    focalName,
     pitRadius: Math.max(4, reach + PIT_MARGIN),
     pitDepth: Math.max(2, depth + PIT_MARGIN),
   };

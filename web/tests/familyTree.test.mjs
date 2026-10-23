@@ -146,6 +146,33 @@ test("every marriage between two lines with trees becomes a link between those t
   assert.equal(f.links.length, catalog.links.length);
   for (const link of f.links) {
     const expected = catalog.links.find((l) => l.family === link.family).lines.slice().sort();
-    assert.deepEqual([f.trees[link.a].book.slug, f.trees[link.b].book.slug].sort(), expected);
+    assert.deepEqual([f.trees[link.a].line.slug, f.trees[link.b].line.slug].sort(), expected);
   }
+});
+
+test("a line's card names its people, in order, with their years", () => {
+  const { lineCard } = require(`${build}/familyForest.js`);
+  const card = lineCard(index, index.line.get("hartwell-I1"));
+  assert.equal(card.title, "The Hartwell line");
+  assert.equal(card.members, 7);
+  assert.equal(card.roster[0].id, "I1");
+  assert.equal(card.roster[0].name, "John Hartwell");
+  assert.match(card.roster[0].years, /^\d{4}-/);
+  assert.match(card.summary, /^7 people born a Hartwell, \d{4}-\d{4}, from John Hartwell & Mary Ashcombe\.$/);
+});
+
+test("the lantern finds a line by any member's name, birthplace or year, every word", () => {
+  const { lineCard } = require(`${build}/familyForest.js`);
+  const { lineMatchesQuery } = require(`${build}/forest.js`);
+  const hartwell = lineCard(index, index.line.get("hartwell-I1"));
+  const pryce = lineCard(index, index.line.get("pryce-I9"));
+  const robert = index.person.get("I7");
+  assert.ok(lineMatchesQuery(hartwell, "Robert"), "a member's given name");
+  assert.ok(lineMatchesQuery(hartwell, `robert ${robert.born}`), "name and year together");
+  assert.ok(!lineMatchesQuery(pryce, "Robert"), "not another line's member");
+  assert.ok(lineMatchesQuery(pryce, "pryce"), "the surname");
+  assert.ok(!lineMatchesQuery(hartwell, "robert 1066"), "every word must match");
+  assert.ok(!lineMatchesQuery(hartwell, "   "));
+  const place = catalog.places.find((p) => p.id === index.person.get("I1").birth_place);
+  if (place) assert.ok(lineMatchesQuery(hartwell, place.name.split(",")[0]), "a birthplace");
 });

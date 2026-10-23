@@ -289,7 +289,7 @@ function MootPlayback({ moot, forest, onClose, live }: { moot: Moot; forest: For
   // Keyed on the trees, which stay the same object as a live moot's turns arrive.
   const trees = moot.trees;
   const slugs = useMemo(() => mootBooks({ ...moot, trees }, BOOKS).map((b) =>
-    b && forest.trees.some((t) => t.book.slug === b.slug) ? b.slug : null), [trees, forest]);
+    b && forest.trees.some((t) => t.line.slug === b.slug) ? b.slug : null), [trees, forest]);
   const voiced = canSpeak();
   // "Read moots aloud" in Settings; the speaker button here flips the same setting.
   const speakMoots = useGame((s) => s.preferences.speakMoots);

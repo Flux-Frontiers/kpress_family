@@ -1,7 +1,6 @@
-import type { Book } from "./catalogTypes";
 import { EXHIBITS, placeExhibits, type Exhibit } from "./exhibits";
 import { indexCatalog, UNKNOWN_LINE, type FamilyCatalog, type FamilyLine } from "./familyCatalog";
-import { homeTree, lineBook, lineGrown, speciesForSurname, type HomeTree } from "./familyForest";
+import { homeTree, lineCard, lineGrown, speciesForSurname, type HomeTree, type LineCard } from "./familyForest";
 import { hourglassTree, lineTree } from "./familyTree";
 import { GROW_VERSION, cellKey3, emitBark, emitLeaves, type BarkBuffers, type GrownTree } from "./growTree";
 import { sunflower, wheelLayout } from "./math";
@@ -34,7 +33,7 @@ export type Grove = {
 };
 
 export type TreeSite = {
-  book: Book;
+  line: LineCard;
   x: number;
   z: number;
   height: number;
@@ -371,7 +370,7 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
   }
   const genres = [...byGenre.keys()];
   const nGenres = genres.length;
-  const booksBy = new Map(genres.map((g) => [g, byGenre.get(g)!.map((line) => lineBook(index, line))]));
+  const booksBy = new Map(genres.map((g) => [g, byGenre.get(g)!.map((line) => lineCard(index, line))]));
   // Trees packed as tight as their crowns allow (shyLayout); groves on a
   // hub-and-spoke wheel around the home tree (wheelLayout).
   const bookInner = 6.5;
@@ -381,7 +380,7 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
 
   // The home hourglass, and a hub wide enough for its glass pit and its crown.
   const home = hourglassTree(index, focal);
-  const corpusTree = homeTree(home, focal, family.lines.length);
+  const corpusTree = homeTree(home, focal, family.lines.length, index.person.get(focal)?.name);
   let crownReach = 0;
   for (const person of home.people) if (person.y > 0) crownReach = Math.max(crownReach, Math.hypot(person.x, person.z));
   const hubPlazaR = Math.max(HUB_PLAZA_R, corpusTree.pitRadius + 2);
@@ -413,19 +412,19 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
     const color = GENRE_PALETTE[gi % GENRE_PALETTE.length]!;
     groves.push({
       genre,
-      label: books[0]?.genreLabel ?? genre,
+      label: books[0]?.surname ?? genre,
       x: c.x,
       z: c.z,
       radius: bookOuter + 6,
       color,
       bookCount: books.length,
-      narration: groveNarration(books[0]?.genreLabel ?? genre, books),
+      narration: groveNarration(books[0]?.surname ?? genre, books),
     });
-    const species = speciesForSurname(books[0]?.genreLabel ?? genre);
+    const species = speciesForSurname(books[0]?.surname ?? genre);
     const bark: BarkBuffers = { pos: [], normal: [], uv: [], index: [] };
     const chunkLeafStart = leafPos.length / 3;
 
-    books.forEach((book, bi) => {
+    books.forEach((line, bi) => {
       const s = spots[bi]!;
       const x = c.x + s.x;
       const z = c.z + s.z;
@@ -440,7 +439,7 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
         leafSpecies.push(species);
       }
       trees.push({
-        book,
+        line,
         x,
         z,
         height: grown.trunkHeight,
@@ -601,7 +600,7 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
     return { x, z, yaw: Math.atan2(-(nx - x), -(nz - z)), genre: nextGenre[i]!, label: labelOf.get(nextGenre[i]!)! };
   });
 
-  const treeOfLine = new Map(trees.map((t, i) => [t.book.slug, i]));
+  const treeOfLine = new Map(trees.map((t, i) => [t.line.slug, i]));
   const links: ForestLink[] = family.links.flatMap((l) => {
     const [a, b] = l.lines.map((id) => treeOfLine.get(id));
     return a === undefined || b === undefined ? [] : [{ family: l.family, a, b, married: l.married }];
@@ -703,22 +702,19 @@ export function treesNear(forest: Forest, x: number, z: number, radius: number):
   return out;
 }
 
-export function bookMatchesQuery(book: Book, q: string): boolean {
-  if (!q.trim()) return false;
-  const s = q.trim().toLowerCase();
-  if (book.title.toLowerCase().includes(s)) return true;
-  if (book.author.toLowerCase().includes(s)) return true;
-  if (book.genreLabel.toLowerCase().includes(s)) return true;
-  if (book.genre.toLowerCase().includes(s)) return true;
-  if (book.tags.some((t) => t.includes(s))) return true;
-  if (book.excerpt.toLowerCase().includes(s)) return true;
-  return false;
+/**
+ * Whether a line answers the lantern: any member's name, birthplace or year,
+ * or the surname. Every word must match somewhere ("boston 1917").
+ */
+export function lineMatchesQuery(line: LineCard, q: string): boolean {
+  const words = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return words.length > 0 && words.every((w) => line.search.includes(w));
 }
 
 /** Matching trees, nearest to (x, z) first. */
 export function searchTrees(forest: Pick<Forest, "trees">, q: string, x: number, z: number): TreeSite[] {
   return forest.trees
-    .filter((t) => bookMatchesQuery(t.book, q))
+    .filter((t) => lineMatchesQuery(t.line, q))
     .sort((a, b) => Math.hypot(a.x - x, a.z - z) - Math.hypot(b.x - x, b.z - z));
 }
 

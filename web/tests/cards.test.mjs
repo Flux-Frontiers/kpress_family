@@ -38,16 +38,16 @@ test("a picked tree stays pinned until dismissed", () => {
 
 test("pickTree returns the first tree along the ray", () => {
   const { pickTree } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const tree = (slug, x, z) => ({ book: { slug }, x, z, height: 10, trunkRadius: 0.3 });
+  const tree = (slug, x, z) => ({ line: { slug }, x, z, height: 10, trunkRadius: 0.3 });
   const forest = { trees: [tree("far", 0, -30), tree("near", 0, -15), tree("aside", 12, -15)] };
   const eye = { x: 0, y: 1.6, z: 0 };
-  assert.equal(pickTree(forest, eye, { x: 0, y: 0, z: -1 }, 200).book.slug, "near");
+  assert.equal(pickTree(forest, eye, { x: 0, y: 0, z: -1 }, 200).line.slug, "near");
   assert.equal(pickTree(forest, eye, { x: 0, y: 0, z: -1 }, 10), null, "past maxDist");
   assert.equal(pickTree(forest, eye, { x: 0, y: 1, z: 0 }, 200), null, "straight up");
-  assert.equal(pickTree(forest, eye, { x: 12, y: 0, z: -15 }, 200).book.slug, "aside");
+  assert.equal(pickTree(forest, eye, { x: 12, y: 0, z: -15 }, 200).line.slug, "aside");
   // Standing under a crown doesn't make every click hit it.
   const under = { x: 1.5, y: 1.6, z: -15 };
-  assert.equal(pickTree(forest, under, { x: -1.5, y: 0, z: -15 }, 200).book.slug, "far");
+  assert.equal(pickTree(forest, under, { x: -1.5, y: 0, z: -15 }, 200).line.slug, "far");
 });
 
 test("fog level reads back from saved preferences", () => {

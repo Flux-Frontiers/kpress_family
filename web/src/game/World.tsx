@@ -9,7 +9,7 @@ import { FOG_SCALE } from "./preferences";
 /** Fog multiplier in the god's-eye view. */
 const GOD_EYE_FOG = 0.1;
 import type { Exhibit } from "./exhibits";
-import { bookMatchesQuery, groveApproach, groveByGenre, type Forest } from "./forest";
+import { lineMatchesQuery, groveApproach, groveByGenre, type Forest } from "./forest";
 import { annulus, disc, ribbon, type FlatMesh } from "./roads";
 import { CorpusRedwood } from "./CorpusRedwood";
 import { GlassPit, MarriageArcs } from "./GlassPit";
@@ -270,7 +270,7 @@ function LanternTrail({
         return { x: wp.x, z: wp.z, mode: "grove" as const };
       }
     }
-    const picked = searchPick ? forest.trees.find((t) => t.book.slug === searchPick) : undefined;
+    const picked = searchPick ? forest.trees.find((t) => t.line.slug === searchPick) : undefined;
     if (picked) return { x: picked.x, z: picked.z, mode: "grove" as const };
     if (!query.trim()) return null;
     return { mode: "query" as const, q: query };
@@ -304,7 +304,7 @@ function LanternTrail({
       let bestD = Infinity;
       let found = false;
       for (const t of forest.trees) {
-        if (!bookMatchesQuery(t.book, target.q)) continue;
+        if (!lineMatchesQuery(t.line, target.q)) continue;
         const d = Math.hypot(t.x - sim.x, t.z - sim.z);
         if (d < bestD) {
           bestD = d;

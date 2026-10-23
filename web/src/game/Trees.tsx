@@ -4,7 +4,7 @@ import { BufferAttribute, BufferGeometry, Color, DoubleSide, Group, InstancedMes
 import { COARSE_POINTER, textureAnisotropy } from "./Environment";
 import { useGame } from "./store";
 import type { Forest } from "./forest";
-import { bookMatchesQuery } from "./forest";
+import { lineMatchesQuery } from "./forest";
 import { SEASONS, type SeasonName } from "./seasons";
 import { leafOutline, SPECIES, type LeafShape, type Species } from "./species";
 
@@ -164,7 +164,7 @@ export function Trees({
     if (!q) return null;
     const set = new Set<number>();
     forest.trees.forEach((t, i) => {
-      if (bookMatchesQuery(t.book, q)) set.add(i);
+      if (lineMatchesQuery(t.line, q)) set.add(i);
     });
     return set;
   }, [forest, q, only]);
@@ -219,7 +219,7 @@ export function Trees({
     forest.trees.forEach((t, i) => {
       dummy.position.set(t.x, 0.05, t.z);
       dummy.rotation.set(-Math.PI / 2, 0, 0);
-      const speaking = only === null && t.book.slug === mootSpeaker?.slug;
+      const speaking = only === null && t.line.slug === mootSpeaker?.slug;
       const on = speaking || (match && only === null ? match.has(i) : false);
       const r = t.trunkRadius * (speaking ? 7 : 4.2);
       dummy.scale.set(on ? r : 0.0001, on ? r : 0.0001, 1);

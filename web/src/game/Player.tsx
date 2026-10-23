@@ -68,7 +68,7 @@ export function Player({ forest, playing }: { forest: Forest; playing: boolean }
   const library = useGame((s) => s.library);
 
   // Each grove's color, by slug, so the cargo matches the trees it was pressed from.
-  const spineColors = useMemo(() => new Map(forest.trees.map((t) => [t.book.slug, t.color])), [forest]);
+  const spineColors = useMemo(() => new Map(forest.trees.map((t) => [t.line.slug, t.color])), [forest]);
   const load = useMemo(() => cartLoad(library, (slug) => spineColors.get(slug) ?? NEUTRAL_SPINE), [library, spineColors]);
 
   const lanternColor = useMemo(() => "#f3e6c2", []);
@@ -274,7 +274,7 @@ export function Player({ forest, playing }: { forest: Forest; playing: boolean }
             best = t;
           }
         }
-        if (best && bestD < 6.8) collect(best.book.slug, best.book.title);
+        if (best && bestD < 6.8) collect(best.line.slug, best.line.title);
       }
     }
 
@@ -394,7 +394,7 @@ export function Player({ forest, playing }: { forest: Forest; playing: boolean }
       const d = Math.hypot(t.x - sim.x, t.z - sim.z);
       if (d < bestD) {
         bestD = d;
-        bestSlug = t.book.slug;
+        bestSlug = t.line.slug;
       }
     }
 
@@ -416,7 +416,7 @@ export function Player({ forest, playing }: { forest: Forest; playing: boolean }
 
     // Arrived at the tree the trail was leading to: put the trail and the query away.
     if (game.searchPick) {
-      const t = forest.trees.find((tr) => tr.book.slug === game.searchPick);
+      const t = forest.trees.find((tr) => tr.line.slug === game.searchPick);
       if (!t || Math.hypot(t.x - sim.x, t.z - sim.z) < TRAIL_ARRIVED) game.setQuery("");
     }
 
