@@ -8,6 +8,8 @@ import { TouchControls } from "./TouchControls";
 import { installControlsTest } from "./controlsTest";
 import { treeFromSearch } from "./deepLink";
 import { commonFrame, portraitPose, shotSlug, treeExtent, type Extent, type Frame } from "./portrait";
+import { indexCatalog, loadFamilyCatalog, type FamilyCatalog } from "./familyCatalog";
+import { richestFocal } from "./familyTree";
 import { getForest, treeApproach, type Forest } from "./forest";
 import { GROW_VERSION } from "./growTree";
 import { bindInput, isInputTarget } from "./input";
@@ -17,9 +19,19 @@ import { resetSim } from "./sim";
 import { unlockSpeechOnGesture } from "./speech";
 import { useGame } from "./store";
 
+/** Where `make family` puts the export; never committed. */
+const FAMILY_BASE = `${import.meta.env.BASE_URL}family/`;
+
 export function ForestApp() {
   const [mounted, setMounted] = useState(false);
   const [forest, setForest] = useState<Forest | null>(null);
+  const [family, setFamily] = useState<FamilyCatalog | null>(null);
+  // `?focal=<id>` opens on that person's hourglass; otherwise whoever's shows the most family.
+  const focal = useMemo(() => {
+    if (!family) return "";
+    const asked = new URLSearchParams(window.location.search).get("focal");
+    return asked && family.people.some((p) => p.id === asked) ? asked : richestFocal(indexCatalog(family));
+  }, [family]);
   const playing = useGame((s) => s.playing);
   const play = useGame((s) => s.play);
   const setToast = useGame((s) => s.setToast);
@@ -44,6 +56,10 @@ export function ForestApp() {
     return () => { unbind?.(); unlockSpeech(); };
   }, []);
 
+  useEffect(() => {
+    loadFamilyCatalog(FAMILY_BASE).then(setFamily, (err: Error) => setToast(err.message));
+  }, [setToast]);
+
   // Grow in a worker, regrowing when leaf complexity changes; only the first
   // forest places the cart. Without Worker support, grow on the main thread.
   const leafScale = useGame((s) => LEAF_SCALE[s.preferences.leaves]);
@@ -59,6 +75,7 @@ export function ForestApp() {
     return () => worker.current?.terminate();
   }, []);
   useEffect(() => {
+    if (!family || !focal) return;
     const apply = (f: Forest) => {
       if (!placed.current) resetSim(f);
       else useGame.getState().setToast(null);
@@ -74,12 +91,12 @@ export function ForestApp() {
       w.onmessage = (e: MessageEvent<{ id: number; forest: Forest }>) => {
         if (e.data.id === request.current) apply(e.data.forest);
       };
-      w.postMessage({ id, leafScale });
+      w.postMessage({ id, leafScale, family, focal });
       return;
     }
-    const t = window.setTimeout(() => apply(getForest(leafScale)), 0);
+    const t = window.setTimeout(() => apply(getForest(family, focal, leafScale)), 0);
     return () => window.clearTimeout(t);
-  }, [leafScale, GROW_VERSION]);
+  }, [leafScale, family, focal, GROW_VERSION]);
 
   // `?tree=<slug>` opens the drive beside that book's tree instead of at home.
   const linked = useMemo(() => (forest ? treeFromSearch(window.location.search, forest.trees) : undefined), [forest]);

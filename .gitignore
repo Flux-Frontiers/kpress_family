@@ -52,3 +52,6 @@ assets/meshy_dad_sculpture_12feet.blend
 assets/Meshy_dad_sculpture.glb
 .venv-docs/
 site/
+
+# A family exported by `genkg export-web` (make family). Personal data: never committed.
+web/public/family/

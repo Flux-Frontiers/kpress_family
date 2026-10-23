@@ -9,10 +9,28 @@ from a GEDCOM file, through two apps:
 - an iPhone, iPad and Mac app that answers questions about the family on
   the device.
 
-**Status: Phase 0.** This repository is a copy of
-[knowledge_press](https://github.com/Flux-Frontiers/knowledge_press) at the
-commit recorded in [PROVENANCE.md](PROVENANCE.md), and it still shows
-books. Nothing in it reads family data yet.
+**Status: Phase 3, in progress.** The orchard grows from a family: one
+grove per surname, one tree per family line, and the home tree at the hub, a
+full hourglass whose roots (the focal person's ancestors) are seen through a
+glass floor over a lit pit. Every tree's wood is the kinship graph itself.
+The HUD, search and tour still speak in books; they are rewritten next.
+The repository started as a copy of
+[knowledge_press](https://github.com/Flux-Frontiers/knowledge_press); see
+[PROVENANCE.md](PROVENANCE.md).
+
+## A family to show
+
+The orchard reads `web/public/family/`, written by `genkg export-web` from a
+[genealogy_kg](https://github.com/Flux-Frontiers/genealogy_kg) store. That
+directory is personal data and is never committed:
+
+```bash
+make family FAMILY_REPO=../my-family    # a genkg store built with the living filter on
+make web-dev
+```
+
+`?focal=<id>` opens on that person's hourglass; otherwise the app picks the
+person whose hourglass is fullest.
 
 ## Build and test
 

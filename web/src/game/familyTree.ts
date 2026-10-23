@@ -299,6 +299,30 @@ function finish(b: Builder, key: string, f: Frame): FamilyTree {
 }
 
 /**
+ * The person whose home tree is the fullest hourglass: the most people in the
+ * smaller of its two halves (ancestors, and descendants with their spouses),
+ * within the default caps, the larger total breaking a tie. Counting the total
+ * alone picks a prolific founder with nothing below ground, and a line's
+ * founder is a poor default for the same reason.
+ */
+export function richestFocal(index: FamilyIndex): string {
+  let best = "", bestBalance = -1, bestTotal = -1;
+  const all: ChildFilter = () => true;
+  for (const id of [...index.person.keys()].sort()) {
+    if (index.person.get(id)!.living) continue;
+    let roots = 0, canopy = 0;
+    for (const v of rootCounts(index, id, DEFAULT_MAX_ANCESTORS).values()) roots += v;
+    // The canopy count includes the person themself.
+    for (const v of canopyCounts(index, id, DEFAULT_MAX_DESCENDANTS, all).values()) canopy += v;
+    const balance = Math.min(roots, canopy - 1), total = roots + canopy;
+    if (balance > bestBalance || (balance === bestBalance && total > bestTotal)) {
+      best = id; bestBalance = balance; bestTotal = total;
+    }
+  }
+  return best;
+}
+
+/**
  * The home tree: the focal person's ancestors as roots, descendants as canopy.
  *
  * :param focal: The trunk person's id.

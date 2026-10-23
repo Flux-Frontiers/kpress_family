@@ -1,3 +1,4 @@
+import { orchardArgs } from "./orchard.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -150,7 +151,7 @@ test("the compass rose: sixteen winds, north up the canvas and so toward -z on t
 test("the compass rose rings the redwood on the hub plaza, clear of the root flare and inside the paving", () => {
   const { getForest, HUB_PLAZA_R } = require(`${build()}/forest.js`);
   const { ROSE_R, WINDS } = require(`${build()}/compassRoseArt.js`);
-  const f = getForest();
+  const f = getForest(...orchardArgs());
   assert.ok(ROSE_R < HUB_PLAZA_R, "the rose overhangs the hub plaza");
   assert.ok(f.corpusTree.baseRadius + 0.4 < ROSE_R * 0.5, "the flare leaves no room for the winds");
   // Every wind reaches well past the flare.
@@ -160,8 +161,8 @@ test("the compass rose rings the redwood on the hub plaza, clear of the root fla
 
 test("junction plazas are small, and still cover the tour's rounded turns", () => {
   const { getForest } = require(`${build()}/forest.js`);
-  const f = getForest();
-  const junctions = f.plazas.filter((p) => p.r !== 10 && !f.circuit.some((wp) => wp.x === p.x && wp.z === p.z) && !f.exhibits.some((e) => e.x === p.x && e.z === p.z));
+  const f = getForest(...orchardArgs());
+  const junctions = f.plazas.filter((p) => !(p.x === 0 && p.z === 0) && !f.circuit.some((wp) => wp.x === p.x && wp.z === p.z) && !f.exhibits.some((e) => e.x === p.x && e.z === p.z));
   assert.ok(junctions.length >= 2);
   for (const j of junctions) assert.equal(j.r, 3);
   // Where the loop bends at a junction, every route point near it stays on the paving with the cart's half-width to spare.

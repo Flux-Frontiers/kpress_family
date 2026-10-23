@@ -51,3 +51,18 @@ export function disc(x: number, z: number, r: number, y: number, out: FlatMesh, 
   }
   for (let s = 0; s < segments; s++) out.index.push(centre, centre + 2 + s, centre + 1 + s);
 }
+
+/** A paved ring, inner radius to outer: the hub plaza round the glass pit. */
+export function annulus(x: number, z: number, rIn: number, rOut: number, y: number, out: FlatMesh, segments = 64) {
+  const start = out.pos.length / 3;
+  for (let s = 0; s <= segments; s++) {
+    const a = (2 * Math.PI * s) / segments;
+    vertex(out, x + Math.cos(a) * rIn, y, z + Math.sin(a) * rIn);
+    vertex(out, x + Math.cos(a) * rOut, y, z + Math.sin(a) * rOut);
+  }
+  for (let s = 0; s < segments; s++) {
+    const i = start + 2 * s;
+    // Wound as disc() is (centre, next, current), so the face is up.
+    out.index.push(i, i + 3, i + 1, i, i + 2, i + 3);
+  }
+}
