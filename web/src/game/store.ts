@@ -160,6 +160,11 @@ export type GameStore = {
   collect: (slug: string, title: string) => void;
   /** Take every book out of the press. */
   emptyPress: () => void;
+  /**
+   * Drop album entries that name no line of this family: a save from another
+   * family, or from before this was a family app, would fill the cart.
+   */
+  keepLines: (slugs: readonly string[]) => void;
   markGrove: (genre: string) => void;
   setNearby: (slug: string | null, dist: number, speed: number) => void;
   pinTree: (slug: string | null) => void;
@@ -316,6 +321,13 @@ export const useGame = create<GameStore>((set, get) => ({
   emptyPress: () => {
     set({ library: [], lastReadSlug: null });
     persist(get());
+  },
+  keepLines: (slugs) => {
+    const known = new Set(slugs);
+    const library = get().library.filter((slug) => known.has(slug));
+    if (library.length === get().library.length) return;
+    set({ library });
+    persist({ ...get(), library });
   },
   markGrove: (genre) => {
     const grovesVisited = get().grovesVisited;

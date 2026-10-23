@@ -37,6 +37,8 @@ export type TreeSite = {
   x: number;
   z: number;
   height: number;
+  /** The highest point of its wood, m: the crown's top. */
+  top: number;
   trunkRadius: number;
   color: string;
   /** Index into SPECIES. */
@@ -450,6 +452,7 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
         x,
         z,
         height: grown.trunkHeight,
+        top: Math.max(...grown.skeleton.nodes.filter((_, k) => k % 3 === 1)),
         trunkRadius: Math.max(0.28, grown.trunkRadius),
         color,
         species,
