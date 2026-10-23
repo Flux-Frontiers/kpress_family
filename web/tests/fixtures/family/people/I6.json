@@ -1,0 +1,51 @@
+{
+ "id": "I6",
+ "name": "Anna Kessler",
+ "sex": "F",
+ "line": "kessler-I6",
+ "living": false,
+ "summary": "Anna Kessler (female).\nBorn 1852 in Bavaria, Germany.\nDied AFTER 1930.\nSpouse(s): William Hartwell, married 1874.",
+ "events": [
+  {
+   "type": "BIRT",
+   "label": "Birth 1852 in Bavaria, Germany",
+   "date": "1852",
+   "place": "bavaria-germany"
+  },
+  {
+   "type": "DEAT",
+   "label": "Death AFTER 1930",
+   "date": "1930",
+   "place": null
+  }
+ ],
+ "parents": [],
+ "spouses": [
+  {
+   "id": "I3",
+   "family": "F2"
+  }
+ ],
+ "children": [
+  "I7",
+  "I8"
+ ],
+ "record": {
+  "file": "family.ged",
+  "start": 88,
+  "end": 98,
+  "lines": [
+   "0 @I6@ INDI",
+   "1 NAME Anna /Kessler/",
+   "2 GIVN Anna",
+   "2 SURN Kessler",
+   "1 SEX F",
+   "1 BIRT",
+   "2 DATE 1852",
+   "2 PLAC Bavaria, Germany",
+   "1 DEAT",
+   "2 DATE AFT 1930",
+   "1 FAMS @F2@"
+  ]
+ }
+}

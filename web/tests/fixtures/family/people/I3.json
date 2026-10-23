@@ -1,0 +1,63 @@
+{
+ "id": "I3",
+ "name": "William Hartwell",
+ "sex": "M",
+ "line": "hartwell-I1",
+ "living": false,
+ "summary": "William Hartwell (male).\nBorn 2 FEB 1848 in Leeds, Yorkshire, England.\nDied 1922 in Cincinnati, Hamilton, Ohio, USA.\nOccupation: Hardware merchant.\nParents: John Hartwell and Mary Ashcombe.\nSpouse(s): Anna Kessler, married 1874.",
+ "events": [
+  {
+   "type": "BIRT",
+   "label": "Birth 2 FEB 1848 in Leeds, Yorkshire, England",
+   "date": "1848-02-02",
+   "place": "leeds-yorkshire-england"
+  },
+  {
+   "type": "DEAT",
+   "label": "Death 1922 in Cincinnati, Hamilton, Ohio, USA",
+   "date": "1922",
+   "place": "cincinnati-hamilton-ohio-usa"
+  },
+  {
+   "type": "OCCU",
+   "label": "Occupation",
+   "date": null,
+   "place": null
+  }
+ ],
+ "parents": [
+  "I1",
+  "I2"
+ ],
+ "spouses": [
+  {
+   "id": "I6",
+   "family": "F2"
+  }
+ ],
+ "children": [
+  "I7",
+  "I8"
+ ],
+ "record": {
+  "file": "family.ged",
+  "start": 52,
+  "end": 65,
+  "lines": [
+   "0 @I3@ INDI",
+   "1 NAME William /Hartwell/",
+   "2 GIVN William",
+   "2 SURN Hartwell",
+   "1 SEX M",
+   "1 BIRT",
+   "2 DATE 2 FEB 1848",
+   "2 PLAC Leeds, Yorkshire, England",
+   "1 DEAT",
+   "2 DATE 1922",
+   "2 PLAC Cincinnati, Hamilton, Ohio, USA",
+   "1 OCCU Hardware merchant",
+   "1 FAMC @F1@",
+   "1 FAMS @F2@"
+  ]
+ }
+}

@@ -1,0 +1,47 @@
+{
+ "id": "I5",
+ "name": "Thomas Hartwell",
+ "sex": "M",
+ "line": "hartwell-I1",
+ "living": false,
+ "summary": "Thomas Hartwell (male).\nBorn 4 OCT 1855 in Cincinnati, Hamilton, Ohio, USA.\nDied BEFORE 1857 in Cincinnati, Hamilton, Ohio, USA.\nParents: John Hartwell and Mary Ashcombe.",
+ "events": [
+  {
+   "type": "BIRT",
+   "label": "Birth 4 OCT 1855 in Cincinnati, Hamilton, Ohio, USA",
+   "date": "1855-10-04",
+   "place": "cincinnati-hamilton-ohio-usa"
+  },
+  {
+   "type": "DEAT",
+   "label": "Death BEFORE 1857 in Cincinnati, Hamilton, Ohio, USA",
+   "date": null,
+   "place": "cincinnati-hamilton-ohio-usa"
+  }
+ ],
+ "parents": [
+  "I1",
+  "I2"
+ ],
+ "spouses": [],
+ "children": [],
+ "record": {
+  "file": "family.ged",
+  "start": 76,
+  "end": 87,
+  "lines": [
+   "0 @I5@ INDI",
+   "1 NAME Thomas /Hartwell/",
+   "2 GIVN Thomas",
+   "2 SURN Hartwell",
+   "1 SEX M",
+   "1 BIRT",
+   "2 DATE 4 OCT 1855",
+   "2 PLAC Cincinnati, Hamilton, Ohio, USA",
+   "1 DEAT",
+   "2 DATE BEF 1857",
+   "2 PLAC Cincinnati, Hamilton, Ohio, USA",
+   "1 FAMC @F1@"
+  ]
+ }
+}

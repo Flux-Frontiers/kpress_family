@@ -1,0 +1,63 @@
+{
+ "id": "I7",
+ "name": "Robert Hartwell",
+ "sex": "M",
+ "line": "hartwell-I1",
+ "living": false,
+ "summary": "Robert Hartwell (male).\nBorn 20 FEB 1876 in Cincinnati, Hamilton, Ohio, USA.\nDied 1949 in Dayton, Montgomery, Ohio, USA.\nOccupation: Chemist.\nParents: William Hartwell and Anna Kessler.\nSpouse(s): Louise Brandt, married 14 SEP 1901.",
+ "events": [
+  {
+   "type": "BIRT",
+   "label": "Birth 20 FEB 1876 in Cincinnati, Hamilton, Ohio, USA",
+   "date": "1876-02-20",
+   "place": "cincinnati-hamilton-ohio-usa"
+  },
+  {
+   "type": "DEAT",
+   "label": "Death 1949 in Dayton, Montgomery, Ohio, USA",
+   "date": "1949",
+   "place": "dayton-montgomery-ohio-usa"
+  },
+  {
+   "type": "OCCU",
+   "label": "Occupation",
+   "date": null,
+   "place": null
+  }
+ ],
+ "parents": [
+  "I3",
+  "I6"
+ ],
+ "spouses": [
+  {
+   "id": "I11",
+   "family": "F4"
+  }
+ ],
+ "children": [
+  "I12"
+ ],
+ "record": {
+  "file": "family.ged",
+  "start": 99,
+  "end": 113,
+  "lines": [
+   "0 @I7@ INDI",
+   "1 NAME Robert /Hartwell/",
+   "2 GIVN Robert",
+   "2 SURN Hartwell",
+   "1 SEX M",
+   "1 BIRT",
+   "2 DATE 20 FEB 1876",
+   "2 PLAC Cincinnati, Hamilton, Ohio, USA",
+   "2 SOUR @S2@",
+   "1 DEAT",
+   "2 DATE 1949",
+   "2 PLAC Dayton, Montgomery, Ohio, USA",
+   "1 OCCU Chemist",
+   "1 FAMC @F2@",
+   "1 FAMS @F4@"
+  ]
+ }
+}

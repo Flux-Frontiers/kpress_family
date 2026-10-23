@@ -1,0 +1,38 @@
+{
+ "id": "I10",
+ "name": "Edith Pryce",
+ "sex": "F",
+ "line": "pryce-I9",
+ "living": false,
+ "summary": "Edith Pryce (female).\nBorn MAY 1874 in Cincinnati, Hamilton, Ohio, USA.\nParents: Samuel Pryce and Eliza Hartwell.",
+ "events": [
+  {
+   "type": "BIRT",
+   "label": "Birth MAY 1874 in Cincinnati, Hamilton, Ohio, USA",
+   "date": "1874-05",
+   "place": "cincinnati-hamilton-ohio-usa"
+  }
+ ],
+ "parents": [
+  "I4",
+  "I9"
+ ],
+ "spouses": [],
+ "children": [],
+ "record": {
+  "file": "family.ged",
+  "start": 132,
+  "end": 140,
+  "lines": [
+   "0 @I10@ INDI",
+   "1 NAME Edith /Pryce/",
+   "2 GIVN Edith",
+   "2 SURN Pryce",
+   "1 SEX F",
+   "1 BIRT",
+   "2 DATE MAY 1874",
+   "2 PLAC Cincinnati, Hamilton, Ohio, USA",
+   "1 FAMC @F3@"
+  ]
+ }
+}
