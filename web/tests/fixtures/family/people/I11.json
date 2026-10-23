@@ -1,0 +1,42 @@
+{
+ "id": "I11",
+ "name": "Louise Brandt",
+ "sex": "F",
+ "line": "brandt-I11",
+ "living": false,
+ "summary": "Louise Brandt (female).\nBorn 1880 in Dayton, Montgomery, Ohio, USA.\nSpouse(s): Robert Hartwell, married 14 SEP 1901.",
+ "events": [
+  {
+   "type": "BIRT",
+   "label": "Birth 1880 in Dayton, Montgomery, Ohio, USA",
+   "date": "1880",
+   "place": "dayton-montgomery-ohio-usa"
+  }
+ ],
+ "parents": [],
+ "spouses": [
+  {
+   "id": "I7",
+   "family": "F4"
+  }
+ ],
+ "children": [
+  "I12"
+ ],
+ "record": {
+  "file": "family.ged",
+  "start": 141,
+  "end": 149,
+  "lines": [
+   "0 @I11@ INDI",
+   "1 NAME Louise /Brandt/",
+   "2 GIVN Louise",
+   "2 SURN Brandt",
+   "1 SEX F",
+   "1 BIRT",
+   "2 DATE 1880",
+   "2 PLAC Dayton, Montgomery, Ohio, USA",
+   "1 FAMS @F4@"
+  ]
+ }
+}

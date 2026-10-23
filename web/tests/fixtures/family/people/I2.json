@@ -1,0 +1,54 @@
+{
+ "id": "I2",
+ "name": "Mary Ashcombe",
+ "sex": "F",
+ "line": "ashcombe-I2",
+ "living": false,
+ "summary": "Mary Ashcombe (female).\nBorn 12 MAR 1824 in Leeds, Yorkshire, England.\nDied BETWEEN 1899 AND 1901 in Cincinnati, Hamilton, Ohio, USA.\nSpouse(s): John Hartwell, married 3 JUN 1846.",
+ "events": [
+  {
+   "type": "BIRT",
+   "label": "Birth 12 MAR 1824 in Leeds, Yorkshire, England",
+   "date": "1824-03-12",
+   "place": "leeds-yorkshire-england"
+  },
+  {
+   "type": "DEAT",
+   "label": "Death BETWEEN 1899 AND 1901 in Cincinnati, Hamilton, Ohio, USA",
+   "date": "1899",
+   "place": "cincinnati-hamilton-ohio-usa"
+  }
+ ],
+ "parents": [],
+ "spouses": [
+  {
+   "id": "I1",
+   "family": "F1"
+  }
+ ],
+ "children": [
+  "I3",
+  "I4",
+  "I5"
+ ],
+ "record": {
+  "file": "family.ged",
+  "start": 39,
+  "end": 51,
+  "lines": [
+   "0 @I2@ INDI",
+   "1 NAME Mary /Ashcombe/",
+   "2 GIVN Mary",
+   "2 SURN Ashcombe",
+   "1 SEX F",
+   "1 BIRT",
+   "2 DATE 12 MAR 1824",
+   "2 PLAC Leeds, Yorkshire, England",
+   "2 SOUR @S1@",
+   "1 DEAT",
+   "2 DATE BET 1899 AND 1901",
+   "2 PLAC Cincinnati, Hamilton, Ohio, USA",
+   "1 FAMS @F1@"
+  ]
+ }
+}

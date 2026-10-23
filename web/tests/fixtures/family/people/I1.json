@@ -1,0 +1,83 @@
+{
+ "id": "I1",
+ "name": "John Hartwell",
+ "sex": "M",
+ "line": "hartwell-I1",
+ "living": false,
+ "summary": "John Hartwell (male).\nBorn ABOUT 1820 in Yorkshire, England.\nDied 7 NOV 1891 in Cincinnati, Hamilton, Ohio, USA.\nOccupation: Ironmonger.\nSpouse(s): Mary Ashcombe, married 3 JUN 1846.\nNotes: Emigrated to the United States in 1850 with his wife and eldest\nson. Settled in Cincinnati, where he kept a hardware shopon Vine Street.",
+ "events": [
+  {
+   "type": "BIRT",
+   "label": "Birth ABOUT 1820 in Yorkshire, England",
+   "date": "1820",
+   "place": "yorkshire-england"
+  },
+  {
+   "type": "RESI",
+   "label": "Residence 1880 in Cincinnati, Hamilton, Ohio, USA",
+   "date": "1880",
+   "place": "cincinnati-hamilton-ohio-usa"
+  },
+  {
+   "type": "DEAT",
+   "label": "Death 7 NOV 1891 in Cincinnati, Hamilton, Ohio, USA",
+   "date": "1891-11-07",
+   "place": "cincinnati-hamilton-ohio-usa"
+  },
+  {
+   "type": "BURI",
+   "label": "Burial 10 NOV 1891 in Spring Grove Cemetery, Cincinnati, Hamilton, Ohio, USA",
+   "date": "1891-11-10",
+   "place": "spring-grove-cemetery-cincinnati-hamilton-ohio-usa"
+  },
+  {
+   "type": "OCCU",
+   "label": "Occupation",
+   "date": null,
+   "place": null
+  }
+ ],
+ "parents": [],
+ "spouses": [
+  {
+   "id": "I2",
+   "family": "F1"
+  }
+ ],
+ "children": [
+  "I3",
+  "I4",
+  "I5"
+ ],
+ "record": {
+  "file": "family.ged",
+  "start": 15,
+  "end": 38,
+  "lines": [
+   "0 @I1@ INDI",
+   "1 NAME John /Hartwell/",
+   "2 GIVN John",
+   "2 SURN Hartwell",
+   "1 SEX M",
+   "1 BIRT",
+   "2 DATE ABT 1820",
+   "2 PLAC Yorkshire, England",
+   "1 DEAT",
+   "2 DATE 7 NOV 1891",
+   "2 PLAC Cincinnati, Hamilton, Ohio, USA",
+   "2 SOUR @S1@",
+   "1 BURI",
+   "2 DATE 10 NOV 1891",
+   "2 PLAC Spring Grove Cemetery, Cincinnati, Hamilton, Ohio, USA",
+   "1 OCCU Ironmonger",
+   "1 RESI",
+   "2 DATE 1880",
+   "2 PLAC Cincinnati, Hamilton, Ohio, USA",
+   "2 SOUR @S2@",
+   "1 FAMS @F1@",
+   "1 NOTE Emigrated to the United States in 1850 with his wife and eldest",
+   "2 CONT son. Settled in Cincinnati, where he kept a hardware shop",
+   "2 CONC on Vine Street."
+  ]
+ }
+}

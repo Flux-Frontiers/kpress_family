@@ -437,7 +437,7 @@ function varyHabit(habit: Habit, slug: string): Habit {
  * Pipe-model radii, parent^e = sum child^e (e = 2 is Leonardo's rule), then
  * thickened toward the height floor. Radii depend only on topology.
  */
-function pipeRadii(parents: Int32Array, n: number, tipRadius: number, pipeExp: number, trunkHeight: number): Float32Array {
+export function pipeRadii(parents: Int32Array, n: number, tipRadius: number, pipeExp: number, trunkHeight: number): Float32Array {
   const radii = new Float32Array(n);
   radii.fill(tipRadius);
   // Walk children -> parent. Children have higher indices, so each node's own

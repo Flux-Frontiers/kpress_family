@@ -1,0 +1,42 @@
+{
+ "id": "I9",
+ "name": "Samuel Pryce",
+ "sex": "M",
+ "line": "pryce-I9",
+ "living": false,
+ "summary": "Samuel Pryce (male).\nBorn 1847 in Wales.\nSpouse(s): Eliza Hartwell, married 1872.",
+ "events": [
+  {
+   "type": "BIRT",
+   "label": "Birth 1847 in Wales",
+   "date": "1847",
+   "place": "wales"
+  }
+ ],
+ "parents": [],
+ "spouses": [
+  {
+   "id": "I4",
+   "family": "F3"
+  }
+ ],
+ "children": [
+  "I10"
+ ],
+ "record": {
+  "file": "family.ged",
+  "start": 123,
+  "end": 131,
+  "lines": [
+   "0 @I9@ INDI",
+   "1 NAME Samuel /Pryce/",
+   "2 GIVN Samuel",
+   "2 SURN Pryce",
+   "1 SEX M",
+   "1 BIRT",
+   "2 DATE 1847",
+   "2 PLAC Wales",
+   "1 FAMS @F3@"
+  ]
+ }
+}

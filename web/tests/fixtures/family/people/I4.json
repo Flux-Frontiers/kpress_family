@@ -1,0 +1,46 @@
+{
+ "id": "I4",
+ "name": "Eliza Hartwell",
+ "sex": "F",
+ "line": "hartwell-I1",
+ "living": false,
+ "summary": "Eliza Hartwell (female).\nBorn 1851 in Cincinnati, Hamilton, Ohio, USA.\nParents: John Hartwell and Mary Ashcombe.\nSpouse(s): Samuel Pryce, married 1872.",
+ "events": [
+  {
+   "type": "BIRT",
+   "label": "Birth 1851 in Cincinnati, Hamilton, Ohio, USA",
+   "date": "1851",
+   "place": "cincinnati-hamilton-ohio-usa"
+  }
+ ],
+ "parents": [
+  "I1",
+  "I2"
+ ],
+ "spouses": [
+  {
+   "id": "I9",
+   "family": "F3"
+  }
+ ],
+ "children": [
+  "I10"
+ ],
+ "record": {
+  "file": "family.ged",
+  "start": 66,
+  "end": 75,
+  "lines": [
+   "0 @I4@ INDI",
+   "1 NAME Eliza /Hartwell/",
+   "2 GIVN Eliza",
+   "2 SURN Hartwell",
+   "1 SEX F",
+   "1 BIRT",
+   "2 DATE 1851",
+   "2 PLAC Cincinnati, Hamilton, Ohio, USA",
+   "1 FAMC @F1@",
+   "1 FAMS @F3@"
+  ]
+ }
+}

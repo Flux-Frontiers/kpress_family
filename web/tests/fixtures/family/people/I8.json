@@ -1,0 +1,38 @@
+{
+ "id": "I8",
+ "name": "Clara Hartwell",
+ "sex": "F",
+ "line": "hartwell-I1",
+ "living": false,
+ "summary": "Clara Hartwell (female).\nBorn 1879 in Cincinnati, Hamilton, Ohio, USA.\nParents: William Hartwell and Anna Kessler.",
+ "events": [
+  {
+   "type": "BIRT",
+   "label": "Birth 1879 in Cincinnati, Hamilton, Ohio, USA",
+   "date": "1879",
+   "place": "cincinnati-hamilton-ohio-usa"
+  }
+ ],
+ "parents": [
+  "I3",
+  "I6"
+ ],
+ "spouses": [],
+ "children": [],
+ "record": {
+  "file": "family.ged",
+  "start": 114,
+  "end": 122,
+  "lines": [
+   "0 @I8@ INDI",
+   "1 NAME Clara /Hartwell/",
+   "2 GIVN Clara",
+   "2 SURN Hartwell",
+   "1 SEX F",
+   "1 BIRT",
+   "2 DATE 1879",
+   "2 PLAC Cincinnati, Hamilton, Ohio, USA",
+   "1 FAMC @F2@"
+  ]
+ }
+}

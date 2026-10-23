@@ -1,0 +1,424 @@
+{
+ "meta": {
+  "format": 1,
+  "generator": "genealogy_kg 0.3.0",
+  "generated": "2026-10-23T17:55:07+00:00",
+  "sources": [
+   "family.ged"
+  ],
+  "privacy": {
+   "living_cutoff_years": 100,
+   "unknown_birth_policy": "redact",
+   "include_living": false
+  },
+  "counts": {
+   "people": 12,
+   "families": 4,
+   "lines": 5,
+   "links": 4,
+   "places": 13
+  }
+ },
+ "lines": [
+  {
+   "id": "ashcombe-I2",
+   "surname": "Ashcombe",
+   "grove": "ashcombe",
+   "founders": [
+    "I2",
+    "I1"
+   ],
+   "members": [
+    "I2"
+   ],
+   "span": [
+    "1824",
+    "1824"
+   ]
+  },
+  {
+   "id": "brandt-I11",
+   "surname": "Brandt",
+   "grove": "brandt",
+   "founders": [
+    "I11",
+    "I7"
+   ],
+   "members": [
+    "I11"
+   ],
+   "span": [
+    "1880",
+    "1880"
+   ]
+  },
+  {
+   "id": "hartwell-I1",
+   "surname": "Hartwell",
+   "grove": "hartwell",
+   "founders": [
+    "I1",
+    "I2"
+   ],
+   "members": [
+    "I1",
+    "I3",
+    "I4",
+    "I5",
+    "I7",
+    "I8",
+    "I12"
+   ],
+   "span": [
+    "1820",
+    "1903"
+   ]
+  },
+  {
+   "id": "kessler-I6",
+   "surname": "Kessler",
+   "grove": "kessler",
+   "founders": [
+    "I6",
+    "I3"
+   ],
+   "members": [
+    "I6"
+   ],
+   "span": [
+    "1852",
+    "1852"
+   ]
+  },
+  {
+   "id": "pryce-I9",
+   "surname": "Pryce",
+   "grove": "pryce",
+   "founders": [
+    "I9",
+    "I4"
+   ],
+   "members": [
+    "I9",
+    "I10"
+   ],
+   "span": [
+    "1847",
+    "1874"
+   ]
+  }
+ ],
+ "people": [
+  {
+   "id": "I1",
+   "name": "John Hartwell",
+   "surname": "Hartwell",
+   "sex": "M",
+   "born": "1820",
+   "died": "1891",
+   "birth_place": "yorkshire-england",
+   "line": "hartwell-I1",
+   "living": false
+  },
+  {
+   "id": "I10",
+   "name": "Edith Pryce",
+   "surname": "Pryce",
+   "sex": "F",
+   "born": "1874",
+   "died": null,
+   "birth_place": "cincinnati-hamilton-ohio-usa",
+   "line": "pryce-I9",
+   "living": false
+  },
+  {
+   "id": "I11",
+   "name": "Louise Brandt",
+   "surname": "Brandt",
+   "sex": "F",
+   "born": "1880",
+   "died": null,
+   "birth_place": "dayton-montgomery-ohio-usa",
+   "line": "brandt-I11",
+   "living": false
+  },
+  {
+   "id": "I12",
+   "name": "Margaret Hartwell",
+   "surname": "Hartwell",
+   "sex": "F",
+   "born": "1903",
+   "died": "1990",
+   "birth_place": "dayton-montgomery-ohio-usa",
+   "line": "hartwell-I1",
+   "living": false
+  },
+  {
+   "id": "I2",
+   "name": "Mary Ashcombe",
+   "surname": "Ashcombe",
+   "sex": "F",
+   "born": "1824",
+   "died": "1901",
+   "birth_place": "leeds-yorkshire-england",
+   "line": "ashcombe-I2",
+   "living": false
+  },
+  {
+   "id": "I3",
+   "name": "William Hartwell",
+   "surname": "Hartwell",
+   "sex": "M",
+   "born": "1848",
+   "died": "1922",
+   "birth_place": "leeds-yorkshire-england",
+   "line": "hartwell-I1",
+   "living": false
+  },
+  {
+   "id": "I4",
+   "name": "Eliza Hartwell",
+   "surname": "Hartwell",
+   "sex": "F",
+   "born": "1851",
+   "died": null,
+   "birth_place": "cincinnati-hamilton-ohio-usa",
+   "line": "hartwell-I1",
+   "living": false
+  },
+  {
+   "id": "I5",
+   "name": "Thomas Hartwell",
+   "surname": "Hartwell",
+   "sex": "M",
+   "born": "1855",
+   "died": "1857",
+   "birth_place": "cincinnati-hamilton-ohio-usa",
+   "line": "hartwell-I1",
+   "living": false
+  },
+  {
+   "id": "I6",
+   "name": "Anna Kessler",
+   "surname": "Kessler",
+   "sex": "F",
+   "born": "1852",
+   "died": "1930",
+   "birth_place": "bavaria-germany",
+   "line": "kessler-I6",
+   "living": false
+  },
+  {
+   "id": "I7",
+   "name": "Robert Hartwell",
+   "surname": "Hartwell",
+   "sex": "M",
+   "born": "1876",
+   "died": "1949",
+   "birth_place": "cincinnati-hamilton-ohio-usa",
+   "line": "hartwell-I1",
+   "living": false
+  },
+  {
+   "id": "I8",
+   "name": "Clara Hartwell",
+   "surname": "Hartwell",
+   "sex": "F",
+   "born": "1879",
+   "died": null,
+   "birth_place": "cincinnati-hamilton-ohio-usa",
+   "line": "hartwell-I1",
+   "living": false
+  },
+  {
+   "id": "I9",
+   "name": "Samuel Pryce",
+   "surname": "Pryce",
+   "sex": "M",
+   "born": "1847",
+   "died": null,
+   "birth_place": "wales",
+   "line": "pryce-I9",
+   "living": false
+  }
+ ],
+ "families": [
+  {
+   "id": "F1",
+   "spouses": [
+    "I1",
+    "I2"
+   ],
+   "children": [
+    "I3",
+    "I4",
+    "I5"
+   ],
+   "married": "1846"
+  },
+  {
+   "id": "F2",
+   "spouses": [
+    "I3",
+    "I6"
+   ],
+   "children": [
+    "I7",
+    "I8"
+   ],
+   "married": "1874"
+  },
+  {
+   "id": "F3",
+   "spouses": [
+    "I4",
+    "I9"
+   ],
+   "children": [
+    "I10"
+   ],
+   "married": "1872"
+  },
+  {
+   "id": "F4",
+   "spouses": [
+    "I11",
+    "I7"
+   ],
+   "children": [
+    "I12"
+   ],
+   "married": "1901"
+  }
+ ],
+ "links": [
+  {
+   "family": "F1",
+   "lines": [
+    "ashcombe-I2",
+    "hartwell-I1"
+   ],
+   "spouses": [
+    "I1",
+    "I2"
+   ],
+   "married": "1846"
+  },
+  {
+   "family": "F2",
+   "lines": [
+    "hartwell-I1",
+    "kessler-I6"
+   ],
+   "spouses": [
+    "I3",
+    "I6"
+   ],
+   "married": "1874"
+  },
+  {
+   "family": "F3",
+   "lines": [
+    "hartwell-I1",
+    "pryce-I9"
+   ],
+   "spouses": [
+    "I4",
+    "I9"
+   ],
+   "married": "1872"
+  },
+  {
+   "family": "F4",
+   "lines": [
+    "brandt-I11",
+    "hartwell-I1"
+   ],
+   "spouses": [
+    "I11",
+    "I7"
+   ],
+   "married": "1901"
+  }
+ ],
+ "places": [
+  {
+   "id": "bavaria-germany",
+   "name": "Bavaria, Germany",
+   "within": "germany",
+   "events": 1
+  },
+  {
+   "id": "cincinnati-hamilton-ohio-usa",
+   "name": "Cincinnati, Hamilton, Ohio, USA",
+   "within": "hamilton-ohio-usa",
+   "events": 12
+  },
+  {
+   "id": "dayton-montgomery-ohio-usa",
+   "name": "Dayton, Montgomery, Ohio, USA",
+   "within": "montgomery-ohio-usa",
+   "events": 5
+  },
+  {
+   "id": "england",
+   "name": "England",
+   "within": null,
+   "events": 0
+  },
+  {
+   "id": "germany",
+   "name": "Germany",
+   "within": null,
+   "events": 0
+  },
+  {
+   "id": "hamilton-ohio-usa",
+   "name": "Hamilton, Ohio, USA",
+   "within": "ohio-usa",
+   "events": 0
+  },
+  {
+   "id": "leeds-yorkshire-england",
+   "name": "Leeds, Yorkshire, England",
+   "within": "yorkshire-england",
+   "events": 3
+  },
+  {
+   "id": "montgomery-ohio-usa",
+   "name": "Montgomery, Ohio, USA",
+   "within": "ohio-usa",
+   "events": 0
+  },
+  {
+   "id": "ohio-usa",
+   "name": "Ohio, USA",
+   "within": "usa",
+   "events": 0
+  },
+  {
+   "id": "spring-grove-cemetery-cincinnati-hamilton-ohio-usa",
+   "name": "Spring Grove Cemetery, Cincinnati, Hamilton, Ohio, USA",
+   "within": "cincinnati-hamilton-ohio-usa",
+   "events": 1
+  },
+  {
+   "id": "usa",
+   "name": "USA",
+   "within": null,
+   "events": 0
+  },
+  {
+   "id": "wales",
+   "name": "Wales",
+   "within": null,
+   "events": 1
+  },
+  {
+   "id": "yorkshire-england",
+   "name": "Yorkshire, England",
+   "within": "england",
+   "events": 1
+  }
+ ]
+}
