@@ -52,14 +52,14 @@ test("exhibits stand in roadside glades: clear of trunks, off the road, apart fr
   }
 });
 
-test("wind rotors turn over their own plaza: overhead of the cart, never out over the road", () => {
+test("the double helix turns over its own plaza: overhead of the cart, never out over the road", () => {
   const { getForest } = require(`${process.env.FOREST_TEST_BUILD}/forest.js`);
-  const { rotorEnvelope, PLINTH_TOP } = require(`${process.env.FOREST_TEST_BUILD}/windRotors.js`);
+  const { dnaEnvelope, PLINTH_TOP } = require(`${process.env.FOREST_TEST_BUILD}/windRotors.js`);
   const f = getForest(...orchardArgs());
-  for (const id of ["helix", "darrieus", "savonius", "dna", "mast"]) {
+  for (const id of ["dna"]) {
     const e = f.exhibits.find((x) => x.id === id);
     assert.ok(e, `${id} placed`);
-    const { reach, lowest } = rotorEnvelope(id);
+    const { reach, lowest } = dnaEnvelope();
     assert.ok(lowest > PLINTH_TOP + 0.8, `${id} rotor sweeps the plinth top at ${lowest.toFixed(2)} m`);
     // Anything wider than the plinth must pass over the head of someone standing beside it.
     assert.ok(reach <= e.obstacle || lowest > 2.5, `${id} reaches ${reach.toFixed(2)} m at ${lowest.toFixed(2)} m`);
@@ -140,19 +140,4 @@ test("the double helix is B-DNA: right-handed, 10.5 pairs a turn, minor groove n
   // The two backbones sit 12/34 of a turn apart: the narrow side is the minor groove.
   const gap = ((bearing(pairs[0].b) - bearing(pairs[0].a)) + 2 * Math.PI) % (2 * Math.PI);
   assert.ok(Math.abs(gap - DNA.minorGroove * 2 * Math.PI) < 1e-9 && gap < Math.PI);
-});
-
-test("the weather mast reads the forest's wind: heading near the prevailing sway, sock filling with the gust", () => {
-  const { windHeading, gust, sockFill } = require(`${process.env.FOREST_TEST_BUILD}/windRotors.js`);
-  const prevailing = Math.atan2(0.37, 0.93);
-  let lo = Infinity, hi = -Infinity;
-  for (let t = 0; t < 2000; t += 0.5) {
-    const d = windHeading(t) - prevailing;
-    assert.ok(Math.abs(d) <= 0.42 + 1e-9, `veers ${d.toFixed(2)} rad at ${t}`);
-    const f = sockFill(gust(t, 0));
-    lo = Math.min(lo, f);
-    hi = Math.max(hi, f);
-  }
-  // Slack in the lulls, full in the strongest gusts.
-  assert.ok(lo < 0.05 && hi > 0.95, `sock ranges ${lo.toFixed(2)} to ${hi.toFixed(2)}`);
 });

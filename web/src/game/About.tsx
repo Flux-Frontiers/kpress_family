@@ -1,9 +1,6 @@
-import { useEffect, useMemo, useRef } from "react";
-import { BOOKS } from "./catalog";
+import { useEffect, useRef } from "react";
 import { COARSE_POINTER } from "./Environment";
-import { USER_GUIDE_URL } from "./links";
 import { NightSky } from "./NightSky";
-import { SPECIES, speciesFor } from "./species";
 import { useGame } from "./store";
 
 /** Every control, keyboard first; a touch screen gets its own list. */
@@ -12,9 +9,9 @@ const KEYS: [string, string][] = [
   ["A / D", "steer"],
   ["Drag, or arrows", "look around; the view eases back to ahead when you let go, the tilt stays"],
   ["Shift / Space", "hurry / brake"],
-  ["E", "read the nearest tree"],
-  ["G / B / L", "the grove atlas, every book, your press"],
-  ["H / Q", "home to the redwood / the guided tour"],
+  ["E", "add the nearest tree's line to your album"],
+  ["G / B / L", "the grove atlas, every line, your album"],
+  ["H / Q", "home to the home tree / the guided tour"],
   ["C", "camera: behind, high, in the cart, god's eye"],
   ["?", "this page"],
   ["Esc", "close a panel; with none open, settings"],
@@ -23,9 +20,9 @@ const KEYS: [string, string][] = [
 const TOUCH: [string, string][] = [
   ["Stick, bottom left", "drive: up forward, down reverse, sideways to steer"],
   ["Drag anywhere else", "look around; the view eases back to ahead when you let go"],
-  ["Read", "the nearest tree, once you are close"],
+  ["Add", "the nearest tree's line to your album, once you are close"],
   ["Guided tour", "the cart drives the ring and stops at each grove"],
-  ["Three-dot menu", "time of day, silent mode, screenshot, moots, settings, this page"],
+  ["Three-dot menu", "time of day, silent mode, screenshot, settings, this page"],
 ];
 
 /**
@@ -38,14 +35,6 @@ export function About() {
   const toggle = useGame((s) => s.toggleHelp);
   const dialog = useRef<HTMLDialogElement>(null);
   const close = useRef<HTMLButtonElement>(null);
-  // Each species with the genres that grow as it, in catalog order.
-  const species = useMemo(() => {
-    const labels = new Map(BOOKS.map((b) => [b.genre, b.genreLabel]));
-    return SPECIES.map((s, i) => ({
-      s,
-      genres: [...labels].filter(([genre]) => speciesFor(genre) === i).map(([, label]) => label),
-    })).filter((x) => x.genres.length);
-  }, []);
 
   useEffect(() => {
     if (open) {
@@ -62,8 +51,8 @@ export function About() {
       <div className="p-6">
       <header className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs tracking-[0.2em] text-primary uppercase">The Knowledge Press</p>
-          <h2 id="about-title" className="mt-1 font-display text-3xl">About the forest</h2>
+          <p className="text-xs tracking-[0.2em] text-primary uppercase">The Knowledge Press: The Family</p>
+          <h2 id="about-title" className="mt-1 font-display text-3xl">About the orchard</h2>
         </div>
         <button ref={close} type="button" aria-label="Close" onClick={toggle}
           className="grid size-11 shrink-0 place-items-center rounded-md border border-border text-xl leading-none">×</button>
@@ -71,22 +60,18 @@ export function About() {
 
       <div className="about-body mt-4 text-sm leading-relaxed text-muted">
         <p className="text-base text-fg">
-          The forest is a picture of a library. Each of its {BOOKS.length} public-domain books is one tree, and the
-          shape of the tree is the shape of the book: the trunk is the work, the limbs are its sections, the leaves
-          are its passages. A long book stands taller, and a book with more chapters carries more limbs.
+          The orchard is a picture of a family. Each family line, the people born with one surname, is one tree,
+          and the tree is the line itself: its founder is the trunk, every limb runs from a parent to a child, and
+          each person is a tuft of leaves. A spouse who married in hangs as a twig at the fork.
         </p>
 
-        <h3>A genre is a species</h3>
+        <h3>A surname is a grove</h3>
         <p>
-          The books of a genre stand together in a grove, and each genre grows as a real tree, with its bark, leaf
-          and growth habit. The groves ring the corpus redwood at the hub, one tree for the whole library with a limb
-          reaching toward every book.
+          The lines of a surname stand together in a grove, and each surname grows as one species. The groves ring
+          the home tree at the hub: one person's whole family, their descendants as the crown and their ancestors
+          as the roots, seen through the glass floor of the pit below it. Overhead, gold arcs join the trees of
+          lines that married.
         </p>
-        <ul className="about-species">
-          {species.map(({ s, genres }) => (
-            <li key={s.name}><span>{s.common}</span><em>{genres.join(", ")}</em></li>
-          ))}
-        </ul>
 
         <h3>The sky</h3>
         <p>
@@ -112,13 +97,12 @@ export function About() {
 
         <h3>How it was made</h3>
         <p>
-          The books come from Project Gutenberg, indexed by GutenbergKG. Each tree is grown in code, not drawn: its
-          wood grows toward the passages it has to reach, and every limb is as thick as the wood it carries. The
-          forest is built with three.js and React. The astronomy is SunCalc's; the stars are the Yale Bright Star
-          Catalogue (Hoffleit &amp; Warren, 1991); the planets follow JPL's approximate Keplerian elements (Standish)
-          with magnitudes from Mallama &amp; Hilton (2018); the moon is NASA's Lunar Reconnaissance Orbiter color
-          mosaic. The <a href={USER_GUIDE_URL} target="_blank" rel="noopener" className="text-primary underline">user
-          guide</a> covers the rest.
+          The family comes from a GEDCOM file, indexed by GenealogyKG, with people who may be living withheld. Each
+          tree is laid out in code from the family's own kinship, and every limb is as thick as the family it
+          carries. The orchard is built with three.js and React. The astronomy is SunCalc's; the stars are the Yale
+          Bright Star Catalogue (Hoffleit &amp; Warren, 1991); the planets follow JPL's approximate Keplerian elements
+          (Standish) with magnitudes from Mallama &amp; Hilton (2018); the moon is NASA's Lunar Reconnaissance
+          Orbiter color mosaic.
         </p>
       </div>
       </div>

@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { DEFAULT_MOOT_WORKER } from "./preferences";
 import { SEASON_ORDER, SEASONS, type SeasonName } from "./seasons";
-import { canSpeak, mootVoiceNames, onVoicesChanged, unlockSpeech } from "./speech";
-import { USER_GUIDE_URL } from "./links";
+import { unlockSpeech } from "./speech";
 import { useGame } from "./store";
 import { weather, weatherName } from "./weather";
 
@@ -68,13 +66,6 @@ export function PauseOverlay() {
             if (e.target.checked) unlockSpeech(true);
           }} />
         </label>
-        <label className="flex items-center justify-between gap-4">Read moots aloud
-          <input type="checkbox" checked={prefs.speakMoots} onChange={(e) => {
-            setPreferences({ speakMoots: e.target.checked });
-            if (e.target.checked) unlockSpeech(true);
-          }} />
-        </label>
-        {prefs.speakMoots && canSpeak() && <MootVoiceChoice />}
         <label className="flex items-center justify-between gap-4">Silent mode · no pop-up cards
           <input type="checkbox" checked={prefs.silent} onChange={(e) => setPreferences({ silent: e.target.checked })} />
         </label>
@@ -103,62 +94,17 @@ export function PauseOverlay() {
           <input type="checkbox" checked={prefs.weather} onChange={(e) => setPreferences({ weather: e.target.checked })} />
         </label>
       </div>
-      <h3 className="mb-3 text-xs tracking-[0.2em] text-primary uppercase">Live moots</h3>
-      <div className="mb-5 grid gap-4 text-sm">
-        <label className="grid gap-2">
-          <span>GutenbergKG worker<span className="block text-xs text-muted">Holds a new moot and makes each turn. See the Moots guide.</span></span>
-          <input type="url" value={prefs.mootWorker} spellCheck={false} placeholder={DEFAULT_MOOT_WORKER}
-            onChange={(e) => setPreferences({ mootWorker: e.target.value })} className="rounded-md border border-border bg-bg p-2" />
-        </label>
-        <label className="grid gap-2">
-          <span>Moot token<span className="block text-xs text-muted">Only if the worker sets MOOT_TOKEN</span></span>
-          <input type="password" value={prefs.mootToken} autoComplete="off"
-            onChange={(e) => setPreferences({ mootToken: e.target.value })} className="rounded-md border border-border bg-bg p-2" />
-        </label>
-      </div>
       <div className="rounded-md bg-bg p-3 text-sm leading-relaxed text-muted">
         <p><span className="text-fg">WASD</span> drive · <span className="text-fg">Drag</span> or <span className="text-fg">arrows</span> look around · <span className="text-fg">Space</span> brake</p>
-        <p><span className="text-fg">Shift</span> hurry · <span className="text-fg">E</span> read · <span className="text-fg">C</span> camera</p>
-        <p><span className="text-fg">G</span> groves · <span className="text-fg">B</span> books · <span className="text-fg">H</span> home · <span className="text-fg">Q</span> guided tour · <span className="text-fg">?</span> about</p>
+        <p><span className="text-fg">Shift</span> hurry · <span className="text-fg">E</span> album · <span className="text-fg">C</span> camera</p>
+        <p><span className="text-fg">G</span> groves · <span className="text-fg">B</span> lines · <span className="text-fg">H</span> home · <span className="text-fg">Q</span> guided tour · <span className="text-fg">?</span> about</p>
         <p className="mt-2 text-xs">Release the throttle to stop. You can turn in place. On a phone, the stick drives and a drag anywhere else looks. Gamepad: left stick to drive, right stick to look around, A to read, LT to brake, RT to hurry.</p>
       </div>
-      <p className="mt-4 text-center text-sm text-muted">
-        <a href={USER_GUIDE_URL} target="_blank" rel="noopener" className="text-primary underline">Read the user guide</a>
-      </p>
       <button type="button" className="mt-3 min-h-11 w-full rounded-md border border-border text-muted"
-        onClick={() => { if (window.confirm("Reset every setting on this device, including the tour welcome? Your press and visited groves are kept.")) resetSettings(); }}>
+        onClick={() => { if (window.confirm("Reset every setting on this device, including the tour welcome? Your album and visited groves are kept.")) resetSettings(); }}>
         Reset all settings
       </button>
       <button ref={back} type="button" className="mt-5 min-h-11 w-full rounded-md bg-primary text-primary-fg" onClick={resume}>Back to the forest</button>
     </dialog>
   );
-}
-
-/**
- * The two moot voices, each "Automatic" unless the listener picks one of this
- * browser's English voices. The list fills in once the browser has loaded it.
- */
-function MootVoiceChoice() {
-  const voices = useGame((s) => s.preferences.mootVoices);
-  const setPreferences = useGame((s) => s.setPreferences);
-  const [names, setNames] = useState(mootVoiceNames);
-  useEffect(() => onVoicesChanged(() => setNames(mootVoiceNames())), []);
-  const choose = (i: 0 | 1, name: string) => {
-    const next: [string, string] = [voices[0], voices[1]];
-    next[i] = name;
-    setPreferences({ mootVoices: next });
-  };
-  return (<>
-    {(["First tree's voice", "Second tree's voice"] as const).map((label, i) => (
-      <label key={label} className="flex items-center justify-between gap-4 pl-4 text-muted">{label}
-        <select value={voices[i]} onChange={(e) => choose(i as 0 | 1, e.target.value)}
-          className="max-w-48 rounded-md border border-border bg-bg p-2 text-fg">
-          <option value="">Automatic</option>
-          {/* A chosen voice this browser lacks stays listed, so the choice is visible. */}
-          {voices[i] && !names.includes(voices[i]) && <option value={voices[i]}>{voices[i]} (not here)</option>}
-          {names.map((n) => <option key={n} value={n}>{n}</option>)}
-        </select>
-      </label>
-    ))}
-  </>);
 }

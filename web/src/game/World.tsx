@@ -14,7 +14,6 @@ import { annulus, disc, ribbon, type FlatMesh } from "./roads";
 import { CorpusRedwood } from "./CorpusRedwood";
 import { GlassPit, MarriageArcs } from "./GlassPit";
 import { Cart } from "./Cart";
-import { FlameOfKnowledge } from "./FlameOfKnowledge";
 import { GroveMarks } from "./GroveMarks";
 import { Mysterium } from "./Mysterium";
 import { Signposts } from "./Signposts";
@@ -24,7 +23,7 @@ import { sim } from "./sim";
 import { useGame } from "./store";
 import { tourAhead, tourState } from "./tour";
 import { fogMix, stepWeather, weather, weatherAt, weatherOverride } from "./weather";
-import { DarrieusSculpture, DnaSculpture, HelixSculpture, SavoniusSculpture, WeatherMast } from "./WindSculptures";
+import { DnaSculpture } from "./WindSculptures";
 
 const dummy = new Object3D();
 const gray = new Color();
@@ -32,12 +31,7 @@ const CLEAR = { fogDensity: 0, cloud: 0, kind: "clear" as const };
 
 const EXHIBIT_VIEWS: Record<string, ComponentType<{ exhibit: Exhibit }>> = {
   mysterium: Mysterium,
-  flame: FlameOfKnowledge,
-  helix: HelixSculpture,
-  darrieus: DarrieusSculpture,
-  savonius: SavoniusSculpture,
   dna: DnaSculpture,
-  mast: WeatherMast,
   sundial: Sundial,
 };
 const TRAIL_N = 20;
