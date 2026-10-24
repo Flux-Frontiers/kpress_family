@@ -2,7 +2,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import { Group, MathUtils, PerspectiveCamera, Vector3 } from "three";
 import { Cart, WHEEL_R } from "./Cart";
-import { cartLoad, NEUTRAL_SPINE } from "./cartLoad";
+import { cartLoad, NEUTRAL_COVER } from "./cartLoad";
 import { EXPOSURE } from "./Environment";
 import { atGroveStop, treesNear, type Forest } from "./forest";
 import { addDragLook, resetInput, sampleActions, setDragging } from "./input";
@@ -69,9 +69,9 @@ export function Player({ forest, playing }: { forest: Forest; playing: boolean }
   const setPose = useGame((s) => s.setPose);
   const library = useGame((s) => s.library);
 
-  // Each grove's color, by slug, so the cargo matches the trees it was pressed from.
-  const spineColors = useMemo(() => new Map(forest.trees.map((t) => [t.line.slug, t.color])), [forest]);
-  const load = useMemo(() => cartLoad(library, (slug) => spineColors.get(slug) ?? NEUTRAL_SPINE), [library, spineColors]);
+  // Each grove's color, by line, so an album's cover matches the tree it came from.
+  const coverColors = useMemo(() => new Map(forest.trees.map((t) => [t.line.slug, t.color])), [forest]);
+  const load = useMemo(() => cartLoad(library, (slug) => coverColors.get(slug) ?? NEUTRAL_COVER), [library, coverColors]);
 
   const lanternColor = useMemo(() => "#f3e6c2", []);
   const gl = useThree((s) => s.gl);

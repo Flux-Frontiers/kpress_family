@@ -1,24 +1,30 @@
 /**
- * The lantern cart's cargo: where each pressed book rides in the bed.
+ * The lantern cart's cargo: the family albums the rider has collected, one
+ * per line added to the album, lying flat in stacks in the bed.
  *
  * Pure layout, no React or three, so the tests can run it. Slot k belongs to
- * the k-th book pressed, and depends only on k and that book's slug, so
- * pressing one more book adds one book and never moves the others.
+ * the k-th line added, and depends only on k and that line's slug, so adding
+ * one more line adds one album and never moves the others.
+ *
+ * An album is a landscape volume, wider than tall: a cover in its grove's
+ * color, top and bottom, with a spine along one long edge, a cream page block
+ * between, and brass caps on the two fore-edge corners. Each part is a box,
+ * so the cart draws every album as one InstancedMesh (Cart.tsx).
  *
  * The cart's local frame has forward as +z and the bed floor at y = 0.53. The
- * bed is 1.04 m wide between the side rails and runs from the tailboard to
- * the front board. The load is capped at LOAD_CAP, below the seat camera
- * (1.65 m) and the behind camera, and below the lamp (bottom about 1.13 m)
- * wherever the lamp is within reach of a book.
+ * bed runs 1.04 m between the side rails and from the tailboard to the front
+ * board. Albums stand in three columns across it and six rows along it, clear
+ * of the lantern's hook at the front left, and stack no higher than LOAD_CAP,
+ * below the lamp (bottom about 1.13 m) and the seat camera (1.65 m).
  */
 
-/** One book in the cart, as a box placed in the cart's local frame. */
-export type CartBook = {
+/** One box of the load, placed in the cart's local frame. */
+export type CartBox = {
   /** Center of the box in the cart's local frame, m. Forward is +z. */
   x: number;
   y: number;
   z: number;
-  /** Box size: thickness (spine width), height, depth, m. */
+  /** Box size along its own x, y and z, m. */
   w: number;
   h: number;
   d: number;
@@ -30,43 +36,56 @@ export type CartBook = {
 
 /** The top of the bed floor, m: the planks' upper face. */
 export const BED_FLOOR = 0.53;
-/** No book rises above this, m. */
+/** No album rises above this, m. */
 export const LOAD_CAP = 1.2;
 
-/** Standing rows: books on their feet, spine to the tailboard, across the bed. */
-const STANDING_COLS = 11;
-const STANDING_ROWS = 7;
-const STANDING_PITCH_X = 0.094;
-const STANDING_PITCH_Z = 0.215;
-/** Center of the first standing row, m: just clear of the tailboard. */
-const STANDING_Z0 = -0.695;
+/** Albums across the bed, along it, and stacked. */
+const COLS = 3;
+const ROWS = 6;
+const LAYERS = 9;
+const COL_PITCH = 0.34;
+const ROW_PITCH = 0.27;
+/** Center of the first row, m: just clear of the tailboard. */
+const ROW_Z0 = -0.74;
+const LAYER_PITCH = 0.058;
 
-/** Flat stacks: a regular grid of three columns, a few layers deep. */
-const STACK_COLS = 3;
-const STACK_ROWS = 8;
-const STACK_LAYERS = 3;
-const STACK_PITCH_X = 0.345;
-/** The heap: four columns that overhang the side rails, laid on the stacks. */
-const HEAP_COLS = 4;
-const HEAP_LAYERS = 4;
-const HEAP_PITCH_X = 0.315;
-/** Row pitch and first row center for the flat grids, m. */
-const FLAT_PITCH_Z = 0.1875;
-const FLAT_Z0 = -0.80 + FLAT_PITCH_Z / 2;
-/** Vertical pitch of the flat layers, m. */
-const LAYER_PITCH = 0.045;
-/** The flat layers rest on this height: above the tallest standing book (0.53 + 0.32) and the rails. */
-const SHELF = 0.86;
+/** An album's size: across the bed, along it, and thick, m. */
+const ALBUM_W = 0.31;
+const ALBUM_D = 0.24;
+const ALBUM_T = 0.052;
+const COVER = 0.006;
+const SPINE = 0.01;
+/** Pages stand in from the cover's three open edges by this much, m. */
+const PAGE_INSET = 0.006;
+const CORNER = 0.035;
 
-const STANDING_COUNT = STANDING_COLS * STANDING_ROWS;
-const STACK_COUNT = STACK_COLS * STACK_ROWS * STACK_LAYERS;
-const HEAP_COUNT = HEAP_COLS * STACK_ROWS * HEAP_LAYERS;
+/** Boxes drawn for each album. */
+export const ALBUM_PARTS = 6;
+/** How many albums the cart holds; lines added past this are not drawn. */
+export const CART_ALBUMS = COLS * ROWS * LAYERS;
+/** How many boxes the cart draws at most. */
+export const CART_CAPACITY = CART_ALBUMS * ALBUM_PARTS;
 
-/** How many books the cart holds; pressed books past this are not drawn. */
-export const CART_CAPACITY = STANDING_COUNT + STACK_COUNT + HEAP_COUNT;
+/** The cover of an album whose line the caller cannot place. */
+export const NEUTRAL_COVER = "#6b5a46";
+const PAGES = "#efe6cf";
+const BRASS = "#b08a3e";
+/** Covers are the grove's color tanned toward this brown, by LEATHER_TAN: leather, not paint. */
+const LEATHER = [0x3a, 0x26, 0x18];
+const LEATHER_TAN = 0.5;
 
-/** The color of a book whose slug the caller cannot place. */
-export const NEUTRAL_SPINE = "#6b5a46";
+/**
+ * A grove color as album leather: blended toward a dark brown, so the
+ * grove's hue survives but a pastel reads as a bound cover.
+ *
+ * :param hex: "#rrggbb".
+ */
+export function leather(hex: string): string {
+  const v = parseInt(hex.slice(1), 16);
+  if (!/^#[0-9a-f]{6}$/i.test(hex) || Number.isNaN(v)) return hex;
+  const rgb = [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+  return "#" + rgb.map((c, i) => Math.round(c + (LEATHER[i]! - c) * LEATHER_TAN).toString(16).padStart(2, "0")).join("");
+}
 
 /** A 32-bit FNV-1a hash of a string. */
 function hashSlug(s: string): number {
@@ -79,10 +98,10 @@ function hashSlug(s: string): number {
 }
 
 /**
- * A repeatable number in [0, 1) for one purpose of one book.
+ * A repeatable number in [0, 1) for one purpose of one album.
  *
- * :param hash: the book's slug hash.
- * :param salt: which quantity this is, so sizes and angles are independent.
+ * :param hash: the line's slug hash.
+ * :param salt: which quantity this is, so offsets and angles are independent.
  */
 function unit(hash: number, salt: number): number {
   let h = (hash ^ Math.imul(salt + 1, 0x9e3779b1)) >>> 0;
@@ -101,9 +120,9 @@ function between(a: number, b: number, t: number): number {
  * Half the size of the box's bounding box in the cart's frame, m. The box is
  * rotated about z by lean, then about y by yaw.
  *
- * :param b: the book, of which only the size and the two angles are read.
+ * :param b: the box, of which only the size and the two angles are read.
  */
-export function cartBookHalfExtents(b: Pick<CartBook, "w" | "h" | "d" | "yaw" | "lean">): { x: number; y: number; z: number } {
+export function cartBoxHalfExtents(b: Pick<CartBox, "w" | "h" | "d" | "yaw" | "lean">): { x: number; y: number; z: number } {
   const cy = Math.abs(Math.cos(b.yaw));
   const sy = Math.abs(Math.sin(b.yaw));
   const cl = Math.abs(Math.cos(b.lean));
@@ -119,91 +138,52 @@ export function cartBookHalfExtents(b: Pick<CartBook, "w" | "h" | "d" | "yaw" | 
   };
 }
 
-/** A box with its center placed so its lowest point rests on `base`. */
-function restingOn(base: number, book: Omit<CartBook, "y">): CartBook {
-  return { ...book, y: base + cartBookHalfExtents(book).y };
-}
-
-/** A book standing on the bed floor, spine to the tailboard, in standing slot k. */
-function standing(k: number, hash: number, color: string): CartBook {
-  const col = k % STANDING_COLS;
-  const row = Math.floor(k / STANDING_COLS);
-  return restingOn(BED_FLOOR, {
-    x: (col - (STANDING_COLS - 1) / 2) * STANDING_PITCH_X + between(-0.003, 0.003, unit(hash, 5)),
-    z: STANDING_Z0 + row * STANDING_PITCH_Z + between(-0.004, 0.004, unit(hash, 6)),
-    w: between(0.05, 0.09, unit(hash, 0)),
-    h: between(0.22, 0.32, unit(hash, 1)),
-    d: between(0.17, 0.21, unit(hash, 2)),
-    yaw: between(-0.03, 0.03, unit(hash, 3)),
-    lean: between(-0.05, 0.05, unit(hash, 4)),
-    color,
+/**
+ * The boxes of the album in slot k: its covers, spine, pages and corners,
+ * all turned together by the album's small yaw about its own center.
+ */
+function album(k: number, hash: number, color: string): CartBox[] {
+  const col = k % COLS;
+  const row = Math.floor(k / COLS) % ROWS;
+  const layer = Math.floor(k / (COLS * ROWS));
+  const cx = (col - (COLS - 1) / 2) * COL_PITCH + between(-0.008, 0.008, unit(hash, 0));
+  const cz = ROW_Z0 + row * ROW_PITCH + between(-0.006, 0.006, unit(hash, 1));
+  const cy = BED_FLOOR + layer * LAYER_PITCH + ALBUM_T / 2;
+  const yaw = between(-0.05, 0.05, unit(hash, 2));
+  const cos = Math.cos(yaw), sin = Math.sin(yaw);
+  // A part offset (dx, dy, dz) from the album's center, sized w x h x d.
+  const part = (dx: number, dy: number, dz: number, w: number, h: number, d: number, c: string): CartBox => ({
+    x: cx + dx * cos + dz * sin,
+    y: cy + dy,
+    z: cz - dx * sin + dz * cos,
+    w, h, d, yaw, lean: 0, color: c,
   });
+  const half = { w: ALBUM_W / 2, t: ALBUM_T / 2, d: ALBUM_D / 2 };
+  const pageH = ALBUM_T - 2 * COVER;
+  // The spine runs along the album's left long edge (-x); the fore edge is +x.
+  const pageW = ALBUM_W - SPINE - PAGE_INSET;
+  return [
+    part(0, -half.t + COVER / 2, 0, ALBUM_W, COVER, ALBUM_D, color),
+    part(0, half.t - COVER / 2, 0, ALBUM_W, COVER, ALBUM_D, color),
+    part(-half.w + SPINE / 2, 0, 0, SPINE, pageH, ALBUM_D, color),
+    part(-half.w + SPINE + pageW / 2, 0, 0, pageW, pageH, ALBUM_D - 2 * PAGE_INSET, PAGES),
+    part(half.w - CORNER / 2, 0, half.d - CORNER / 2, CORNER, ALBUM_T + 0.002, CORNER, BRASS),
+    part(half.w - CORNER / 2, 0, -half.d + CORNER / 2, CORNER, ALBUM_T + 0.002, CORNER, BRASS),
+  ];
 }
 
 /**
- * A book lying flat in a grid cell, its length across the bed. The box is
- * turned a quarter about z, so its height runs along x and its thickness up.
+ * Lay out the collected albums in the cart's bed, slot k for the k-th line
+ * added: a layer of eighteen on the floor, then the next layer on top, and so
+ * on. Past CART_ALBUMS the extra lines are not drawn.
  *
- * :param cell: column, row and layer of the cell; columns count from the left.
- * :param cols: columns in this grid.
- * :param pitchX: column pitch, m.
- * :param yawMax: largest yaw off square, radians.
- * :param rollMax: largest roll off flat, radians; the book then leans on its neighbor.
+ * :param slugs: the lines in the album, in the order they were added.
+ * :param colorOf: a line's grove color, by slug; its album wears it as leather.
+ * :returns: ALBUM_PARTS boxes per album, album by album.
  */
-function lying(
-  cell: { col: number; row: number; layer: number },
-  cols: number,
-  pitchX: number,
-  yawMax: number,
-  rollMax: number,
-  hash: number,
-  color: string,
-): CartBook {
-  return restingOn(SHELF + cell.layer * LAYER_PITCH, {
-    x: (cell.col - (cols - 1) / 2) * pitchX + between(-0.006, 0.006, unit(hash, 5)),
-    z: FLAT_Z0 + cell.row * FLAT_PITCH_Z + between(-0.004, 0.004, unit(hash, 6)),
-    w: between(0.04, 0.045, unit(hash, 0)),
-    h: between(0.22, 0.27, unit(hash, 1)),
-    d: between(0.15, 0.165, unit(hash, 2)),
-    yaw: between(-yawMax, yawMax, unit(hash, 3)),
-    lean: Math.PI / 2 + between(-rollMax, rollMax, unit(hash, 4)),
-    color,
-  });
-}
-
-/**
- * Lay out the pressed books in the cart's bed, slot k for the k-th book pressed.
- *
- * The first books stand in rows across the bed from the tailboard forward,
- * the next lie in stacks on a shelf above them, and the rest are heaped on top,
- * wedged at angles and overhanging the side rails. Past CART_CAPACITY the
- * extra books are dropped.
- *
- * :param slugs: the pressed books in the order they were pressed.
- * :param colorOf: the spine color of a book, by slug.
- */
-export function cartLoad(slugs: readonly string[], colorOf: (slug: string) => string): CartBook[] {
-  const out: CartBook[] = [];
-  const n = Math.min(slugs.length, CART_CAPACITY);
-  for (let k = 0; k < n; k++) {
-    const slug = slugs[k]!;
-    const hash = hashSlug(slug);
-    const color = colorOf(slug);
-    if (k < STANDING_COUNT) {
-      out.push(standing(k, hash, color));
-    } else if (k < STANDING_COUNT + STACK_COUNT) {
-      const i = k - STANDING_COUNT;
-      const perLayer = STACK_COLS * STACK_ROWS;
-      const layer = Math.floor(i / perLayer);
-      const cell = { col: i % STACK_COLS, row: Math.floor((i % perLayer) / STACK_COLS), layer };
-      out.push(lying(cell, STACK_COLS, STACK_PITCH_X, 0.06, 0, hash, color));
-    } else {
-      const i = k - STANDING_COUNT - STACK_COUNT;
-      const perLayer = HEAP_COLS * STACK_ROWS;
-      const layer = STACK_LAYERS + Math.floor(i / perLayer);
-      const cell = { col: i % HEAP_COLS, row: Math.floor((i % perLayer) / HEAP_COLS), layer };
-      out.push(lying(cell, HEAP_COLS, HEAP_PITCH_X, 0.12, 0.03, hash, color));
-    }
-  }
+export function cartLoad(slugs: readonly string[], colorOf: (slug: string) => string): CartBox[] {
+  const out: CartBox[] = [];
+  const n = Math.min(slugs.length, CART_ALBUMS);
+  for (let k = 0; k < n; k++) out.push(...album(k, hashSlug(slugs[k]!), leather(colorOf(slugs[k]!))));
   return out;
 }

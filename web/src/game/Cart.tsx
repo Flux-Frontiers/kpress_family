@@ -1,10 +1,11 @@
-import { forwardRef, useLayoutEffect, useMemo, useRef } from "react";
+import { forwardRef, useLayoutEffect, useRef } from "react";
 import { Color, Object3D, type Group, type InstancedMesh } from "three";
-import { CART_CAPACITY, type CartBook } from "./cartLoad";
+import { CART_CAPACITY, type CartBox } from "./cartLoad";
 
 /**
- * The lantern cart: a small oak book wagon, the reader's own vehicle, and the
- * figure that stands beside each tree in the book gallery for scale.
+ * The lantern cart: a small oak wagon, the rider's own vehicle, carrying the
+ * family albums collected on the way, and the figure that stands beside each
+ * tree in the line gallery for scale.
  *
  * Forward is +z. It is 1.9 m long, 1.2 m wide over the wheels and 1.5 m to
  * the top of the lantern hook; CART_SIZE states it for the gallery page.
@@ -18,7 +19,6 @@ const OAK = "#8a5a36";
 const OAK_DARK = "#5e3b22";
 const IRON = "#2b2d30";
 const BRASS = "#b08a3e";
-const SPINES = ["#7a2e2e", "#2e3a5a", "#3d4a32", "#6b4a1e", "#4a2e4a", "#8a6a2a", "#2e4a4a"];
 
 /** A spoked wheel in the yz plane, turning about x: iron tire, oak spokes, a hub. */
 const Wheel = forwardRef<Group, { r: number; spokes: number; position: [number, number, number] }>(
@@ -52,10 +52,10 @@ type CartProps = {
   wheelLeft?: React.Ref<Group>;
   wheelRight?: React.Ref<Group>;
   /**
-   * The pressed books to carry, from cartLoad. Omitted, the cart carries the
-   * fixed cargo the gallery's parked cart shows.
+   * The family albums to carry, from cartLoad. Omitted, as for the gallery's
+   * parked cart, the bed is empty.
    */
-  load?: readonly CartBook[];
+  load?: readonly CartBox[];
 };
 
 const WHITE = new Color("#ffffff");
@@ -63,12 +63,12 @@ const placer = new Object3D();
 const tint = new Color();
 
 /**
- * The pressed books as one InstancedMesh: a unit box scaled, turned and
- * colored per instance, so any number of books is one draw call.
+ * The albums as one InstancedMesh: a unit box scaled, turned and colored per
+ * instance, so every part of every album is one draw call.
  *
- * :param load: the books to draw, at most CART_CAPACITY.
+ * :param load: the boxes to draw, at most CART_CAPACITY.
  */
-function CartCargo({ load }: { load: readonly CartBook[] }) {
+function CartCargo({ load }: { load: readonly CartBox[] }) {
   const mesh = useRef<InstancedMesh>(null);
 
   useLayoutEffect(() => {
@@ -91,7 +91,7 @@ function CartCargo({ load }: { load: readonly CartBook[] }) {
     m.count = load.length;
   }, [load]);
 
-  // The bounding sphere is one unit box's, so the books would be culled from the seat.
+  // The bounding sphere is one unit box's, so the albums would be culled from the seat.
   return (
     <instancedMesh ref={mesh} args={[undefined, undefined, CART_CAPACITY]} frustumCulled={false} castShadow>
       <boxGeometry args={[1, 1, 1]} />
@@ -101,14 +101,6 @@ function CartCargo({ load }: { load: readonly CartBook[] }) {
 }
 
 export function Cart({ lanternColor = "#f3e6c2", light = true, wheelLeft, wheelRight, load }: CartProps) {
-  // A row of books standing in the bed, heights and widths varied by position.
-  const books = useMemo(() => Array.from({ length: 9 }, (_, k) => ({
-    x: -0.42 + k * 0.105,
-    w: 0.07 + ((k * 37) % 5) * 0.008,
-    h: 0.24 + ((k * 53) % 7) * 0.018,
-    color: SPINES[(k * 3) % SPINES.length]!,
-  })), []);
-
   return (
     <group>
       {/* Bed: planks over two iron-shod runners. */}
@@ -150,23 +142,8 @@ export function Cart({ lanternColor = "#f3e6c2", light = true, wheelLeft, wheelR
         <meshStandardMaterial color={OAK_DARK} roughness={0.8} />
       </mesh>
 
-      {/* The press's cargo: the pressed books, or for the gallery's cart a row standing and a stack lying flat. */}
-      {load ? <CartCargo load={load} /> : (
-        <>
-          {books.map((b) => (
-            <mesh key={b.x} position={[b.x, 0.53 + b.h / 2, -0.55]} castShadow>
-              <boxGeometry args={[b.w, b.h, 0.2]} />
-              <meshStandardMaterial color={b.color} roughness={0.7} />
-            </mesh>
-          ))}
-          {[0, 1, 2].map((k) => (
-            <mesh key={k} position={[0.18, 0.56 + k * 0.06, 0.05]} rotation={[0, 0.12 * (k - 1), 0]} castShadow>
-              <boxGeometry args={[0.36 - k * 0.03, 0.055, 0.26 - k * 0.02]} />
-              <meshStandardMaterial color={SPINES[(k * 2 + 1) % SPINES.length]} roughness={0.7} />
-            </mesh>
-          ))}
-        </>
-      )}
+      {/* The family albums collected on the way. */}
+      {load ? <CartCargo load={load} /> : null}
 
       {/* The lantern: an iron shepherd's hook at the front, a brass-capped lamp hanging from it. */}
       <mesh position={[-0.46, 0.98, 0.84]} castShadow>

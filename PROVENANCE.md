@@ -52,4 +52,3 @@ support pages. The Cosmographium, the Double Helix and the sundial were kept.
 - `public/start/`: the start screen's stills are still of the book forest.
 - Grove marks: every surname grove shows the same globe glyph, since the
   glyphs are keyed by book genre.
-- The cart carries the album as the forest carried pressed books.
