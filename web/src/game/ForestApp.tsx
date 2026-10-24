@@ -8,8 +8,9 @@ import { TouchControls } from "./TouchControls";
 import { installControlsTest } from "./controlsTest";
 import { treeFromSearch } from "./deepLink";
 import { commonFrame, portraitPose, shotSlug, treeExtent, type Extent, type Frame } from "./portrait";
-import { indexCatalog, loadFamilyCatalog, type FamilyCatalog } from "./familyCatalog";
-import { FAMILY_BASE } from "./FamilyReader";
+import { chooseFamily, indexCatalog, loadFamilyCatalog, loadFamilyIndex, type FamilyCatalog, type FamilyEntry } from "./familyCatalog";
+import { ASSET_ROOT } from "./FamilyReader";
+import { savedFamily } from "./familyChoice";
 import { richestFocal } from "./familyTree";
 import { getForest, treeApproach, type Forest } from "./forest";
 import { GROW_VERSION } from "./growTree";
@@ -25,15 +26,20 @@ export function ForestApp() {
   const [mounted, setMounted] = useState(false);
   const [forest, setForest] = useState<Forest | null>(null);
   const [family, setFamily] = useState<FamilyCatalog | null>(null);
+  const [families, setFamilies] = useState<FamilyEntry[]>([]);
+  const familySlug = useGame((s) => s.familySlug);
+  const entry = families.find((f) => f.slug === familySlug);
   // `?focal=<id>` opens on that person's hourglass; then the person chosen in
-  // the reader (setHome); otherwise whoever's shows the most family.
+  // the reader (setHome); then the family's own (FAMILY_FOCAL); otherwise
+  // whoever's shows the most family.
   const home = useGame((s) => s.home);
   const focal = useMemo(() => {
     if (!family) return "";
     const has = (id: string | null) => id !== null && family.people.some((p) => p.id === id);
     const asked = new URLSearchParams(window.location.search).get("focal");
-    return has(asked) ? asked! : has(home) ? home! : richestFocal(indexCatalog(family));
-  }, [family, home]);
+    const named = entry?.focal ?? null;
+    return has(asked) ? asked! : has(home) ? home! : has(named) ? named! : richestFocal(indexCatalog(family));
+  }, [family, home, entry?.focal]);
   const playing = useGame((s) => s.playing);
   const play = useGame((s) => s.play);
   const setToast = useGame((s) => s.setToast);
@@ -58,8 +64,20 @@ export function ForestApp() {
     return () => { unbind?.(); unlockSpeech(); };
   }, []);
 
+  // The family: `?family=<slug>`, else the one chosen last time, else the
+  // first in public/families/index.json; an export from before families is
+  // read from public/family/ alone.
   useEffect(() => {
-    loadFamilyCatalog(FAMILY_BASE).then(setFamily, (err: Error) => setToast(err.message));
+    const load = (slug: string, base: string) => {
+      useGame.getState().useFamily(slug, base);
+      return loadFamilyCatalog(base).then(setFamily);
+    };
+    loadFamilyIndex(ASSET_ROOT).catch(() => null).then((list) => {
+      if (!list) return load("family", `${ASSET_ROOT}family/`);
+      setFamilies(list);
+      const chosen = chooseFamily(list, new URLSearchParams(window.location.search).get("family"), savedFamily());
+      return load(chosen.slug, `${ASSET_ROOT}families/${chosen.slug}/`);
+    }).catch((err: Error) => setToast(err.message));
   }, [setToast]);
 
   // Grow in a worker, regrowing when leaf complexity changes; only the first
@@ -224,6 +242,8 @@ export function ForestApp() {
         </>
       ) : shot ? null : (
         <StartScreen
+          families={families}
+          family={familySlug}
           ready={Boolean(forest)}
           growing={!forest}
           opensAt={linked?.line.title}

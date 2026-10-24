@@ -148,6 +148,21 @@ export function defaultFocal(catalog: FamilyCatalog): string {
  * :param base: The directory URL holding catalog.json, with a trailing slash.
  * :throws: On a missing file or an export format this build does not read.
  */
+const ROMAN = /^(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})$/;
+
+/**
+ * A name as people write it: a word in capitals, the old GEDCOM way of
+ * marking a surname ("John Fitzgerald KENNEDY", "WASHINGTON"), in title case.
+ * Roman numerals ("Henry VIII") and single letters are left alone.
+ */
+export function tidyName(name: string): string {
+  return name.replace(/[A-Z][A-Z'-]+/g, (w) => {
+    if (ROMAN.test(w)) return w;
+    // "O'BRIEN-SMITH" -> "O'Brien-Smith": capitals after an apostrophe or hyphen stay.
+    return w[0] + w.slice(1).toLowerCase().replace(/([-'])([a-z])/g, (_, p: string, c: string) => p + c.toUpperCase());
+  });
+}
+
 export async function loadFamilyCatalog(base: string): Promise<FamilyCatalog> {
   const res = await fetch(`${base}catalog.json`);
   if (!res.ok) throw new Error(`no family at ${base}catalog.json (${res.status}); run make family`);
@@ -155,6 +170,11 @@ export async function loadFamilyCatalog(base: string): Promise<FamilyCatalog> {
   if (catalog.meta?.format !== FAMILY_FORMAT) {
     throw new Error(`catalog.json is export format ${catalog.meta?.format}; this build reads ${FAMILY_FORMAT}`);
   }
+  for (const p of catalog.people) {
+    p.name = tidyName(p.name);
+    if (p.surname) p.surname = tidyName(p.surname);
+  }
+  for (const l of catalog.lines) l.surname = tidyName(l.surname);
   return catalog;
 }
 
@@ -162,5 +182,36 @@ export async function loadFamilyCatalog(base: string): Promise<FamilyCatalog> {
 export async function loadPersonPage(base: string, id: string): Promise<PersonPage> {
   const res = await fetch(`${base}people/${encodeURIComponent(id)}.json`);
   if (!res.ok) throw new Error(`no page for ${id} (${res.status})`);
-  return (await res.json()) as PersonPage;
+  const page = (await res.json()) as PersonPage;
+  page.name = tidyName(page.name);
+  return page;
+}
+
+/** One family the app can show: a folder under public/families (scripts/families.mjs). */
+export type FamilyEntry = {
+  slug: string;
+  title: string;
+  people: number;
+  lines: number;
+  /** The person its home tree opens on (`make family FAMILY_FOCAL=`), if one was named. */
+  focal?: string;
+};
+
+/**
+ * Fetch the list of exported families.
+ *
+ * :param root: The app's base URL, with a trailing slash.
+ * :returns: The families, or null when there is no index (an export from
+ *     before families, in public/family/ alone).
+ */
+export async function loadFamilyIndex(root: string): Promise<FamilyEntry[] | null> {
+  const res = await fetch(`${root}families/index.json`);
+  if (!res.ok) return null;
+  const index = (await res.json()) as { families?: FamilyEntry[] };
+  return Array.isArray(index.families) && index.families.length ? index.families : null;
+}
+
+/** The family to show: the one asked for in the URL, else the last one chosen, else the first. */
+export function chooseFamily(families: readonly FamilyEntry[], asked: string | null, saved: string | null): FamilyEntry {
+  return families.find((f) => f.slug === asked) ?? families.find((f) => f.slug === saved) ?? families[0]!;
 }

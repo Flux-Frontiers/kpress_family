@@ -1,6 +1,8 @@
 import { BookOpen, Info, Route } from "lucide-react";
 import { COARSE_POINTER } from "./Environment";
 import { SEASONS, type SeasonName } from "./seasons";
+import type { FamilyEntry } from "./familyCatalog";
+import { switchFamily } from "./familyChoice";
 import { useGame } from "./store";
 
 /** The keys worth knowing before the first drive; About and the guide have the rest. */
@@ -21,11 +23,17 @@ const KEYS: [string[], string][] = [
  * today's season and sky (Player.tsx); after the Art Techno plaza's start.
  */
 export function StartScreen({
+  families,
+  family,
   ready,
   growing,
   opensAt,
   onEnter,
 }: {
+  /** Every exported family, for the choice of which to open; fewer than two shows no choice. */
+  families: FamilyEntry[];
+  /** The family shown. */
+  family: string | null;
   ready: boolean;
   growing: boolean;
   /** The title of the tree a `?tree=` link opens beside, if any. */
@@ -66,6 +74,18 @@ export function StartScreen({
             About
           </button>
         </div>
+
+        {families.length > 1 ? (
+          <label className="mt-5 flex max-w-sm items-center gap-3 text-sm text-muted">
+            Family
+            <select value={family ?? ""} onChange={(e) => switchFamily(e.target.value)}
+              className="min-w-0 flex-1 rounded-md border border-border bg-surface/80 p-2 text-base text-fg">
+              {families.map((f) => (
+                <option key={f.slug} value={f.slug}>{f.title} · {f.people.toLocaleString("en-US")} people</option>
+              ))}
+            </select>
+          </label>
+        ) : null}
 
         {COARSE_POINTER ? (
           <p className="mt-5 text-sm text-muted">The stick at bottom left drives; drag anywhere else to look around.</p>

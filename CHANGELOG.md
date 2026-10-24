@@ -8,8 +8,8 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- The web orchard, read from a `genkg export-web` family in
-  `web/public/family/`: one grove per surname, one tree per family line,
+- The web orchard, read from `genkg export-web` families in
+  `web/public/families/`: one grove per surname, one tree per family line,
   each tree's wood the line's parent-to-child links, with married-in
   spouses as twigs.
 - The home tree at the hub: one person's full hourglass, descendants as the
@@ -33,8 +33,13 @@ and the project uses [Semantic Versioning](https://semver.org/).
   their own colors so the diagram reads at night.
 - "Make this the home tree" in the record reader regrows the orchard around
   that person and remembers the choice; `?focal=` still overrides it.
-- `make family` and `make demo` (the public Kennedy sample), both through
-  genealogy_kg with the living-person filter on.
+- Several families: a choice on the start screen and `?family=`, each with
+  its own album, groves visited and home person, and a home person of its
+  own by default. `make family FAMILY=<slug>` adds one; `make demos` builds
+  the Kennedys, the Tudors and George Washington's family from
+  genealogy_kg's corpus, all with the living-person filter on.
+- Names written in capitals (the old GEDCOM way of marking a surname) read
+  in title case; roman numerals stay.
 - Privacy tests over the committed fixtures and git.
 
 ### Removed

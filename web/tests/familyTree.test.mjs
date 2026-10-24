@@ -218,3 +218,14 @@ test("the lantern finds a line by any member's name, birthplace or year, every w
   const place = catalog.places.find((p) => p.id === index.person.get("I1").birth_place);
   if (place) assert.ok(lineMatchesQuery(hartwell, place.name.split(",")[0]), "a birthplace");
 });
+
+test("names in capitals read in title case; roman numerals stay", () => {
+  const { tidyName } = require(`${build}/familyCatalog.js`);
+  assert.equal(tidyName("John Fitzgerald KENNEDY"), "John Fitzgerald Kennedy");
+  assert.equal(tidyName("WASHINGTON"), "Washington");
+  assert.equal(tidyName("Henry VIII"), "Henry VIII");
+  assert.equal(tidyName("Louis XIV de BOURBON"), "Louis XIV de Bourbon");
+  assert.equal(tidyName("Mary O'BRIEN-SMITH"), "Mary O'Brien-Smith");
+  assert.equal(tidyName("Rose Elizabeth Fitzgerald"), "Rose Elizabeth Fitzgerald");
+  assert.equal(tidyName("John F. Kennedy Jr."), "John F. Kennedy Jr.");
+});

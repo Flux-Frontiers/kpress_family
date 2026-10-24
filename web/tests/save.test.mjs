@@ -105,3 +105,35 @@ test("exit goes back to the start screen with every panel shut and the tour over
   assert.equal(st().helpOpen, false);
   assert.equal(st().query, "");
 });
+
+test("each family keeps its own album, groves and home person; settings are shared", () => {
+  const store = new Map();
+  globalThis.window = { localStorage: { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) } };
+  const { useGame } = require(`${process.env.FOREST_TEST_BUILD}/store.js`);
+  const st = () => useGame.getState();
+  st().useFamily("kennedy", "/families/kennedy/");
+  st().emptyPress();
+  st().collect("kennedy-I120", "The Kennedy line");
+  st().setHome("I125");
+  st().setPreferences({ camera: "god" });
+  st().useFamily("tudors", "/families/tudors/");
+  // A family never opened starts empty: person ids repeat across families.
+  assert.deepEqual(st().library, []);
+  assert.equal(st().home, null);
+  st().collect("tudor-I1", "The Tudor line");
+  assert.deepEqual(st().library, ["tudor-I1"]);
+  st().useFamily("kennedy", "/families/kennedy/");
+  assert.deepEqual(st().library, ["kennedy-I120"]);
+  assert.equal(st().home, "I125");
+  assert.equal(st().familyBase, "/families/kennedy/");
+  assert.equal(st().preferences.camera, "god");
+  assert.deepEqual(JSON.parse(store.get("kpf-family-v1:tudors")).library, ["tudor-I1"]);
+});
+
+test("the family shown: the URL's, else the last chosen, else the first", () => {
+  const { chooseFamily } = require(`${process.env.FOREST_TEST_BUILD}/familyCatalog.js`);
+  const fams = [{ slug: "kennedy" }, { slug: "tudors" }, { slug: "washington" }];
+  assert.equal(chooseFamily(fams, "tudors", "washington").slug, "tudors");
+  assert.equal(chooseFamily(fams, "nobody", "washington").slug, "washington");
+  assert.equal(chooseFamily(fams, null, null).slug, "kennedy");
+});
