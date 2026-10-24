@@ -44,6 +44,12 @@ and the project uses [Semantic Versioning](https://semver.org/).
   own by default. `make family FAMILY=<slug>` adds one; `make demos` builds
   the Kennedys, the Tudors and George Washington's family from
   genealogy_kg's corpus, all with the living-person filter on.
+- Each grove's stop plaza carries a monogram of its surname's initial in a
+  script face (Pinyon Script), from one shared atlas; the band and disc are
+  geometry, so the marks cost one texture however many groves there are.
+- Signpost faces have textures only within 70 m of the cart, and the species
+  plates are shared across signs: a family's sign memory is bounded by what
+  stands near you, not by its size.
 - Names written in capitals (the old GEDCOM way of marking a surname) read
   in title case; roman numerals stay.
 - Privacy tests over the committed fixtures and git.
