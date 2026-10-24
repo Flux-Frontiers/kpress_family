@@ -13,6 +13,8 @@ import { useNightLamps } from "./Uplights";
  * lights are added.
  */
 const LAMP_GLOW = "#ffe8c0";
+/** A grove signpost is drawn at this fraction of its modelled size (3 m wide, 3 m tall), so it stands below the crowns it names. */
+const SIGN_SCALE = 0.6;
 
 function canvasTexture(canvas: HTMLCanvasElement): CanvasTexture {
   const tex = new CanvasTexture(canvas);
@@ -231,7 +233,7 @@ function Signpost({
 
   // Tapping the sign lists the grove's books.
   return (
-    <group position={[x, 0, z]} rotation={[0, yaw, 0]}
+    <group position={[x, 0, z]} rotation={[0, yaw, 0]} scale={SIGN_SCALE}
       onClick={(e) => { e.stopPropagation(); useGame.getState().openCatalog(grove.genre); }}
       onPointerOver={() => { document.body.style.cursor = "pointer"; }}
       onPointerOut={() => { document.body.style.cursor = ""; }}>
