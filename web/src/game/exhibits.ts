@@ -48,7 +48,7 @@ const RING_HALF = 1.7;
 const SPUR_ROAD_CLEAR = 3.6;
 /** Spur road showing between the ring's edge and the plaza's, shortest and longest. */
 const SPUR_MIN = 7;
-const SPUR_MAX = 18;
+const SPUR_MAX = 40;
 
 function segDist(x: number, z: number, ax: number, az: number, bx: number, bz: number) {
   const dx = bx - ax, dz = bz - az;

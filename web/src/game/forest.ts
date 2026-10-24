@@ -74,8 +74,13 @@ export const HUB_PLAZA_R = 10;
 const HUB_CLEAR = 18;
 /** A ring road's centreline to the edge of the groves outside it; a grove's stop is on the ring. */
 const GROVE_SETBACK = 1.4;
+/** How far past the outermost groves an exhibit may stand, m. */
+const EXHIBIT_ROOM = 30;
 /** Least clear ground between two groves. */
-const GROVE_GAP = 8;
+const GROVE_GAP = 4;
+/** A grove reaches this far past its widest crown, m, and is never smaller than GROVE_MIN_R. */
+const GROVE_MARGIN = 3;
+const GROVE_MIN_R = 5;
 /** Least clear ground from a spoke's centreline to a grove it passes between. */
 const SPOKE_LANE = 2;
 /** Ring roads are sampled about this far apart. */
@@ -237,16 +242,18 @@ const WOOD_CELL = 2;
  * crown first, each tree takes the innermost spot on a fine sunflower spiral
  * where its trunk keeps MIN_TRUNK_GAP and every branch keeps CROWN_GAP of air
  * from the trees already standing. Crowns may interleave (a small tree under a
- * big one's limbs) but never pass through each other. Returns trunk offsets
- * from the grove centre in `grown` order, and the farthest trunk's distance.
+ * big one's limbs) but never pass through each other. A lone tree stands at
+ * the centre. Returns trunk offsets from the grove centre in `grown` order,
+ * and how far the farthest crown reaches from the centre.
  */
-function shyLayout(grown: GrownTree[], inner: number): { pts: { x: number; z: number }[]; outer: number } {
+function shyLayout(grown: GrownTree[], inner: number): { pts: { x: number; z: number }[]; extent: number } {
   const n = grown.length;
   const reach = grown.map(({ skeleton: { nodes, n: m } }) => {
     let r = 0;
     for (let k = 0; k < m; k++) r = Math.max(r, Math.hypot(nodes[k * 3]!, nodes[k * 3 + 2]!));
     return r;
   });
+  if (n === 1) return { pts: [{ x: 0, z: 0 }], extent: reach[0]! };
   const order = [...Array(n).keys()].sort((a, b) => reach[b]! - reach[a]! || a - b);
   let cands = sunflower(n * 80 + 200, inner, 2).pts;
   const placed: { i: number; x: number; z: number }[] = [];
@@ -296,7 +303,7 @@ function shyLayout(grown: GrownTree[], inner: number): { pts: { x: number; z: nu
       break;
     }
   }
-  return { pts: out, outer: Math.max(0, ...out.map((p) => Math.hypot(p.x, p.z))) };
+  return { pts: out, extent: Math.max(0, ...out.map((p, i) => Math.hypot(p.x, p.z) + reach[i]!)) };
 }
 
 /** A signpost's centre from any road centreline: half the widest road (1.7 m), the cart (1.05 m), and a little. */
@@ -385,7 +392,7 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
   const bookInner = 6.5;
   const grownBy = genres.map((g) => byGenre.get(g)!.map((line) => lineGrown(lineTree(index, line.id), line.id)));
   const layouts = grownBy.map((g) => shyLayout(g, bookInner));
-  const groveRadius = (outer: number) => Math.max(14, outer) + 6;
+  const groveRadius = (extent: number) => Math.max(GROVE_MIN_R, extent + GROVE_MARGIN);
 
   // The home hourglass, and a hub wide enough for its glass pit and its crown.
   const home = hourglassTree(index, focal);
@@ -394,7 +401,7 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
   for (const person of home.people) if (person.y > 0) crownReach = Math.max(crownReach, Math.hypot(person.x, person.z));
   const hubPlazaR = Math.max(HUB_PLAZA_R, corpusTree.pitRadius + 2);
   const hubClear = Math.max(HUB_CLEAR, hubPlazaR + 8, crownReach + 6);
-  const wheel = wheelLayout(layouts.map((l) => groveRadius(l.outer)), {
+  const wheel = wheelLayout(layouts.map((l) => groveRadius(l.extent)), {
     hub: hubClear, setback: GROVE_SETBACK, gap: GROVE_GAP, lane: SPOKE_LANE, spokes: MAX_SPOKES,
   });
   // Turn the wheel so a spoke runs out behind home: the drive starts on the road.
@@ -416,7 +423,7 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
   genres.forEach((genre, gi) => {
     const books = booksBy.get(genre)!;
     const c = groveCenters[gi]!;
-    const bookOuter = Math.max(14, layouts[gi]!.outer);
+    const radius = groveRadius(layouts[gi]!.extent);
     const spots = layouts[gi]!.pts;
     const color = GENRE_PALETTE[gi % GENRE_PALETTE.length]!;
     groves.push({
@@ -424,7 +431,7 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
       label: books[0]?.surname ?? genre,
       x: c.x,
       z: c.z,
-      radius: bookOuter + 6,
+      radius,
       color,
       bookCount: books.length,
       narration: groveNarration(books[0]?.surname ?? genre, books),
@@ -468,7 +475,7 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
       species,
       x: c.x,
       z: c.z,
-      radius: bookOuter + 12,
+      radius: radius + 6,
       bark: {
         count: bark.pos.length / 3,
         pos: new Float32Array(bark.pos),
@@ -492,7 +499,7 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
     else grid.set(k, [i]);
   });
 
-  const worldRadius = Math.max(80, wheel.outer);
+  const orchardRadius = Math.max(80, wheel.outer);
 
   // Roads: a circular ring road per tier, each grove's stop on its tier's
   // ring at the grove's bearing, and straight spokes from the hub plaza out
@@ -550,13 +557,15 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
   const STOP_R = 4;
   // Each exhibit at the end of a spur off a ring, clear of the stops' signposts and the junctions.
   const exhibits = placeExhibits({
-    specs: EXHIBITS, roadLines, trees, worldRadius,
+    // Exhibits may stand in open ground just past the outermost groves.
+    specs: EXHIBITS, roadLines, trees, worldRadius: orchardRadius + EXHIBIT_ROOM,
     avoid: [
-      ...circuit.map((wp) => ({ x: wp.x, z: wp.z, r: STOP_R + 12 })),
+      ...circuit.map((wp) => ({ x: wp.x, z: wp.z, r: STOP_R + 2 })),
       ...wheel.spokes.flatMap((a) => wheel.rings.map((R) => ({ x: R * Math.cos(a), z: R * Math.sin(a), r: JUNCTION_CLEAR }))),
     ],
   });
   for (const e of exhibits) roadLines.push({ kind: "spur", pts: e.spur, closed: false });
+  const worldRadius = Math.max(orchardRadius, ...exhibits.map((e) => Math.hypot(e.x, e.z) + e.plazaR + 4));
   const roads: RoadSeg[] = [];
   for (const line of roadLines) {
     const n = line.pts.length;
