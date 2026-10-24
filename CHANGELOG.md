@@ -23,6 +23,8 @@ and the project uses [Semantic Versioning](https://semver.org/).
   began and ends at the home tree.
 - The album, with ranks: Reader, Clerk, Registrar, Archivist and Keeper of
   the Line.
+- The cart carries each line in the album as a family album: a landscape
+  volume bound in its grove's color, with brass corners, stacked in the bed.
 - `make family` and `make demo` (the public Kennedy sample), both through
   genealogy_kg with the living-person filter on.
 - Privacy tests over the committed fixtures and git.
