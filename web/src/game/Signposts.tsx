@@ -13,6 +13,14 @@ import { useNightLamps } from "./Uplights";
  * lights are added.
  */
 const LAMP_GLOW = "#ffe8c0";
+/**
+ * Sign faces are drawn in a 1024 px wide design space and rasterized at this
+ * fraction of it. A family has a grove, so a sign, per surname: a hundred
+ * signs at full size (four textures each, with mipmaps) took over 500 MB of
+ * GPU memory and crashed the page on a phone as the tour's first turn swept
+ * them all into view. At 60% world scale the boards still read from the road.
+ */
+const SIGN_RASTER = 0.5;
 /** A grove signpost is drawn at this fraction of its modelled size (3 m wide, 3 m tall), so it stands below the crowns it names. */
 const SIGN_SCALE = 0.6;
 
@@ -137,10 +145,11 @@ function drawSign(label: string, meta: string, accent: string): HTMLCanvasElemen
   const w = 1024;
   const h = 360;
   const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
+  canvas.width = w * SIGN_RASTER;
+  canvas.height = h * SIGN_RASTER;
   const ctx = canvas.getContext("2d");
   if (!ctx) return canvas;
+  ctx.scale(SIGN_RASTER, SIGN_RASTER);
 
   ctx.fillStyle = "#cfc6b4";
   ctx.fillRect(0, 0, w, h);
@@ -178,10 +187,11 @@ function drawSpeciesPlate(common: string, latin: string): HTMLCanvasElement {
   const w = 1024;
   const h = 164;
   const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
+  canvas.width = w * SIGN_RASTER;
+  canvas.height = h * SIGN_RASTER;
   const ctx = canvas.getContext("2d");
   if (!ctx) return canvas;
+  ctx.scale(SIGN_RASTER, SIGN_RASTER);
   ctx.fillStyle = "#3a322c";
   ctx.fillRect(0, 0, w, h);
   ctx.fillStyle = "#efe8dc";
