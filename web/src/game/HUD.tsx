@@ -350,12 +350,20 @@ export function HUD({ forest }: { forest: Forest }) {
                 {forest.corpusTree.totalChunks.toLocaleString("en-US")} people · {forest.trees.length} lines · {Math.round(forest.corpusTree.height)} m
               </p>
               <p className="card-extra mt-2 hidden text-sm leading-relaxed text-fg/90 sm:block">
-                The home tree: ancestors as roots under the glass, descendants as the crown. Browse every line and jump to any one.
+                {forest.corpusTree.ancestors
+                  ? "Their ancestors, rising as the crown: parents, then grandparents, doubling as they go."
+                  : "The home tree: ancestors as roots under the glass, descendants as the crown. Browse every line and jump to any one."}
               </p>
-              <button type="button" onClick={toggleCatalog}
-                className="mt-3 min-h-11 rounded-md bg-primary px-4 text-sm text-primary-fg">
-                Browse every line · B
-              </button>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button type="button" onClick={toggleCatalog}
+                  className="min-h-11 rounded-md bg-primary px-4 text-sm text-primary-fg">
+                  Browse every line · B
+                </button>
+                <button type="button" onClick={() => useGame.getState().toggleAncestors()}
+                  className="min-h-11 rounded-md border border-border px-4 text-sm text-primary">
+                  {forest.corpusTree.ancestors ? "Show the whole family" : "Show ancestors"}
+                </button>
+              </div>
             </article>
           ) : showBook && nearby ? (
             <article className="relative rounded-lg border border-border bg-surface/94 p-3 pr-12 sm:p-4 sm:pr-14">

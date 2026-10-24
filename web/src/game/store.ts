@@ -187,6 +187,9 @@ export type GameStore = {
   home: string | null;
   /** Grow the home tree around this person (FamilyReader), and remember it. */
   setHome: (id: string | null) => void;
+  /** The home tree shows the focal person's ancestors as its crown (pedigreeTree), not the hourglass. */
+  ancestors: boolean;
+  toggleAncestors: () => void;
   /**
    * Drop album entries that name no line of this family: a save from another
    * family, or from before this was a family app, would fill the cart.
@@ -278,6 +281,7 @@ export const useGame = create<GameStore>((set, get) => ({
   home: initial.home,
   familySlug: null,
   familyBase: "",
+  ancestors: false,
   nearbySlug: null,
   nearbyDist: 99,
   nearbyDismissed: null,
@@ -368,6 +372,7 @@ export const useGame = create<GameStore>((set, get) => ({
       home: typeof mine.home === "string" ? mine.home : null,
     });
   },
+  toggleAncestors: () => set({ ancestors: !get().ancestors }),
   setHome: (home) => {
     set({ home });
     persist({ ...get(), home });

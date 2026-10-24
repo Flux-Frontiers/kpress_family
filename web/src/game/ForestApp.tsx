@@ -28,6 +28,7 @@ export function ForestApp() {
   const [family, setFamily] = useState<FamilyCatalog | null>(null);
   const [families, setFamilies] = useState<FamilyEntry[]>([]);
   const familySlug = useGame((s) => s.familySlug);
+  const ancestors = useGame((s) => s.ancestors);
   const entry = families.find((f) => f.slug === familySlug);
   // `?focal=<id>` opens on that person's hourglass; then the person chosen in
   // the reader (setHome); then the family's own (FAMILY_FOCAL); otherwise
@@ -115,12 +116,12 @@ export function ForestApp() {
       w.onmessage = (e: MessageEvent<{ id: number; forest: Forest }>) => {
         if (e.data.id === request.current) apply(e.data.forest);
       };
-      w.postMessage({ id, leafScale, family, focal });
+      w.postMessage({ id, leafScale, family, focal, ancestors });
       return;
     }
-    const t = window.setTimeout(() => apply(getForest(family, focal, leafScale)), 0);
+    const t = window.setTimeout(() => apply(getForest(family, focal, leafScale, ancestors)), 0);
     return () => window.clearTimeout(t);
-  }, [leafScale, family, focal, GROW_VERSION]);
+  }, [leafScale, family, focal, ancestors, GROW_VERSION]);
 
   // `?tree=<slug>` opens the drive beside that book's tree instead of at home.
   const linked = useMemo(() => (forest ? treeFromSearch(window.location.search, forest.trees) : undefined), [forest]);

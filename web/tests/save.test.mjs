@@ -59,7 +59,7 @@ test("reset puts every setting back and forgets the tour welcome, but keeps the 
   assert.deepEqual(st().library, ["hamlet"]);
   assert.equal(tourHeard(), true);
   st().resetSettings();
-  assert.equal(st().preferences.camera, "follow");
+  assert.equal(st().preferences.camera, "high");
   assert.equal(st().preferences.narrate, false);
   assert.equal(st().preferences.weather, false);
   assert.equal(st().preferences.fog, "normal");
@@ -68,7 +68,7 @@ test("reset puts every setting back and forgets the tour welcome, but keeps the 
   assert.equal(tourHeard(), false);
   assert.deepEqual(st().library, ["hamlet"]);
   const saved = JSON.parse(store.get("kpf-library-v1"));
-  assert.equal(saved.preferences.camera, "follow");
+  assert.equal(saved.preferences.camera, "high");
   assert.deepEqual(saved.library, ["hamlet"]);
 });
 

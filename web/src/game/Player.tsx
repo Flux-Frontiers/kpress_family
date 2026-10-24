@@ -6,7 +6,7 @@ import { cartLoad, NEUTRAL_COVER } from "./cartLoad";
 import { EXPOSURE } from "./Environment";
 import { atGroveStop, treesNear, type Forest } from "./forest";
 import { addDragLook, resetInput, sampleActions, setDragging } from "./input";
-import { crownFrame, flightPose, FOLLOW_BACK, FOLLOW_UP, forestGodLimits, godPose, groundPose, resetGodView, type Vec3 } from "./godEye";
+import { crownFrame, flightPose, FOLLOW_BACK, FOLLOW_CAMERA, FOLLOW_UP, forestGodLimits, HIGH_AHEAD, HIGH_CAMERA, HIGH_LOOK_UP, godPose, groundPose, resetGodView, type Vec3 } from "./godEye";
 import { clamp } from "./math";
 import { forwardOf, sim, stepVehicle, teleportSim } from "./sim";
 import { hush, speak, speaking } from "./speech";
@@ -340,25 +340,34 @@ export function Player({ forest, playing }: { forest: Forest; playing: boolean }
       state.camera.position.copy(camPos);
       lookAt.set(sim.x + v.x * 10, sim.y + 1.65, sim.z + v.z * 10);
     } else {
-      // Beside a tall tree the chase camera backs off and tilts up to its crown.
+      // Beside a tall tree, the home tree too, the chase camera backs off and tilts up to its crown.
+      const high = preferences.camera === "high";
+      const chase = high ? HIGH_CAMERA : FOLLOW_CAMERA;
       let want = { back: 0, rise: 0, tilt: 0 };
-      if (preferences.camera === "follow") {
-        for (const t of treesNear(forest, sim.x, sim.z, 18)) {
-          const frame = crownFrame(Math.hypot(t.x - sim.x, t.z - sim.z), t.top, cam.fov, sim.speed);
-          if (frame.back > want.back) want = frame;
-        }
+      const tall = treesNear(forest, sim.x, sim.z, 18).map((t) => ({ dist: Math.hypot(t.x - sim.x, t.z - sim.z), top: t.top }));
+      // The home tree frames fully anywhere on the hub plaza, as a roadside tree does within 8 m of the cart.
+      const hubR = forest.plazas[0]?.r ?? 0;
+      tall.push({ dist: Math.max(0, Math.hypot(sim.x, sim.z) - hubR + 8), top: forest.corpusTree.height });
+      for (const t of tall) {
+        const frame = crownFrame(t.dist, t.top, cam.fov, sim.speed, chase);
+        if (frame.back > want.back) want = frame;
       }
       const ease = 1 - Math.exp(-1.5 * dt);
       crown.current.back += (want.back - crown.current.back) * ease;
       crown.current.rise += (want.rise - crown.current.rise) * ease;
       crown.current.tilt += (want.tilt - crown.current.tilt) * ease;
-      const follow = preferences.camera === "high" ? 12 : FOLLOW_BACK + crown.current.back;
-      const height = preferences.camera === "high" ? 10 : FOLLOW_UP + crown.current.rise;
+      const follow = chase.back + crown.current.back;
+      const height = chase.up + crown.current.rise;
       camPos.set(sim.x - v.x * follow, sim.y + height, sim.z - v.z * follow);
       state.camera.position.lerp(camPos, 1 - Math.exp(-3.4 * dt));
       // Behind the cart, look level down the road; the high view looks down at the cart.
-      const ahead = preferences.camera === "high" ? 2.6 : 10;
-      lookAt.set(sim.x + v.x * ahead, sim.y + (preferences.camera === "high" ? 1.4 : FOLLOW_UP), sim.z + v.z * ahead);
+      const ahead = high ? HIGH_AHEAD : 10;
+      lookAt.set(sim.x + v.x * ahead, sim.y + (high ? HIGH_LOOK_UP : FOLLOW_UP), sim.z + v.z * ahead);
+      // The high view tilts from its own downward rest; the follow view's tilt is added below.
+      if (high && crown.current.tilt > 0) {
+        const reach = follow + ahead;
+        lookAt.y = sim.y + height + reach * Math.tan(HIGH_CAMERA.pitch + crown.current.tilt);
+      }
     }
     // A tree portrait (portrait.ts) overrides the chase camera entirely.
     const portrait = game.portrait;

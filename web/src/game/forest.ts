@@ -1,7 +1,7 @@
 import { EXHIBITS, placeExhibits, type Exhibit } from "./exhibits";
 import { indexCatalog, UNKNOWN_LINE, type FamilyCatalog, type FamilyLine } from "./familyCatalog";
 import { foundingYear, homeTree, lineCard, lineGrown, speciesForSurname, type HomeTree, type LineCard } from "./familyForest";
-import { hourglassTree, lineTree } from "./familyTree";
+import { hourglassTree, lineTree, pedigreeTree } from "./familyTree";
 import { GROW_VERSION, cellKey3, emitBark, emitLeaves, type BarkBuffers, type GrownTree } from "./growTree";
 import { sunflower, wheelLayout } from "./math";
 import { groveNarration } from "./narration";
@@ -193,10 +193,10 @@ function cellKey(cx: number, cz: number): string {
  * :param family: As `genkg export-web` wrote it.
  * :param focal: The home tree's trunk person.
  */
-export function getForest(family: FamilyCatalog, focal: string, leafMultiplier = 1): Forest {
-  const key = `${GROW_VERSION}:${leafMultiplier}:${family.meta.generated}:${family.meta.counts.people}:${focal}`;
+export function getForest(family: FamilyCatalog, focal: string, leafMultiplier = 1, ancestors = false): Forest {
+  const key = `${GROW_VERSION}:${leafMultiplier}:${family.meta.generated}:${family.meta.counts.people}:${focal}:${ancestors}`;
   if (cached && cachedVersion === key) return cached;
-  cached = buildForest(family, focal, leafMultiplier);
+  cached = buildForest(family, focal, leafMultiplier, ancestors);
   cachedVersion = key;
   return cached;
 }
@@ -366,7 +366,7 @@ function roundTurns(path: [number, number][], r: number): [number, number][] {
 }
 
 // leafMultiplier stays in the cache key: the tufts are fixed per person.
-function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: number): Forest {
+function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: number, ancestors: boolean): Forest {
   const index = indexCatalog(family);
   // One grove per surname, holding each of its lines (a surname can found
   // several unconnected lines). The unknown line grows no tree.
@@ -395,8 +395,9 @@ function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: numb
   const groveRadius = (extent: number) => Math.max(GROVE_MIN_R, extent + GROVE_MARGIN);
 
   // The home hourglass, and a hub wide enough for its glass pit and its crown.
-  const home = hourglassTree(index, focal);
-  const corpusTree = homeTree(home, focal, family.lines.length, index.person.get(focal)?.name);
+  // The hourglass, or with `ancestors` the focal person's ancestors rising as the crown.
+  const home = ancestors ? pedigreeTree(index, focal) : hourglassTree(index, focal);
+  const corpusTree = homeTree(home, focal, family.lines.length, index.person.get(focal)?.name, ancestors);
   let crownReach = 0;
   for (const person of home.people) if (person.y > 0) crownReach = Math.max(crownReach, Math.hypot(person.x, person.z));
   const hubPlazaR = Math.max(HUB_PLAZA_R, corpusTree.pitRadius + 2);

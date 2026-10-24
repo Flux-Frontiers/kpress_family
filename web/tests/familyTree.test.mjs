@@ -229,3 +229,25 @@ test("names in capitals read in title case; roman numerals stay", () => {
   assert.equal(tidyName("Rose Elizabeth Fitzgerald"), "Rose Elizabeth Fitzgerald");
   assert.equal(tidyName("John F. Kennedy Jr."), "John F. Kennedy Jr.");
 });
+
+test("the ancestors' tree: the focal person at the trunk, exactly their ancestors rising above", () => {
+  const { pedigreeTree, DEFAULT_MAX_ANCESTORS } = require(`${build}/familyTree.js`);
+  const tree = pedigreeTree(index, "I7");
+  const trunk = tree.people.find((p) => p.id === "I7");
+  assert.ok(trunk && trunk.generation === 0);
+  // Exactly the ancestors within the cap, each above the person they descend to.
+  const want = new Set();
+  const walk = (id, depth) => {
+    if (depth >= DEFAULT_MAX_ANCESTORS) return;
+    for (const p of parentsOf(index, id)) { want.add(p); walk(p, depth + 1); }
+  };
+  walk("I7", 0);
+  assert.deepEqual(new Set(tree.people.filter((p) => p.id !== "I7").map((p) => p.id)), want);
+  for (const p of tree.people) {
+    if (p.id === "I7") continue;
+    assert.ok(p.generation < 0 && p.y > trunk.y, `${p.id} at ${p.y.toFixed(1)} m`);
+    const above = personAbove(tree, p.node);
+    assert.ok(parentsOf(index, above).includes(p.id), `${p.id} grows from ${above}, not their child`);
+  }
+  assert.ok(Array.from({ length: tree.skeleton.n }, (_, i) => tree.skeleton.nodes[i * 3 + 1]).every((y) => y >= 0), "nothing below ground");
+});

@@ -183,6 +183,8 @@ export type HomeTree = CorpusTree & {
   pitRadius: number;
   /** Depth of the pit floor below ground, m. */
   pitDepth: number;
+  /** Drawn as the ancestors' tree (pedigreeTree), ancestors as the crown, not the hourglass. */
+  ancestors: boolean;
 };
 
 /**
@@ -190,7 +192,7 @@ export type HomeTree = CorpusTree & {
  * kinship wood, a foliage spray per person, and a pit wide and deep enough to
  * show every root through the glass.
  */
-export function homeTree(tree: FamilyTree, focal: string, lines: number, focalName = focal): HomeTree {
+export function homeTree(tree: FamilyTree, focal: string, lines: number, focalName = focal, ancestors = false): HomeTree {
   const { nodes, radii, n } = tree.skeleton;
   let height = 0, reach = 0, depth = 0;
   for (let i = 0; i < n; i++) {
@@ -243,5 +245,6 @@ export function homeTree(tree: FamilyTree, focal: string, lines: number, focalNa
     focalName,
     pitRadius: Math.max(4, reach + PIT_MARGIN),
     pitDepth: Math.max(2, depth + PIT_MARGIN),
+    ancestors,
   };
 }
