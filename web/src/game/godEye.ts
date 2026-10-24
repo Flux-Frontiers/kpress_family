@@ -15,6 +15,15 @@ export const FLIGHT_S = 2.4;
 export const FOLLOW_BACK = 6.5;
 export const FOLLOW_UP = 2.5;
 
+/** A chase camera as crownFrame sees it: metres back and up from the cart, and its resting pitch (radians, up positive). */
+export type ChaseCamera = { back: number; up: number; pitch: number };
+/** Behind the cart, looking level down the road. */
+export const FOLLOW_CAMERA: ChaseCamera = { back: FOLLOW_BACK, up: FOLLOW_UP, pitch: 0 };
+/** The high view: back and well up, looking down at a point HIGH_AHEAD past the cart, HIGH_LOOK_UP above the ground. */
+export const HIGH_AHEAD = 2.6;
+export const HIGH_LOOK_UP = 1.4;
+export const HIGH_CAMERA: ChaseCamera = { back: 12, up: 10, pitch: Math.atan2(HIGH_LOOK_UP - 10, 12 + HIGH_AHEAD) };
+
 /** Driving past a tall tree the behind-the-cart camera backs off at most this far, m; parked, up to CROWN_PARKED_MAX to fit the whole tree. It rises half as much. */
 const CROWN_BACK_MAX = 8;
 const CROWN_PARKED_MAX = 30;
@@ -38,18 +47,22 @@ const FRAME_MARGIN = (4 * Math.PI) / 180;
  * :param top: Height of the tree's crown, m.
  * :param fov: The camera's vertical field of view, degrees.
  * :param speed: The cart's speed, m/s.
+ * :param cam: Which chase camera; its tilt is measured from its own resting pitch.
  * :returns: Extra metres back, extra metres up, and radians of upward tilt.
  */
-export function crownFrame(dist: number, top: number, fov: number, speed = 0): { back: number; rise: number; tilt: number } {
+export function crownFrame(
+  dist: number, top: number, fov: number, speed = 0, cam: ChaseCamera = FOLLOW_CAMERA,
+): { back: number; rise: number; tilt: number } {
   const w = clamp((CROWN_REACH - dist) / (CROWN_REACH - CROWN_FULL), 0, 1);
   const driving = clamp((top - 8) * 0.3, 0, CROWN_BACK_MAX);
   if (w === 0 || driving === 0) return { back: 0, rise: 0, tilt: 0 };
   const half = (fov * Math.PI) / 360;
-  // From `back` metres further back: the tilt the crown top wants, and the most that keeps the cart (its bed, 0.8 m up) in frame.
+  // From `back` metres further back: the tilt past the camera's rest that the
+  // crown top wants, and the most that keeps the cart (its bed, 0.8 m up) in frame.
   const aim = (back: number) => {
-    const up = FOLLOW_UP + back / 2;
-    const need = Math.atan2(top + 1 - up, dist + FOLLOW_BACK + back) - (half - FRAME_MARGIN);
-    const most = half - FRAME_MARGIN - Math.atan2(up - 0.8, FOLLOW_BACK + back);
+    const up = cam.up + back / 2;
+    const need = Math.atan2(top + 1 - up, dist + cam.back + back) - (half - FRAME_MARGIN) - cam.pitch;
+    const most = half - FRAME_MARGIN - Math.atan2(up - 0.8, cam.back + back) - cam.pitch;
     return { need, tilt: clamp(need, 0, Math.max(0, most)) };
   };
   let parked = driving;

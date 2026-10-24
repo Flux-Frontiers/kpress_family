@@ -230,21 +230,24 @@ function placeCanopy(
   });
 }
 
-/** The roots below ground: a fan chart, each wedge halved between the parents. */
+/**
+ * The roots below ground: a fan chart, each wedge halved between the parents.
+ * With `up`, the same fan rises above the trunk instead (pedigreeTree).
+ */
 function placeRoots(
   index: FamilyIndex, b: Builder, f: Frame, counts: Map<number, number>, maxGen: number,
-  id: string, node: number, depth: number, start: number, span: number,
+  id: string, node: number, depth: number, start: number, span: number, up = false,
 ): void {
   if (depth + 1 > maxGen) return;
   const parents = parentsOf(index, id);
   if (!parents.length) return;
   const radius = ringRadius(depth + 1, counts.get(depth + 1) ?? 1, f.scale);
-  const y = -(depth + 1) * f.tierDown;
+  const y = up ? f.trunkHeight + (depth + 1) * f.tierUp : -(depth + 1) * f.tierDown;
   const part = span / parents.length;
   parents.forEach((p, i) => {
     if (b.placed.has(p)) { b.skipped++; return; }
     const n = b.add(polar(radius, start + part * (i + 0.5), y), node, p, -(depth + 1));
-    placeRoots(index, b, f, counts, maxGen, p, n, depth + 1, start + part * i, part);
+    placeRoots(index, b, f, counts, maxGen, p, n, depth + 1, start + part * i, part, up);
   });
 }
 
@@ -379,6 +382,30 @@ export function hourglassTree(
   placeCanopy(index, b, f, canopy, down, all, focal, trunk, 0, 0, 2 * Math.PI, new Map());
   placeRoots(index, b, f, roots, up, focal, ground, 0, 0, 2 * Math.PI);
   return finish(b, `home:${focal}`, f);
+}
+
+/**
+ * The ancestors' tree: the focal person at the trunk top, their ancestors
+ * rising above as the crown (parents one tier up, grandparents two), the
+ * roots' fan chart turned to the sky. The home tree's other face, so the
+ * ancestors can be seen from the ground and not only through the glass.
+ *
+ * :param focal: The trunk person's id.
+ * :param opts.maxAncestors: Generations above the trunk; Infinity for all.
+ * :throws: For an unknown person.
+ */
+export function pedigreeTree(index: FamilyIndex, focal: string, opts: { maxAncestors?: number } = {}): FamilyTree {
+  if (!index.person.has(focal)) throw new Error(`no such person: ${focal}`);
+  const up = opts.maxAncestors ?? DEFAULT_MAX_ANCESTORS;
+  const roots = rootCounts(index, focal, up);
+  let population = 1;
+  for (const v of roots.values()) population += v;
+  const f = frame(population);
+  const b = new Builder();
+  const ground = b.add([0, 0, 0], -1, null);
+  const trunk = b.add([0, f.trunkHeight, 0], ground, focal, 0);
+  placeRoots(index, b, f, roots, up, focal, trunk, 0, 0, 2 * Math.PI, true);
+  return finish(b, `ancestors:${focal}`, f);
 }
 
 /**

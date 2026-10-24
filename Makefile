@@ -18,11 +18,13 @@
 #   make gallery       -- a portrait of each line tree into renders/lines
 #                         (needs make web-dev running and puppeteer-core)
 #
-# A family (web/public/family, never committed):
-#   make family FAMILY_REPO=<dir>  -- genkg export-web from a genealogy_kg store
-#                                     built with the living-person filter on
-#   make demo          -- build the public Kennedy file from genealogy_kg's
-#                         corpus into .demo/kennedy (filter on), then export it
+# Families (web/public/families/<slug>, never committed):
+#   make family FAMILY=<slug> FAMILY_REPO=<dir> [FAMILY_TITLE="..."] [FAMILY_FOCAL=<id>]
+#                      -- genkg export-web from a genealogy_kg store built with
+#                         the living-person filter on, then refresh the index
+#   make demos         -- build the public demo families from genealogy_kg's
+#                         corpus into .demo/<slug> (filter on) and export them:
+#                         Kennedy, the Tudors and George Washington's family
 #
 # The Swift kit (app/KnowledgePressKit):
 #   make kit-build     -- swift build
@@ -31,12 +33,19 @@
 
 KIT_DIR := app/KnowledgePressKit
 GENEALOGY_KG_DIR ?= ../genealogy_kg
+FAMILY ?=
 FAMILY_REPO ?=
+FAMILY_TITLE ?= $(FAMILY)
+# The person the home tree opens on; empty lets the app pick the fullest hourglass.
+FAMILY_FOCAL ?=
 FAMILY_CUTOFF ?= 100
-DEMO_DIR := .demo/kennedy
-DEMO_GED := $(GENEALOGY_KG_DIR)/corpora/gedcom-samples/sample-kennedy/kennedy.ged
+# People with no birth date and no death record: "redact" treats them as
+# living. "keep" is for wholly historical files, where a missing date means
+# an old record, not a living person.
+FAMILY_UNKNOWN_BIRTH ?= redact
+CORPORA := $(GENEALOGY_KG_DIR)/corpora
 
-.PHONY: web-install web-dev web-test web-build web-preview web-kill kit-build kit-test family demo gallery
+.PHONY: web-install web-dev web-test web-build web-preview web-kill kit-build kit-test family demos gallery
 
 web-install:
 	cd web && npm install
@@ -69,18 +78,29 @@ kit-test:
 
 # The export refuses a store that was not built with at least this cutoff.
 family:
+	@test -n "$(FAMILY)" || { echo "set FAMILY to a short name for the family, such as kennedy"; exit 1; }
 	@test -n "$(FAMILY_REPO)" || { echo "set FAMILY_REPO to a genkg store directory"; exit 1; }
 	cd $(GENEALOGY_KG_DIR) && env -u VIRTUAL_ENV -u POETRY_ACTIVE poetry run genkg export-web \
-		--repo $(abspath $(FAMILY_REPO)) --out $(abspath web/public/family) \
-		--living-cutoff $(FAMILY_CUTOFF) --force
+		--repo $(abspath $(FAMILY_REPO)) --out $(abspath web/public/families/$(FAMILY)) \
+		--living-cutoff $(FAMILY_CUTOFF) --unknown-birth $(FAMILY_UNKNOWN_BIRTH) --force
+	printf '{"title": "%s", "focal": "%s"}\n' "$(FAMILY_TITLE)" "$(FAMILY_FOCAL)" > web/public/families/$(FAMILY)/about.json
+	cd web && node scripts/families.mjs
 
-demo:
-	mkdir -p $(DEMO_DIR)
-	cp "$(DEMO_GED)" $(DEMO_DIR)/kennedy.ged
-	printf '[tool.genealogykg]\nliving_cutoff_years = $(FAMILY_CUTOFF)\nunknown_birth_policy = "redact"\n' > $(DEMO_DIR)/pyproject.toml
+# One demo family: build its store from a corpus GEDCOM, then export it.
+# $(call demo,slug,title,gedcom,unknown-birth policy,home person)
+define demo
+	mkdir -p .demo/$(1)
+	cp "$(3)" .demo/$(1)/family.ged
+	printf '[tool.genealogykg]\nliving_cutoff_years = $(FAMILY_CUTOFF)\nunknown_birth_policy = "$(4)"\n' > .demo/$(1)/pyproject.toml
 	cd $(GENEALOGY_KG_DIR) && env -u VIRTUAL_ENV -u POETRY_ACTIVE poetry run genkg build \
-		--repo $(abspath $(DEMO_DIR)) --source $(abspath $(DEMO_DIR))/kennedy.ged
-	$(MAKE) family FAMILY_REPO=$(DEMO_DIR)
+		--repo $(abspath .demo/$(1)) --source $(abspath .demo/$(1))/family.ged
+	$(MAKE) family FAMILY=$(1) FAMILY_REPO=.demo/$(1) FAMILY_TITLE="$(2)" FAMILY_UNKNOWN_BIRTH=$(4) FAMILY_FOCAL=$(5)
+endef
+
+demos:
+	$(call demo,kennedy,The Kennedys,$(CORPORA)/gedcom-samples/sample-kennedy/kennedy.ged,redact,I104)
+	$(call demo,tudors,The Tudors,$(CORPORA)/entries/royalty/english-tudor-royal-family/English+Tudor+Royal+Family.ged,keep,I14)
+	$(call demo,washington,George Washington's Family,$(CORPORA)/entries/us-presidents/george-washington-family-big/George+Washington+Family+Big.ged,keep,I1)
 
 gallery:
 	cd web && node scripts/gallery.mjs

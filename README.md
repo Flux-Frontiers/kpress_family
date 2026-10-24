@@ -20,25 +20,33 @@ The iPhone, iPad and Mac app is next. The repository started as a copy of
 [knowledge_press](https://github.com/Flux-Frontiers/knowledge_press); see
 [PROVENANCE.md](PROVENANCE.md).
 
-## A family to show
+## Families to show
 
-The orchard reads `web/public/family/`, written by `genkg export-web` from a
-[genealogy_kg](https://github.com/Flux-Frontiers/genealogy_kg) store. That
-directory is personal data and is never committed:
+The orchard reads families from `web/public/families/<slug>/`, each written
+by `genkg export-web` from a
+[genealogy_kg](https://github.com/Flux-Frontiers/genealogy_kg) store, with an
+index the start screen offers a choice from. That directory is personal data
+and is never committed:
 
 ```bash
-make family FAMILY_REPO=../my-family    # a genkg store built with the living filter on
+make demos                       # the Kennedys, the Tudors, George Washington's family
+make family FAMILY=mine FAMILY_REPO=../my-family FAMILY_TITLE="My Family"
 make web-dev
 ```
 
-`make demo` builds the public Kennedy sample from genealogy_kg's local
-corpus (`corpora/gedcom-samples/sample-kennedy/kennedy.ged`) into
-`.demo/kennedy`, with the living filter on, and exports it the same way.
+`make demos` builds three public files from genealogy_kg's local corpus into
+`.demo/<slug>`, with the living filter on, and exports them. `make family`
+adds any genkg store built with the filter on; `FAMILY_FOCAL=<id>` names the
+person its home tree opens on, and `FAMILY_UNKNOWN_BIRTH=keep` is for wholly
+historical files, where a missing birth date means an old record rather than
+a living person.
 
-`?focal=<id>` opens on that person's hourglass. Otherwise the home tree is
-the person chosen with "Make this the home tree" in the record reader, or the
-person whose hourglass is fullest. `?tree=<line id>` opens beside a line's
-tree.
+`?family=<slug>` opens that family; otherwise the one chosen last on this
+device, or the first. Each family keeps its own album, groves visited and home
+person. `?focal=<id>` opens on that person's hourglass. Otherwise the home
+tree is the person chosen with "Make this the home tree" in the record reader,
+then the family's own, or else the person whose hourglass is fullest.
+`?tree=<line id>` opens beside a line's tree.
 
 ## Build and test
 

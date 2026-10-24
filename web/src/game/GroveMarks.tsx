@@ -8,7 +8,7 @@ import { drawGenreMark, MARK_BAND_R } from "./genreMarks";
 const MARK_R = 2.5;
 /** Just above the plaza (0.055) and the grove rings (0.06). */
 const MARK_Y = 0.07;
-const TEXTURE_PX = 512;
+const TEXTURE_PX = 256;
 
 /**
  * A genre mark painted on the stop plaza ahead of each grove, its top toward

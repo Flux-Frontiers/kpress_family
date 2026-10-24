@@ -40,7 +40,7 @@ test("a living person is a name of Living and nothing else, with no page", () =>
 });
 
 test("git tracks no exported family outside the test fixtures", () => {
-  const out = spawnSync("git", ["ls-files", "--", ":(top)web/public/family", ":(top)*.ged", ":(top)*.pack", ":(top)*.vectors"], { encoding: "utf8" });
+  const out = spawnSync("git", ["ls-files", "--", ":(top)web/public/family", ":(top)web/public/families", ":(top).demo", ":(top)*.ged", ":(top)*.pack", ":(top)*.vectors"], { encoding: "utf8" });
   assert.equal(out.status, 0, out.stderr);
   assert.equal(out.stdout.trim(), "", `tracked: ${out.stdout}`);
 });

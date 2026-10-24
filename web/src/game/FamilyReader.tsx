@@ -4,8 +4,8 @@ import { loadFamilyCatalog, loadPersonPage, type FamilyCatalog, type PersonPage 
 import type { LineCard } from "./familyForest";
 import { useGame } from "./store";
 
-/** Where `make family` puts the export; never committed. */
-export const FAMILY_BASE = `${import.meta.env.BASE_URL}family/`;
+/** Where the app is served from; the families sit under it (`make family`, never committed). */
+export const ASSET_ROOT = import.meta.env.BASE_URL;
 
 /** The person each line was left at, for this session. */
 const lastPerson = new Map<string, string>();
@@ -18,9 +18,12 @@ export function openPerson(lineSlug: string, id: string): void {
   useGame.getState().openReader(lineSlug);
 }
 
-/** The catalog, fetched once, for naming relatives the page gives as ids. */
-let catalog: Promise<FamilyCatalog> | null = null;
-const familyCatalog = () => (catalog ??= loadFamilyCatalog(FAMILY_BASE));
+/** The family's catalog, fetched once per family, for naming relatives the page gives as ids. */
+let catalog: { base: string; loaded: Promise<FamilyCatalog> } | null = null;
+const familyCatalog = (base: string) => {
+  if (catalog?.base !== base) catalog = { base, loaded: loadFamilyCatalog(base) };
+  return catalog.loaded;
+};
 
 type Load<T> = { state: "loading" } | { state: "error"; message: string } | { state: "ready"; value: T };
 
@@ -31,6 +34,7 @@ type Load<T> = { state: "loading" } | { state: "error"; message: string } | { st
  */
 export function FamilyReader({ line, home }: { line: LineCard; home: string }) {
   const close = () => useGame.getState().openReader(null);
+  const base = useGame((s) => s.familyBase);
   /** Regrow the orchard with this person's hourglass at the hub. */
   const makeHome = (id: string) => {
     useGame.getState().setHome(id);
@@ -51,24 +55,24 @@ export function FamilyReader({ line, home }: { line: LineCard; home: string }) {
 
   useEffect(() => {
     let live = true;
-    familyCatalog().then((c) => {
+    familyCatalog(base).then((c) => {
       if (live) setNames(new Map(c.people.map((p) => [p.id, { name: p.name, line: p.line }])));
     }, () => {});
     return () => { live = false; };
-  }, []);
+  }, [base]);
 
   useEffect(() => {
     if (!current) return;
     let live = true;
     setPage({ state: "loading" });
-    loadPersonPage(FAMILY_BASE, current.id).then(
+    loadPersonPage(base, current.id).then(
       (value) => { if (live) setPage({ state: "ready", value }); },
       (e: unknown) => { if (live) setPage({ state: "error", message: String((e as Error).message ?? e) }); },
     );
     lastPerson.set(line.slug, current.id);
     pane.current?.scrollTo({ top: 0 });
     return () => { live = false; };
-  }, [line.slug, current, attempt]);
+  }, [base, line.slug, current, attempt]);
 
   // Left and Right turn to the previous or next person; Up and Down scroll.
   useEffect(() => {

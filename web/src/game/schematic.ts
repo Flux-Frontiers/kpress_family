@@ -8,7 +8,7 @@
 // Pure, no React or three, so the tests can run it.
 
 import { parentsOf, type FamilyIndex } from "./familyCatalog";
-import { hourglassTree, lineTree, type FamilyTree } from "./familyTree";
+import { hourglassTree, lineTree, pedigreeTree, type FamilyTree } from "./familyTree";
 
 export type BeadShape = "round" | "square" | "diamond";
 
@@ -119,15 +119,17 @@ function addTree(index: FamilyIndex, t: FamilyTree, tree: number, ox: number, oz
  *
  * :param trees: The forest's trees, in order: each line's slug and trunk position.
  * :param focal: The home tree's trunk person.
+ * :param ancestors: The home tree is the ancestors' tree (pedigreeTree), not the hourglass.
  */
 export function buildSchematic(
   index: FamilyIndex,
   trees: readonly { line: { slug: string }; x: number; z: number }[],
   focal: string,
+  ancestors = false,
 ): Schematic {
   const out: Schematic = { beads: [], limbs: [], bars: [] };
   trees.forEach((t, i) => addTree(index, lineTree(index, t.line.slug), i, t.x, t.z, out));
-  addTree(index, hourglassTree(index, focal), -1, 0, 0, out);
+  addTree(index, ancestors ? pedigreeTree(index, focal) : hourglassTree(index, focal), -1, 0, 0, out);
   return out;
 }
 

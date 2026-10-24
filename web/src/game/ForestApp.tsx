@@ -8,14 +8,14 @@ import { TouchControls } from "./TouchControls";
 import { installControlsTest } from "./controlsTest";
 import { treeFromSearch } from "./deepLink";
 import { commonFrame, portraitPose, shotSlug, treeExtent, type Extent, type Frame } from "./portrait";
-import { indexCatalog, loadFamilyCatalog, type FamilyCatalog } from "./familyCatalog";
-import { FAMILY_BASE } from "./FamilyReader";
+import { chooseFamily, indexCatalog, loadFamilyCatalog, loadFamilyIndex, type FamilyCatalog, type FamilyEntry } from "./familyCatalog";
+import { ASSET_ROOT } from "./FamilyReader";
+import { savedFamily } from "./familyChoice";
 import { richestFocal } from "./familyTree";
 import { getForest, treeApproach, type Forest } from "./forest";
 import { GROW_VERSION } from "./growTree";
 import { bindInput, isInputTarget } from "./input";
 import { requestPlace } from "./location";
-import { LEAF_SCALE } from "./preferences";
 import { resetSim } from "./sim";
 import { unlockSpeechOnGesture } from "./speech";
 import { useGame } from "./store";
@@ -25,20 +25,25 @@ export function ForestApp() {
   const [mounted, setMounted] = useState(false);
   const [forest, setForest] = useState<Forest | null>(null);
   const [family, setFamily] = useState<FamilyCatalog | null>(null);
+  const [families, setFamilies] = useState<FamilyEntry[]>([]);
+  const familySlug = useGame((s) => s.familySlug);
+  const ancestors = useGame((s) => s.ancestors);
+  const entry = families.find((f) => f.slug === familySlug);
   // `?focal=<id>` opens on that person's hourglass; then the person chosen in
-  // the reader (setHome); otherwise whoever's shows the most family.
+  // the reader (setHome); then the family's own (FAMILY_FOCAL); otherwise
+  // whoever's shows the most family.
   const home = useGame((s) => s.home);
   const focal = useMemo(() => {
     if (!family) return "";
     const has = (id: string | null) => id !== null && family.people.some((p) => p.id === id);
     const asked = new URLSearchParams(window.location.search).get("focal");
-    return has(asked) ? asked! : has(home) ? home! : richestFocal(indexCatalog(family));
-  }, [family, home]);
+    const named = entry?.focal ?? null;
+    return has(asked) ? asked! : has(home) ? home! : has(named) ? named! : richestFocal(indexCatalog(family));
+  }, [family, home, entry?.focal]);
   const playing = useGame((s) => s.playing);
   const play = useGame((s) => s.play);
   const setToast = useGame((s) => s.setToast);
   const toast = useGame((s) => s.toast);
-  const nightStill = useGame((s) => s.sky.daylight < 0.5);
 
   // The sky follows the clock: sun and moon move a few hundredths of a degree between ticks.
   useEffect(() => {
@@ -58,13 +63,24 @@ export function ForestApp() {
     return () => { unbind?.(); unlockSpeech(); };
   }, []);
 
+  // The family: `?family=<slug>`, else the one chosen last time, else the
+  // first in public/families/index.json; an export from before families is
+  // read from public/family/ alone.
   useEffect(() => {
-    loadFamilyCatalog(FAMILY_BASE).then(setFamily, (err: Error) => setToast(err.message));
+    const load = (slug: string, base: string) => {
+      useGame.getState().useFamily(slug, base);
+      return loadFamilyCatalog(base).then(setFamily);
+    };
+    loadFamilyIndex(ASSET_ROOT).catch(() => null).then((list) => {
+      if (!list) return load("family", `${ASSET_ROOT}family/`);
+      setFamilies(list);
+      const chosen = chooseFamily(list, new URLSearchParams(window.location.search).get("family"), savedFamily());
+      return load(chosen.slug, `${ASSET_ROOT}families/${chosen.slug}/`);
+    }).catch((err: Error) => setToast(err.message));
   }, [setToast]);
 
-  // Grow in a worker, regrowing when leaf complexity changes; only the first
+  // Grow in a worker, regrowing when the home tree changes; only the first
   // forest places the cart. Without Worker support, grow on the main thread.
-  const leafScale = useGame((s) => LEAF_SCALE[s.preferences.leaves]);
   const placed = useRef(false);
   const worker = useRef<Worker | null>(null);
   const request = useRef(0);
@@ -97,12 +113,12 @@ export function ForestApp() {
       w.onmessage = (e: MessageEvent<{ id: number; forest: Forest }>) => {
         if (e.data.id === request.current) apply(e.data.forest);
       };
-      w.postMessage({ id, leafScale, family, focal });
+      w.postMessage({ id, family, focal, ancestors });
       return;
     }
-    const t = window.setTimeout(() => apply(getForest(family, focal, leafScale)), 0);
+    const t = window.setTimeout(() => apply(getForest(family, focal, ancestors)), 0);
     return () => window.clearTimeout(t);
-  }, [leafScale, family, focal, GROW_VERSION]);
+  }, [family, focal, ancestors, GROW_VERSION]);
 
   // `?tree=<slug>` opens the drive beside that book's tree instead of at home.
   const linked = useMemo(() => (forest ? treeFromSearch(window.location.search, forest.trees) : undefined), [forest]);
@@ -126,12 +142,6 @@ export function ForestApp() {
       return true;
     };
     const st = useGame.getState();
-    // Every leaf drawn: changing the level regrows the forest and runs this again,
-    // so the shot API is installed only on the forest that will be photographed.
-    if (st.preferences.leaves !== "ultra") {
-      st.setPreferences({ leaves: "ultra" });
-      return;
-    }
     st.setPreferences({ camera: "follow", fog: "light", weather: false, motion: false });
     st.setSeason("summer");
     const time = new URLSearchParams(window.location.search).get("time");
@@ -207,10 +217,9 @@ export function ForestApp() {
       const button = (e.target as HTMLElement).closest("button");
       if (button && !button.closest("dialog")) button.blur();
     }} className="relative h-dvh w-full overflow-hidden bg-bg text-fg" style={{ touchAction: "none" }}>
-      {/* While the forest grows, a still of the start screen's circle, by day or by night as the sky is now
-          (public/start, rendered from the forest itself); the live forest then fades in over it. */}
+      {/* While the orchard grows, the wash alone: a picture would show one family while another loads.
+          The live orchard then fades in over it. */}
       <div className="absolute inset-0 start-wash" />
-      {shot ? null : <img src={nightStill ? "start/night.webp" : "start/day.webp"} alt="" className="absolute inset-0 size-full object-cover" />}
       {mounted && forest ? (
         <div className="forest-fade-in absolute inset-0">
           <ForestCanvas forest={forest} family={family} />
@@ -224,6 +233,8 @@ export function ForestApp() {
         </>
       ) : shot ? null : (
         <StartScreen
+          families={families}
+          family={familySlug}
           ready={Boolean(forest)}
           growing={!forest}
           opensAt={linked?.line.title}

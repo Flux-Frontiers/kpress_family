@@ -153,7 +153,7 @@ export function SchematicOrchard({ forest, family, picker }: {
   forest: Forest; family: FamilyCatalog; picker: RefObject<((ray: Ray, maxDist: number) => SchematicBead | null) | null>;
 }) {
   const schematic = useMemo(
-    () => buildSchematic(indexCatalog(family), forest.trees, forest.corpusTree.focal),
+    () => buildSchematic(indexCatalog(family), forest.trees, forest.corpusTree.focal, forest.corpusTree.ancestors),
     [family, forest],
   );
   const byShape = useMemo(() => {

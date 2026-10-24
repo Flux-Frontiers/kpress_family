@@ -135,6 +135,11 @@ const REDWOOD_BODY =
   "Every limb is a parent and a child, and every limb is as thick as the family it carries. " +
   "Click the tree or press B to browse every line and jump to its tree.";
 
+const ANCESTORS_BODY =
+  "This is the home tree turned over: one person's ancestors rise as the crown, parents one tier " +
+  "up, grandparents two, doubling as they go. Every limb is a child and a parent. Switch back to " +
+  "the whole family from the hub card. Click the tree or press B to browse every line.";
+
 function pointer(on: boolean) {
   document.body.style.cursor = on ? "pointer" : "";
 }
@@ -149,7 +154,7 @@ function RedwoodPlaque({ forest }: { forest: Forest }) {
     <group position={[x, 0, z]} rotation={[0, Math.atan2(x, z), 0]}
       onClick={(e) => { e.stopPropagation(); useGame.getState().openCatalog(null); }}
       onPointerOver={() => pointer(true)} onPointerOut={() => pointer(false)}>
-      <Lectern title={c.focalName} byline={byline} body={REDWOOD_BODY} />
+      <Lectern title={c.focalName} byline={byline} body={c.ancestors ? ANCESTORS_BODY : REDWOOD_BODY} />
     </group>
   );
 }

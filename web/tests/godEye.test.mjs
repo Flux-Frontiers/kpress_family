@@ -114,3 +114,16 @@ test("parked beside a tall tree the chase camera backs off until the whole tree 
   // ...and the cart is still above its lower edge.
   assert.ok(parked.tilt - half < -Math.atan2(up - 0.8, FOLLOW_BACK + parked.back));
 });
+
+test("from the high view, parked by a tall tree, the camera fits its crown and keeps the cart", () => {
+  const { crownFrame, HIGH_CAMERA } = require(`${process.env.FOREST_TEST_BUILD}/godEye.js`);
+  const half = (58 * Math.PI) / 360, margin = (4 * Math.PI) / 180;
+  const f = crownFrame(8, 26, 58, 0, HIGH_CAMERA);
+  assert.ok(f.tilt > 0 && f.back > 0, JSON.stringify(f));
+  const up = HIGH_CAMERA.up + f.rise;
+  const pitch = HIGH_CAMERA.pitch + f.tilt;
+  assert.ok(Math.atan2(26 + 1 - up, 8 + HIGH_CAMERA.back + f.back) <= pitch + half - margin + 1e-9, "crown top in frame");
+  assert.ok(pitch - half < -Math.atan2(up - 0.8, HIGH_CAMERA.back + f.back), "cart in frame");
+  // A small tree leaves the high view as it is.
+  assert.deepEqual(crownFrame(8, 6, 58, 0, HIGH_CAMERA), { back: 0, rise: 0, tilt: 0 });
+});

@@ -10,15 +10,15 @@ their ancestors are the roots, seen through a glass floor over a lit pit.
 
 ```bash
 make web-install                         # once
-make family FAMILY_REPO=../my-family     # a genkg store built with the living filter on
+make demos                               # the demo families, through genealogy_kg
 make web-dev                             # http://localhost:5173
 ```
 
-The orchard reads `public/family/`, written by `genkg export-web`. That
-directory is personal data and is never committed. `?focal=<id>` opens on that
-person's hourglass. Without it, the app opens on the person chosen with "Make
-this the home tree" in the record reader, or else on the person whose
-hourglass is fullest. `?tree=<line id>` opens beside a line's tree.
+The orchard reads families from `public/families/<slug>/`, written by `genkg
+export-web`, and `public/families/index.json` (`scripts/families.mjs`). That
+directory is personal data and is never committed. `?family=<slug>` picks the
+family, `?focal=<id>` the home tree's person, and `?tree=<line id>` opens
+beside a line's tree; see the top-level README for the order of choice.
 
 `make web-test` runs the node tests, and `make web-build` typechecks and
 builds.

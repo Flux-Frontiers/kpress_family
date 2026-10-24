@@ -9,6 +9,8 @@ import type { Portrait } from "./portrait";
 import type { GroundCamera } from "./godEye";
 
 const SAVE_KEY = "kpf-library-v1";
+/** Each family's album, groves visited and home person, under this prefix and its slug. */
+const FAMILY_SAVE_PREFIX = "kpf-family-v1:";
 const SAVE_VERSION = 1;
 
 type SaveBlob = {
@@ -59,6 +61,7 @@ function persist(s: {
   place: Place | null;
   preferences: Preferences;
   home: string | null;
+  familySlug?: string | null;
 }) {
   try {
     const blob: SaveBlob = {
@@ -70,6 +73,10 @@ function persist(s: {
       home: s.home,
     };
     window.localStorage.setItem(SAVE_KEY, JSON.stringify(blob));
+    if (s.familySlug) {
+      const mine = { library: s.library, grovesVisited: s.grovesVisited, home: s.home };
+      window.localStorage.setItem(FAMILY_SAVE_PREFIX + s.familySlug, JSON.stringify(mine));
+    }
   } catch {
     /* private mode / quota */
   }
@@ -166,10 +173,23 @@ export type GameStore = {
   collect: (slug: string, title: string) => void;
   /** Take every book out of the press. */
   emptyPress: () => void;
+  /** The family shown, by its folder under public/families; null until chosen (ForestApp). */
+  familySlug: string | null;
+  /** Where that family's export is served from, with a trailing slash. */
+  familyBase: string;
+  /**
+   * Show this family: switch to its own album, groves visited and home
+   * person, or start them empty if it has no save (person ids repeat across
+   * families), keeping the shared settings.
+   */
+  useFamily: (slug: string, base: string) => void;
   /** The person the home tree is grown around, chosen in the reader; null for the app's own pick. */
   home: string | null;
   /** Grow the home tree around this person (FamilyReader), and remember it. */
   setHome: (id: string | null) => void;
+  /** The home tree shows the focal person's ancestors as its crown (pedigreeTree), not the hourglass. */
+  ancestors: boolean;
+  toggleAncestors: () => void;
   /**
    * Drop album entries that name no line of this family: a save from another
    * family, or from before this was a family app, would fill the cart.
@@ -259,6 +279,9 @@ export const useGame = create<GameStore>((set, get) => ({
   library: initial.library,
   grovesVisited: initial.grovesVisited,
   home: initial.home,
+  familySlug: null,
+  familyBase: "",
+  ancestors: false,
   nearbySlug: null,
   nearbyDist: 99,
   nearbyDismissed: null,
@@ -333,6 +356,23 @@ export const useGame = create<GameStore>((set, get) => ({
     set({ library: [], lastReadSlug: null });
     persist(get());
   },
+  useFamily: (familySlug, familyBase) => {
+    let mine: Partial<Pick<SaveBlob, "library" | "grovesVisited" | "home">> = {};
+    try {
+      const raw = window.localStorage.getItem(FAMILY_SAVE_PREFIX + familySlug);
+      if (raw) mine = JSON.parse(raw);
+    } catch {
+      /* private mode, or a damaged save: start empty */
+    }
+    set({
+      familySlug,
+      familyBase,
+      library: Array.isArray(mine.library) ? mine.library : [],
+      grovesVisited: Array.isArray(mine.grovesVisited) ? mine.grovesVisited : [],
+      home: typeof mine.home === "string" ? mine.home : null,
+    });
+  },
+  toggleAncestors: () => set({ ancestors: !get().ancestors }),
   setHome: (home) => {
     set({ home });
     persist({ ...get(), home });
