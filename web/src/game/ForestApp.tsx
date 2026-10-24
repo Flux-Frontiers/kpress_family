@@ -45,7 +45,6 @@ export function ForestApp() {
   const play = useGame((s) => s.play);
   const setToast = useGame((s) => s.setToast);
   const toast = useGame((s) => s.toast);
-  const nightStill = useGame((s) => s.sky.daylight < 0.5);
 
   // The sky follows the clock: sun and moon move a few hundredths of a degree between ticks.
   useEffect(() => {
@@ -226,10 +225,9 @@ export function ForestApp() {
       const button = (e.target as HTMLElement).closest("button");
       if (button && !button.closest("dialog")) button.blur();
     }} className="relative h-dvh w-full overflow-hidden bg-bg text-fg" style={{ touchAction: "none" }}>
-      {/* While the forest grows, a still of the start screen's circle, by day or by night as the sky is now
-          (public/start, rendered from the forest itself); the live forest then fades in over it. */}
+      {/* While the orchard grows, the wash alone: a picture would show one family while another loads.
+          The live orchard then fades in over it. */}
       <div className="absolute inset-0 start-wash" />
-      {shot ? null : <img src={nightStill ? "start/night.webp" : "start/day.webp"} alt="" className="absolute inset-0 size-full object-cover" />}
       {mounted && forest ? (
         <div className="forest-fade-in absolute inset-0">
           <ForestCanvas forest={forest} family={family} />
