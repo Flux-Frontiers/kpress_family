@@ -12,6 +12,12 @@ const lastPerson = new Map<string, string>();
 /** A relative clicked on another line: who that line opens on. */
 let pendingPerson: string | null = null;
 
+/** Open the reader on one person's page in their line (a bead tapped in schematic mode). */
+export function openPerson(lineSlug: string, id: string): void {
+  pendingPerson = id;
+  useGame.getState().openReader(lineSlug);
+}
+
 /** The catalog, fetched once, for naming relatives the page gives as ids. */
 let catalog: Promise<FamilyCatalog> | null = null;
 const familyCatalog = () => (catalog ??= loadFamilyCatalog(FAMILY_BASE));

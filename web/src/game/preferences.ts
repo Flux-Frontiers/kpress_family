@@ -17,6 +17,8 @@ export type Preferences = {
   weather: boolean;
   /** Riding the ring, read each grove's summary aloud at its stop. */
   narrate: boolean;
+  /** Draw every tree as a family diagram: beads, straight limbs, marriage bars (schematic.ts). */
+  schematic: boolean;
 };
 
 
@@ -51,5 +53,6 @@ export function readPreferences(value?: Partial<Preferences>): Preferences {
     fog: value?.fog && value.fog in FOG_SCALE ? value.fog : "normal",
     weather: value?.weather === true,
     narrate: value?.narrate === true,
+    schematic: value?.schematic === true,
   };
 }

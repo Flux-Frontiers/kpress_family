@@ -1,22 +1,28 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, type RefObject } from "react";
-import { ACESFilmicToneMapping, PerspectiveCamera, Raycaster, Vector2 } from "three";
+import { ACESFilmicToneMapping, PerspectiveCamera, Raycaster, Vector2, type Ray } from "three";
+import type { FamilyCatalog } from "./familyCatalog";
+import { openPerson } from "./FamilyReader";
 import { COARSE_POINTER, EXPOSURE, PHONE } from "./Environment";
 import { pickTree, type Forest, type TreeSite } from "./forest";
 import { forestGodLimits, godPose, zoomGodView } from "./godEye";
 import { GroveLabels } from "./GroveLabels";
 import { Player } from "./Player";
+import { SchematicOrchard } from "./SchematicOrchard";
+import type { SchematicBead } from "./schematic";
 import { setScreenshotCapture } from "./screenshot";
 import { Trees } from "./Trees";
 import { World } from "./World";
 import { useGame } from "./store";
 
-export function ForestCanvas({ forest }: { forest: Forest }) {
+export function ForestCanvas({ forest, family }: { forest: Forest; family: FamilyCatalog | null }) {
   const season = useGame((s) => s.season);
   const query = useGame((s) => s.query);
   const playing = useGame((s) => s.playing);
   const detail = useGame((s) => s.preferences.detail);
   const picker = useRef<((e: MouseEvent) => TreeSite | null) | null>(null);
+  const schematic = useGame((s) => s.preferences.schematic) && family !== null;
+  const beadPicker = useRef<((ray: Ray, maxDist: number) => SchematicBead | null) | null>(null);
 
   return (
     <Canvas
@@ -37,6 +43,13 @@ export function ForestCanvas({ forest }: { forest: Forest }) {
         else if (s.libraryOpen) s.toggleLibrary();
         else if (s.atlasOpen) s.toggleAtlas();
         else {
+          // In schematic mode a bead opens that person's page.
+          if (schematic && beadPicker.current) {
+            aim(e);
+            const bead = beadPicker.current(raycaster.ray, 200);
+            const line = bead ? family?.people.find((p) => p.id === bead.id)?.line : undefined;
+            if (line && forest.trees.some((t) => t.line.slug === line)) { openPerson(line, bead!.id); return; }
+          }
           // Clicking a tree pins its card, silent mode or not; clicking open ground clears it.
           const tree = picker.current?.(e);
           if (tree) s.pinTree(tree.line.slug);
@@ -45,7 +58,7 @@ export function ForestCanvas({ forest }: { forest: Forest }) {
       }}
     >
       <World forest={forest} season={season} />
-      <Trees forest={forest} season={season} query={query} />
+      {schematic ? <SchematicOrchard forest={forest} family={family!} picker={beadPicker} /> : <Trees forest={forest} season={season} query={query} />}
       <StatsSampler />
       <ScreenshotCapture />
       <TreePicker forest={forest} picker={picker} />
@@ -77,11 +90,24 @@ function StatsSampler() {
 
 const raycaster = new Raycaster();
 const ndc = new Vector2();
+/** The camera the click came through, for aim(); set by TreePicker. */
+let clickCamera: PerspectiveCamera | null = null;
+let clickCanvas: HTMLCanvasElement | null = null;
+
+/** Point the shared raycaster through the clicked pixel. */
+function aim(e: MouseEvent): void {
+  if (!clickCamera || !clickCanvas) return;
+  const rect = clickCanvas.getBoundingClientRect();
+  ndc.set(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
+  raycaster.setFromCamera(ndc, clickCamera);
+}
 
 /** Trees have no pointer handlers (raycasting their meshes is costly), so a click that hits nothing is tested against their outlines. */
 function TreePicker({ forest, picker }: { forest: Forest; picker: RefObject<((e: MouseEvent) => TreeSite | null) | null> }) {
   const { camera, gl, scene } = useThree();
   useEffect(() => {
+    clickCamera = camera as PerspectiveCamera;
+    clickCanvas = gl.domElement;
     picker.current = (e) => {
       const rect = gl.domElement.getBoundingClientRect();
       ndc.set(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);

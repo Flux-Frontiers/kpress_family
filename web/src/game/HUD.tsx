@@ -415,7 +415,7 @@ export function HUD({ forest }: { forest: Forest }) {
         </div>
 
         <p className="key-hints absolute bottom-3 left-1/2 hidden -translate-x-1/2 text-xs text-faint sm:block">
-          WASD drive · Drag or arrows look · Space brake · E album · B lines · C camera · Esc settings · ? about
+          WASD drive · Drag or arrows look · Space brake · E album · B lines · C camera · V schematic · Esc settings · ? about
         </p>
       </>)}
 

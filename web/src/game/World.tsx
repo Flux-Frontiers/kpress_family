@@ -54,6 +54,7 @@ export function World({ forest, season }: { forest: Forest; season: SeasonName }
   const fogDensity = (season === "winter" ? 0.0077 : 0.0105) * (1 + (DAY_OVERRIDE.fogDensityScale - 1) * t) * FOG_SCALE[fogLevel]
     * (godEye ? GOD_EYE_FOG : 1);
   const weatherOn = useGame((s) => s.preferences.weather);
+  const schematic = useGame((s) => s.preferences.schematic);
   const morning = sky.morning;
   // What the weather adds to the fog is applied every frame, on the fog object itself,
   // so a fog building or burning off never re-renders the forest.
@@ -128,7 +129,7 @@ export function World({ forest, season }: { forest: Forest; season: SeasonName }
           );
         })}
 
-        <CorpusRedwood forest={forest} season={season} />
+        <CorpusRedwood forest={forest} season={season} wood={!schematic} />
         <GlassPit forest={forest} />
         <MarriageArcs forest={forest} />
         {forest.exhibits.map((e) => {

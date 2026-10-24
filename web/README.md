@@ -31,6 +31,7 @@ builds.
 | `familyForest.ts` | Line cards, line trees as the renderer's trees, and the home tree with its pit |
 | `forest.ts` | The orchard: groves by surname, the hub, roads, the tour loop |
 | `GlassPit.tsx` | The glass floor, the pit under it, and the marriage arcs |
+| `schematic.ts`, `SchematicOrchard.tsx` | Schematic mode (V): each person a bead colored by generation, straight limbs, marriage bars, names nearby |
 | `FamilyReader.tsx` | The record reader: a line's people, one page each |
 | `HUD.tsx` | Cards, search, the line list and the album |
 | `growTree.ts` | Pipe-model radii, the bark sweep and the leaves |
