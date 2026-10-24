@@ -306,8 +306,8 @@ function shyLayout(grown: GrownTree[], inner: number): { pts: { x: number; z: nu
   return { pts: out, extent: Math.max(0, ...out.map((p, i) => Math.hypot(p.x, p.z) + reach[i]!)) };
 }
 
-/** A signpost's centre from any road centreline: half the widest road (1.7 m), the cart (1.05 m), and a little. */
-const SIGN_ROAD_CLEAR = 3;
+/** A signpost's centre from any road centreline: half the widest road (1.3 m), the cart (1.05 m), and a little. */
+const SIGN_ROAD_CLEAR = 2.6;
 /** From any trunk surface: the board is 3 m wide. */
 const SIGN_TRUNK_CLEAR = 1.8;
 
@@ -554,7 +554,8 @@ function buildForest(family: FamilyCatalog, focal: string, ancestors: boolean): 
   }
   const circuit = [...stopIndex.entries()].sort((a, b) => a[1] - b[1]).map(([wp]) => wp);
 
-  const STOP_R = 4;
+  // A stop's plaza: the monogram (GroveMarks, 2.2 m) and a rim of brick.
+  const STOP_R = 3.2;
   // Each exhibit at the end of a spur off a ring, clear of the stops' signposts and the junctions.
   const exhibits = placeExhibits({
     // Exhibits may stand in open ground just past the outermost groves.

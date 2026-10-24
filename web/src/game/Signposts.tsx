@@ -3,6 +3,7 @@ import { AdditiveBlending, CanvasTexture, Color, DoubleSide, LinearFilter, SRGBC
 import type { Exhibit } from "./exhibits";
 import { groveByGenre, type Forest, type Grove } from "./forest";
 import { SPECIES, speciesFor } from "./species";
+import { useNear } from "./near";
 import { useGame } from "./store";
 import { useNightLamps } from "./Uplights";
 
@@ -21,6 +22,14 @@ const LAMP_GLOW = "#ffe8c0";
  * them all into view. At 60% world scale the boards still read from the road.
  */
 const SIGN_RASTER = 0.5;
+/**
+ * A sign's face has textures only within this far of the cart, m, and keeps
+ * them to SIGN_TEXTURE_RELEASE; farther, the board is plain, which is all
+ * that can be read of it anyway. So a hundred groves cost what the dozen
+ * nearest do.
+ */
+const SIGN_TEXTURE_REACH = 70;
+const SIGN_TEXTURE_RELEASE = 90;
 /** A grove signpost is drawn at this fraction of its modelled size (3 m wide, 3 m tall), so it stands below the crowns it names. */
 const SIGN_SCALE = 0.6;
 
@@ -63,14 +72,37 @@ function lampWash(face: HTMLCanvasElement, lamps: number[]): CanvasTexture {
   return canvasTexture(canvas);
 }
 
-/** A board's face and its lamp-lit glow, disposed together. */
-function useLitFace(draw: () => HTMLCanvasElement, lamps: number[], deps: unknown[]) {
+type LitFace = { map: CanvasTexture; glow: CanvasTexture };
+
+/**
+ * A board's face and its lamp-lit glow, disposed together; null, and no
+ * canvas drawn, while `enabled` is false.
+ */
+function useLitFace(draw: () => HTMLCanvasElement, lamps: number[], deps: unknown[], enabled = true): LitFace | null {
   const faces = useMemo(() => {
+    if (!enabled) return null;
     const face = draw();
     return { map: canvasTexture(face), glow: lampWash(face, lamps) };
-  }, deps);
-  useEffect(() => () => { faces.map.dispose(); faces.glow.dispose(); }, [faces]);
+  }, [...deps, enabled]);
+  useEffect(() => () => { faces?.map.dispose(); faces?.glow.dispose(); }, [faces]);
   return faces;
+}
+
+/**
+ * Species plates, one pair of textures per species rather than per sign:
+ * there are a handful of species and a sign per surname. Kept for the page's
+ * life, since every grove may need them again.
+ */
+const plates = new Map<string, LitFace>();
+function speciesPlate(common: string, latin: string): LitFace {
+  const key = `${common}|${latin}`;
+  let plate = plates.get(key);
+  if (!plate) {
+    const face = drawSpeciesPlate(common, latin);
+    plate = { map: canvasTexture(face), glow: lampWash(face, [0.5]) };
+    plates.set(key, plate);
+  }
+  return plate;
 }
 
 /**
@@ -227,16 +259,19 @@ function Signpost({
   sign,
   grove,
   selected,
+  near,
 }: {
   sign: Forest["signs"][number];
   grove: Grove;
   selected: boolean;
+  /** Within SIGN_TEXTURE_REACH of the cart: the board carries its face. */
+  near: boolean;
 }) {
   const night = useNightLamps();
   const face = useLitFace(() => drawSign(grove.label, `${grove.bookCount} trees`, grove.color), [0.27, 0.73],
-    [grove.label, grove.bookCount, grove.color]);
+    [grove.label, grove.bookCount, grove.color], near);
   const species = SPECIES[speciesFor(grove.genre)]!;
-  const plate = useLitFace(() => drawSpeciesPlate(species.common, species.latin), [0.5], [species.common, species.latin]);
+  const plate = speciesPlate(species.common, species.latin);
   const glow = night * 0.95 + (selected ? 0.25 : 0);
 
   const { x, z, yaw } = sign;
@@ -257,15 +292,20 @@ function Signpost({
       ))}
       <mesh position={[0, 2.35, 0.07]}>
         <boxGeometry args={[3.0, 1.05, 0.08]} />
-        <meshStandardMaterial
-          map={face.map}
-          roughness={0.72}
-          metalness={0}
-          emissive={LAMP_GLOW}
-          emissiveMap={face.glow}
-          emissiveIntensity={glow}
-          side={DoubleSide}
-        />
+        {face ? (
+          <meshStandardMaterial
+            map={face.map}
+            roughness={0.72}
+            metalness={0}
+            emissive={LAMP_GLOW}
+            emissiveMap={face.glow}
+            emissiveIntensity={glow}
+            side={DoubleSide}
+          />
+        ) : (
+          // Too far to read: the board's paper, lit as the face would be.
+          <meshStandardMaterial color="#efe8dc" roughness={0.72} metalness={0} emissive={LAMP_GLOW} emissiveIntensity={glow * 0.5} side={DoubleSide} />
+        )}
       </mesh>
       {/* The species plate hangs from the board on two short rods. */}
       {[-0.8, 0.8].map((px) => (
@@ -351,7 +391,8 @@ function drawPlaque(title: string, byline: string, body: string): HTMLCanvasElem
  */
 export function Lectern({ title, byline, body }: { title: string; byline: string; body: string }) {
   const night = useNightLamps();
-  const face = useLitFace(() => drawPlaque(title, byline, body), [0.5], [title, byline, body]);
+  // Always enabled, so never null: the one lectern at the hub, and one per exhibit.
+  const face = useLitFace(() => drawPlaque(title, byline, body), [0.5], [title, byline, body])!;
   return (
     <>
       {[-1.25, 1.25].map((px) => (
@@ -402,9 +443,10 @@ export function ExhibitPlaque({ exhibit: e, title, byline, body, aside = 0 }: {
 
 export function Signposts({ forest }: { forest: Forest }) {
   const selectedGrove = useGame((s) => s.selectedGrove);
+  const near = useNear(forest.signs, SIGN_TEXTURE_REACH, SIGN_TEXTURE_RELEASE);
   return (
     <group>
-      {forest.signs.map((sign) => {
+      {forest.signs.map((sign, i) => {
         const grove = groveByGenre(forest, sign.genre);
         if (!grove) return null;
         return (
@@ -413,6 +455,7 @@ export function Signposts({ forest }: { forest: Forest }) {
             sign={sign}
             grove={grove}
             selected={selectedGrove === sign.genre}
+            near={near.has(i)}
           />
         );
       })}

@@ -49,5 +49,5 @@ support pages. The Cosmographium, the Double Helix and the sundial were kept.
 
 ## Still from knowledge_press
 
-- Grove marks: every surname grove shows the same globe glyph, since the
-  glyphs are keyed by book genre.
+Nothing known, as of 2026-10-24: the start-screen stills, the book-genre
+grove marks and the book cargo in the cart have each been replaced.

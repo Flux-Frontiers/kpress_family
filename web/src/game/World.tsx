@@ -174,9 +174,10 @@ function Roads({ forest, circuit }: { forest: Forest; circuit: boolean }) {
     const spokes: FlatMesh = { pos: [], uv: [], index: [] };
     const ring: FlatMesh = { pos: [], uv: [], index: [] };
     for (const line of forest.roadLines) {
-      if (line.kind === "spoke") ribbon(line, 2.8, 0.035, spokes);
-      else if (line.kind === "spur") ribbon(line, 2.4, 0.035, spokes);
-      else ribbon(line, 3.4, 0.045, ring);
+      // The cart is 1.2 m wide and the tour keeps within a hand's breadth of the centreline.
+      if (line.kind === "spoke") ribbon(line, 2.4, 0.035, spokes);
+      else if (line.kind === "spur") ribbon(line, 2.2, 0.035, spokes);
+      else ribbon(line, 2.6, 0.045, ring);
     }
     // The hub plaza is paved round the glass pit, not over it.
     for (const p of forest.plazas) {
