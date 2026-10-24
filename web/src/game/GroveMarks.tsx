@@ -5,13 +5,13 @@ import { groveByGenre, type Forest } from "./forest";
 import { MARK_INK, MARK_PAPER } from "./genreMarks";
 import { ATLAS_PX, drawMonogramAtlas, MONOGRAM_FONT, monogramCell, monogramLetter } from "./monogram";
 
-/** The mark's band radius on the ground, m; the stop plaza is 4 m, so 1.5 m of brick shows around it. */
-const MARK_R = 2.5;
+/** The mark's band radius on the ground, m; the stop plaza is 3.2 m, so 1 m of brick shows around it. */
+const MARK_R = 2.2;
 /** The ink disc inside the band, and the paper rule between them, m. */
-const DISC_R = 1.9;
-const RULE_R = 2.05;
+const DISC_R = 1.65;
+const RULE_R = 1.8;
 /** The monogram's square, m: the letter fills most of the disc. */
-const LETTER = 3.0;
+const LETTER = 2.6;
 /** Just above the plaza (0.055) and the grove rings (0.06). */
 const MARK_Y = 0.07;
 
