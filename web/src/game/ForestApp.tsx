@@ -181,6 +181,7 @@ export function ForestApp() {
         const next = { follow: "high", high: "cart", cart: "god", god: "follow" } as const;
         st.setPreferences({ camera: next[st.preferences.camera] });
       }
+      if (e.code === "KeyV") st.setPreferences({ schematic: !st.preferences.schematic });
       if (e.code === "KeyH" && forest) {
         st.selectGrove(null);
         st.requestJump(forest.home, "Home · the home tree");
@@ -209,7 +210,7 @@ export function ForestApp() {
       {shot ? null : <img src={nightStill ? "start/night.webp" : "start/day.webp"} alt="" className="absolute inset-0 size-full object-cover" />}
       {mounted && forest ? (
         <div className="forest-fade-in absolute inset-0">
-          <ForestCanvas forest={forest} />
+          <ForestCanvas forest={forest} family={family} />
         </div>
       ) : null}
       {playing && forest && !shot ? (

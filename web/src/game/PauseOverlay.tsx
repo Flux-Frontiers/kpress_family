@@ -90,13 +90,17 @@ export function PauseOverlay() {
           </select>
         </label>
         <label className="flex items-center justify-between gap-4">
+          <span>Schematic trees<span className="block text-xs text-muted">Each person a bead, colored by generation, with names nearby · V</span></span>
+          <input type="checkbox" checked={prefs.schematic} onChange={(e) => setPreferences({ schematic: e.target.checked })} />
+        </label>
+        <label className="flex items-center justify-between gap-4">
           <span>Random weather<span className="block text-xs text-muted">Morning fog that burns off, and cloud{prefs.weather ? ` · now ${weatherName(weather).toLowerCase()}` : ""}</span></span>
           <input type="checkbox" checked={prefs.weather} onChange={(e) => setPreferences({ weather: e.target.checked })} />
         </label>
       </div>
       <div className="rounded-md bg-bg p-3 text-sm leading-relaxed text-muted">
         <p><span className="text-fg">WASD</span> drive · <span className="text-fg">Drag</span> or <span className="text-fg">arrows</span> look around · <span className="text-fg">Space</span> brake</p>
-        <p><span className="text-fg">Shift</span> hurry · <span className="text-fg">E</span> album · <span className="text-fg">C</span> camera</p>
+        <p><span className="text-fg">Shift</span> hurry · <span className="text-fg">E</span> album · <span className="text-fg">C</span> camera · <span className="text-fg">V</span> schematic</p>
         <p><span className="text-fg">G</span> groves · <span className="text-fg">B</span> lines · <span className="text-fg">H</span> home · <span className="text-fg">Q</span> guided tour · <span className="text-fg">?</span> about</p>
         <p className="mt-2 text-xs">Release the throttle to stop. You can turn in place. On a phone, the stick drives and a drag anywhere else looks. Gamepad: left stick to drive, right stick to look around, A to read, LT to brake, RT to hurry.</p>
       </div>

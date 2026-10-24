@@ -25,6 +25,10 @@ and the project uses [Semantic Versioning](https://semver.org/).
   the Line.
 - The cart carries each line in the album as a family album: a landscape
   volume bound in its grove's color, with brass corners, stacked in the bed.
+- Schematic mode (V, or Settings): every tree drawn as a family diagram, each
+  person a bead colored by generation and shaped by sex, straight barked
+  limbs, brass marriage bars, and names over the nearest tree; living people
+  are gray and unnamed. Tapping a bead opens that person's record.
 - `make family` and `make demo` (the public Kennedy sample), both through
   genealogy_kg with the living-person filter on.
 - Privacy tests over the committed fixtures and git.

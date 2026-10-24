@@ -37,7 +37,7 @@ function tiledNoise(u: number, v: number, gx: number, gy: number, seed: number):
  * A height field gives both the colour and the normal map, and every term is
  * periodic, so the tile repeats without a seam (REDWOOD_BARK sets its size).
  */
-function redwoodBark() {
+export function redwoodBark() {
   const W = 256, H = 512, RIDGES = 8;
   const height = new Float32Array(W * H);
   for (let y = 0; y < H; y++) {
@@ -155,7 +155,13 @@ function RedwoodPlaque({ forest }: { forest: Forest }) {
 }
 
 /** The hub's redwood: one bark mesh and one instanced draw of foliage sprays. */
-export function CorpusRedwood({ forest, season }: { forest: Forest; season: SeasonName }) {
+/**
+ * The home tree at the hub: its bark and foliage, and its plaque and uplights.
+ *
+ * :param wood: Draw the tree itself; schematic mode (Schematic.tsx) draws it
+ *     as a diagram and keeps only the plaque and lights.
+ */
+export function CorpusRedwood({ forest, season, wood = true }: { forest: Forest; season: SeasonName; wood?: boolean }) {
   const c = forest.corpusTree;
   const bark = useMemo(() => {
     const g = new BufferGeometry();
@@ -209,6 +215,7 @@ export function CorpusRedwood({ forest, season }: { forest: Forest; season: Seas
 
   return (
     <group>
+      {wood ? (<>
       {/* Touch devices skip the redwood's shadows, as they do the book trees' leaves. */}
       <mesh geometry={bark} material={barkMat} castShadow={!COARSE_POINTER} receiveShadow />
       {/* Tapping the trunk lists every book. An invisible cone takes the click:
@@ -221,6 +228,7 @@ export function CorpusRedwood({ forest, season }: { forest: Forest; season: Seas
       </mesh>
       <instancedMesh ref={ref} args={[spray, sprayMat, Math.max(1, c.foliage.count)]} customDepthMaterial={sprayDepth}
         castShadow={!COARSE_POINTER} receiveShadow={!COARSE_POINTER} />
+      </>) : null}
       <RedwoodPlaque forest={forest} />
       <UplightFixtures radius={c.baseRadius + 0.5} count={6} pool={3.5} />
     </group>
