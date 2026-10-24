@@ -2,8 +2,11 @@
 // its parent and a parent's root from its child. This is a layout, not growth
 // -- space colonization grows wood toward whatever is nearest, which draws a
 // tree with the family's leaf count but not the family. A port of
-// genealogy_kg.hourglass (Z-up there, Y-up here), with one addition: the line
-// tree, a surname line's descent from its founder.
+// genealogy_kg.hourglass (Z-up there, Y-up here), with two additions: the line
+// tree, a surname line's descent from its founder, and where a canopy person
+// stands. genealogy_kg puts everyone on their generation's ring; here a person
+// whose descendants spread over a wide wedge stands nearer the axis, so their
+// children's limbs run out and up, not halfway round the ring nearly level.
 //
 // Two shapes:
 //
@@ -32,7 +35,7 @@ export const TIER_UP = 2.0;
 /** Drop per ancestor generation; roots are shallower than the canopy is tall. */
 export const TIER_DOWN = 1.5;
 /** Radial reach per generation before the crowding floor. */
-const RING = 2.0;
+const RING = 1.0;
 /** Least arc between two people on one ring; a crowded tier widens. */
 const MIN_LEAF_ARC = 0.9;
 /** How far a married-in spouse's twig reaches from the fork. */
@@ -106,6 +109,17 @@ function sizeScale(population: number): number {
 
 function ringRadius(tier: number, count: number, scale: number): number {
   return Math.max(tier * RING * scale, (count * MIN_LEAF_ARC * scale) / (2 * Math.PI));
+}
+
+/**
+ * How far out on its ring a canopy person stands, as a fraction of the ring:
+ * all the way for a narrow wedge, less as the wedge their descendants fill
+ * widens, and on the axis for the whole circle. A person on the ring with
+ * children spread round a wide wedge would reach them with long limbs nearly
+ * level across the crown.
+ */
+function spanReach(span: number): number {
+  return Math.sqrt(Math.max(0, 1 - span / (2 * Math.PI)));
 }
 
 /** Which children a canopy walk follows. */
@@ -208,7 +222,7 @@ function placeCanopy(
         const angle = c0 + kidSpan / 2;
         c0 += kidSpan;
         if (b.placed.has(c)) { b.skipped++; return; }
-        const n = b.add(polar(radius, angle, y), node, c, gen + 1);
+        const n = b.add(polar(radius * spanReach(kidSpan), angle, y), node, c, gen + 1);
         placeCanopy(index, b, f, counts, maxGen, keep, c, n, gen + 1, angle - kidSpan / 2, kidSpan, weights);
       });
     }

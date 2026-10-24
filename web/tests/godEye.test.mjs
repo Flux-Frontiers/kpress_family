@@ -80,15 +80,15 @@ test("the follow pose sits behind the cart and looks down the road", () => {
   assert.equal(cam.y, look.y);
 });
 
-test("beside a tall tree the chase camera backs off, rises and tilts up, keeping the cart in frame", () => {
+test("driving past a tall tree the chase camera backs off, rises and tilts up, keeping the cart in frame", () => {
   const { crownFrame, FOLLOW_BACK, FOLLOW_UP } = require(`${process.env.FOREST_TEST_BUILD}/godEye.js`);
   const none = { back: 0, rise: 0, tilt: 0 };
   // A one-person line, 6.5 m: the level view already shows it.
-  assert.deepEqual(crownFrame(5, 6.5, 58), none);
+  assert.deepEqual(crownFrame(5, 6.5, 58, 6), none);
   // A 34 m tree out of reach leaves the camera alone.
-  assert.deepEqual(crownFrame(25, 34, 58), none);
+  assert.deepEqual(crownFrame(25, 34, 58, 6), none);
   // Beside it: backed off, raised and tilted, within bounds.
-  const near = crownFrame(5, 34, 58);
+  const near = crownFrame(5, 34, 58, 6);
   assert.ok(near.back > 5 && near.back <= 8, `back ${near.back}`);
   assert.equal(near.rise, near.back / 2);
   assert.ok(near.tilt > 0, `tilt ${near.tilt}`);
@@ -97,6 +97,20 @@ test("beside a tall tree the chase camera backs off, rises and tilts up, keeping
   const cartBelow = Math.atan2(FOLLOW_UP + near.rise - 0.8, FOLLOW_BACK + near.back);
   assert.ok(near.tilt - half < -cartBelow, `cart at ${cartBelow}, tilt ${near.tilt}`);
   // Easing in on the approach: halfway in, less than beside it.
-  const coming = crownFrame(13, 34, 58);
+  const coming = crownFrame(13, 34, 58, 6);
   assert.ok(coming.back < near.back && coming.back > 0);
+});
+
+test("parked beside a tall tree the chase camera backs off until the whole tree fits; driving, only a little", () => {
+  const { crownFrame, FOLLOW_BACK, FOLLOW_UP } = require(`${process.env.FOREST_TEST_BUILD}/godEye.js`);
+  const half = (58 * Math.PI) / 360, margin = (4 * Math.PI) / 180;
+  const parked = crownFrame(5, 25, 58, 0);
+  const driving = crownFrame(5, 25, 58, 6);
+  assert.ok(driving.back <= 8, `driving back ${driving.back}`);
+  assert.ok(parked.back > driving.back + 5, `parked back ${parked.back}`);
+  // Parked, the crown top (and a metre of sky) is inside the frame's upper edge...
+  const up = FOLLOW_UP + parked.rise;
+  assert.ok(Math.atan2(25 + 1 - up, 5 + FOLLOW_BACK + parked.back) <= parked.tilt + half - margin + 1e-9);
+  // ...and the cart is still above its lower edge.
+  assert.ok(parked.tilt - half < -Math.atan2(up - 0.8, FOLLOW_BACK + parked.back));
 });

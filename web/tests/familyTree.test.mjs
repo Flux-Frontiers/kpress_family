@@ -89,6 +89,26 @@ test("every parent-to-child pair within a line is wood: the child's limb runs do
   }
 });
 
+test("no line tree's limbs run nearly level: each child rises at least 20 degrees from its parent", () => {
+  // Before the fix, a parent standing out on its ring reached children spread
+  // round a wide wedge with limbs up to 33 m long, nearly flat.
+  const kennedy = JSON.parse(readFileSync(new URL("./fixtures/kennedy/catalog.json", import.meta.url)));
+  const idx = indexCatalog(kennedy);
+  for (const line of kennedy.lines.filter((l) => l.id !== UNKNOWN_LINE && l.members.length)) {
+    const tree = lineTree(idx, line.id);
+    const byNode = new Map(tree.people.map((p) => [p.node, p]));
+    for (const p of tree.people) {
+      if (p.marriedIn) continue;
+      let i = tree.skeleton.parents[p.node];
+      while (i >= 0 && !byNode.has(i)) i = tree.skeleton.parents[i];
+      if (i < 0) continue;
+      const q = byNode.get(i);
+      const rise = Math.atan2(p.y - q.y, Math.hypot(p.x - q.x, p.z - q.z));
+      assert.ok(rise >= (20 * Math.PI) / 180, `${line.id}: ${q.id} to ${p.id} rises ${((rise * 180) / Math.PI).toFixed(0)} deg`);
+    }
+  }
+});
+
 test("every person is a member of exactly one line tree", () => {
   const membership = new Map();
   for (const line of catalog.lines.filter((l) => l.id !== UNKNOWN_LINE)) {
