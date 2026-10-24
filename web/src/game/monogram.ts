@@ -5,10 +5,14 @@
 
 /** The letters the atlas holds, in cell order; anything else shows the last cell. */
 export const MONOGRAM_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ?";
-/** Cells per row and rows in the atlas. */
-export const ATLAS_COLS = 6;
-export const ATLAS_ROWS = 5;
-/** The atlas canvas, px, square; a cell is ATLAS_PX / ATLAS_COLS wide. */
+/**
+ * Cells per row and rows in the atlas. A cell is 205 by 171 px: the widest
+ * script capital (W) is 191 px at the atlas font size, and the tallest (J)
+ * 136 px.
+ */
+export const ATLAS_COLS = 5;
+export const ATLAS_ROWS = 6;
+/** The atlas canvas, px, square; a cell is ATLAS_PX / ATLAS_COLS wide and ATLAS_PX / ATLAS_ROWS high. */
 export const ATLAS_PX = 1024;
 
 /** The letter a grove's mark shows: the first letter of its label, in capitals. */
@@ -29,12 +33,14 @@ export function monogramCell(letter: string): { u0: number; v0: number; u1: numb
 }
 
 /** The script face the monograms are set in, with the display face behind it; loaded in styles.css. */
-export const MONOGRAM_FONT = '400 150px "Pinyon Script", "Cormorant Garamond", Georgia, serif';
+export const MONOGRAM_FONT = '400 130px "Pinyon Script", "Cormorant Garamond", Georgia, serif';
 
 /**
- * Draw the atlas: every letter centered in its cell, in `ink` on a clear
- * ground. Call once the fonts are loaded (document.fonts.ready), or the
- * letters come out in the fallback face.
+ * Draw the atlas: every letter's ink centered in its cell, in `ink` on a
+ * clear ground. Centered on the ink box, not the advance: a script capital's
+ * advance box reaches well left of its ink, so aligning the advance set every
+ * letter 6 to 50 px right of center. Call once the fonts are loaded (see
+ * GroveMarks), or the letters come out in the fallback face.
  */
 export function drawMonogramAtlas(ctx: CanvasRenderingContext2D, ink: string): void {
   const cell = ATLAS_PX / ATLAS_COLS;
@@ -42,11 +48,15 @@ export function drawMonogramAtlas(ctx: CanvasRenderingContext2D, ink: string): v
   ctx.clearRect(0, 0, ATLAS_PX, ATLAS_PX);
   ctx.fillStyle = ink;
   ctx.font = MONOGRAM_FONT;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
   for (let i = 0; i < MONOGRAM_LETTERS.length; i++) {
     const col = i % ATLAS_COLS, row = Math.floor(i / ATLAS_COLS);
-    // Script capitals swash left and sit low; nudge up a little.
-    ctx.fillText(MONOGRAM_LETTERS[i]!, (col + 0.5) * cell, (row + 0.5) * rowH - rowH * 0.06);
+    const letter = MONOGRAM_LETTERS[i]!;
+    const m = ctx.measureText(letter);
+    // Ink box relative to the pen position: left is positive leftward.
+    const inkX = (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2;
+    const inkY = (m.actualBoundingBoxDescent - m.actualBoundingBoxAscent) / 2;
+    ctx.fillText(letter, (col + 0.5) * cell - inkX, (row + 0.5) * rowH - inkY);
   }
 }

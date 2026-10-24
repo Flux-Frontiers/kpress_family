@@ -292,8 +292,13 @@ function Signpost({
       ))}
       <mesh position={[0, 2.35, 0.07]}>
         <boxGeometry args={[3.0, 1.05, 0.08]} />
+        {/* Keyed apart: a material that gains a map after it is made keeps its
+            old shader (three.js recompiles for a changed fog or lights, not a
+            map), so the face would stay blank until something else forced
+            it. A fresh material compiles with the map from the start. */}
         {face ? (
           <meshStandardMaterial
+            key="face"
             map={face.map}
             roughness={0.72}
             metalness={0}
@@ -304,7 +309,7 @@ function Signpost({
           />
         ) : (
           // Too far to read: the board's paper, lit as the face would be.
-          <meshStandardMaterial color="#efe8dc" roughness={0.72} metalness={0} emissive={LAMP_GLOW} emissiveIntensity={glow * 0.5} side={DoubleSide} />
+          <meshStandardMaterial key="paper" color="#efe8dc" roughness={0.72} metalness={0} emissive={LAMP_GLOW} emissiveIntensity={glow * 0.5} side={DoubleSide} />
         )}
       </mesh>
       {/* The species plate hangs from the board on two short rods. */}

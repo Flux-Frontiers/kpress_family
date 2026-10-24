@@ -3,14 +3,14 @@ import { CanvasTexture, CircleGeometry, PlaneGeometry, RingGeometry, SRGBColorSp
 import { textureAnisotropy } from "./Environment";
 import { groveByGenre, type Forest } from "./forest";
 import { MARK_INK, MARK_PAPER } from "./genreMarks";
-import { ATLAS_PX, drawMonogramAtlas, MONOGRAM_FONT, monogramCell, monogramLetter } from "./monogram";
+import { ATLAS_COLS, ATLAS_PX, ATLAS_ROWS, drawMonogramAtlas, MONOGRAM_FONT, monogramCell, monogramLetter } from "./monogram";
 
 /** The mark's band radius on the ground, m; the stop plaza is 3.2 m, so 1 m of brick shows around it. */
 const MARK_R = 2.2;
 /** The ink disc inside the band, and the paper rule between them, m. */
 const DISC_R = 1.65;
 const RULE_R = 1.8;
-/** The monogram's square, m: the letter fills most of the disc. */
+/** The monogram quad's width, m: the letter fills most of the disc. Its height follows the atlas cell. */
 const LETTER = 2.6;
 /** Just above the plaza (0.055) and the grove rings (0.06). */
 const MARK_Y = 0.07;
@@ -42,9 +42,9 @@ function useMonogramAtlas(): CanvasTexture | null {
   return atlas;
 }
 
-/** A square whose UVs are one letter's cell of the atlas. */
+/** A quad with the atlas cell's proportions, whose UVs are one letter's cell. */
 function letterQuad(letter: string): PlaneGeometry {
-  const g = new PlaneGeometry(LETTER, LETTER);
+  const g = new PlaneGeometry(LETTER, LETTER * ATLAS_COLS / ATLAS_ROWS);
   const { u0, v0, u1, v1 } = monogramCell(letter);
   const uv = g.attributes.uv!;
   // PlaneGeometry's corners run top-left, top-right, bottom-left, bottom-right.
