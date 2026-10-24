@@ -16,8 +16,9 @@ make web-dev                             # http://localhost:5173
 
 The orchard reads `public/family/`, written by `genkg export-web`. That
 directory is personal data and is never committed. `?focal=<id>` opens on that
-person's hourglass. Without it, the app opens on the person whose hourglass is
-fullest. `?tree=<line id>` opens beside a line's tree.
+person's hourglass. Without it, the app opens on the person chosen with "Make
+this the home tree" in the record reader, or else on the person whose
+hourglass is fullest. `?tree=<line id>` opens beside a line's tree.
 
 `make web-test` runs the node tests, and `make web-build` typechecks and
 builds.

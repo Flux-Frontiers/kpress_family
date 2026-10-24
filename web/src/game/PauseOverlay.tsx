@@ -90,7 +90,7 @@ export function PauseOverlay() {
           </select>
         </label>
         <label className="flex items-center justify-between gap-4">
-          <span>Schematic trees<span className="block text-xs text-muted">Each person a bead, colored by generation, with names nearby · V</span></span>
+          <span>Schematic trees<span className="block text-xs text-muted">Each person a bead, colored by generation, named over the nearest tree; living people are gray and unnamed · V</span></span>
           <input type="checkbox" checked={prefs.schematic} onChange={(e) => setPreferences({ schematic: e.target.checked })} />
         </label>
         <label className="flex items-center justify-between gap-4">
