@@ -193,10 +193,10 @@ function cellKey(cx: number, cz: number): string {
  * :param family: As `genkg export-web` wrote it.
  * :param focal: The home tree's trunk person.
  */
-export function getForest(family: FamilyCatalog, focal: string, leafMultiplier = 1, ancestors = false): Forest {
-  const key = `${GROW_VERSION}:${leafMultiplier}:${family.meta.generated}:${family.meta.counts.people}:${focal}:${ancestors}`;
+export function getForest(family: FamilyCatalog, focal: string, ancestors = false): Forest {
+  const key = `${GROW_VERSION}:${family.meta.generated}:${family.meta.counts.people}:${focal}:${ancestors}`;
   if (cached && cachedVersion === key) return cached;
-  cached = buildForest(family, focal, leafMultiplier, ancestors);
+  cached = buildForest(family, focal, ancestors);
   cachedVersion = key;
   return cached;
 }
@@ -365,8 +365,7 @@ function roundTurns(path: [number, number][], r: number): [number, number][] {
   return out.filter((p, k) => k === 0 || Math.hypot(p[0] - out[k - 1]![0], p[1] - out[k - 1]![1]) > 1e-6);
 }
 
-// leafMultiplier stays in the cache key: the tufts are fixed per person.
-function buildForest(family: FamilyCatalog, focal: string, _leafMultiplier: number, ancestors: boolean): Forest {
+function buildForest(family: FamilyCatalog, focal: string, ancestors: boolean): Forest {
   const index = indexCatalog(family);
   // One grove per surname, holding each of its lines (a surname can found
   // several unconnected lines). The unknown line grows no tree.

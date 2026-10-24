@@ -53,12 +53,6 @@ export function PauseOverlay() {
         <label className="flex items-center justify-between gap-4">Wind & gentle cart motion
           <input type="checkbox" checked={prefs.motion} onChange={(e) => setPreferences({ motion: e.target.checked })} />
         </label>
-        <label className="flex items-center justify-between gap-4">Leaf complexity
-          <select value={prefs.leaves} onChange={(e) => setPreferences({ leaves: e.target.value as typeof prefs.leaves })} className="rounded-md border border-border bg-bg p-2">
-            <option value="low">Low · 1 in 10 chunks</option><option value="medium">Medium · 1 in 4</option>
-            <option value="high">High · 1 in 2</option><option value="ultra">Ultra · every chunk</option>
-          </select>
-        </label>
         <label className="flex items-center justify-between gap-4">Read each grove aloud on the ring
           <input type="checkbox" checked={prefs.narrate} onChange={(e) => {
             setPreferences({ narrate: e.target.checked });
@@ -102,7 +96,7 @@ export function PauseOverlay() {
         <p><span className="text-fg">WASD</span> drive · <span className="text-fg">Drag</span> or <span className="text-fg">arrows</span> look around · <span className="text-fg">Space</span> brake</p>
         <p><span className="text-fg">Shift</span> hurry · <span className="text-fg">E</span> album · <span className="text-fg">C</span> camera · <span className="text-fg">V</span> schematic</p>
         <p><span className="text-fg">G</span> groves · <span className="text-fg">B</span> lines · <span className="text-fg">H</span> home · <span className="text-fg">Q</span> guided tour · <span className="text-fg">?</span> about</p>
-        <p className="mt-2 text-xs">Release the throttle to stop. You can turn in place. On a phone, the stick drives and a drag anywhere else looks. Gamepad: left stick to drive, right stick to look around, A to read, LT to brake, RT to hurry.</p>
+        <p className="mt-2 text-xs">Release the throttle to stop. You can turn in place. On a phone, the stick drives and a drag anywhere else looks. Gamepad: left stick to drive, right stick to look around, A to add a line to the album, LT to brake, RT to hurry.</p>
       </div>
       <button type="button" className="mt-3 min-h-11 w-full rounded-md border border-border text-muted"
         onClick={() => { if (window.confirm("Reset every setting on this device, including the tour welcome? Your album and visited groves are kept.")) resetSettings(); }}>

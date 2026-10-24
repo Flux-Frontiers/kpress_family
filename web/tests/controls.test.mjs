@@ -135,9 +135,6 @@ test("old or malformed preferences have usable defaults and bounded sensitivity"
   // A saved god's-eye view survives a reload.
   assert.equal(readPreferences({ camera: "god" }).camera, "god");
   assert.equal(readPreferences({ camera: "cart" }).camera, "cart");
-  assert.equal(readPreferences({}).leaves, "medium");
-  assert.equal(readPreferences({ leaves: "bogus" }).leaves, "medium");
-  assert.equal(readPreferences({ leaves: "ultra" }).leaves, "ultra");
   assert.equal(readPreferences({}).stats, false);
   assert.equal(readPreferences({}).silent, false);
   assert.equal(readPreferences({ silent: true }).silent, true);

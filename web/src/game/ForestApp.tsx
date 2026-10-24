@@ -16,7 +16,6 @@ import { getForest, treeApproach, type Forest } from "./forest";
 import { GROW_VERSION } from "./growTree";
 import { bindInput, isInputTarget } from "./input";
 import { requestPlace } from "./location";
-import { LEAF_SCALE } from "./preferences";
 import { resetSim } from "./sim";
 import { unlockSpeechOnGesture } from "./speech";
 import { useGame } from "./store";
@@ -80,9 +79,8 @@ export function ForestApp() {
     }).catch((err: Error) => setToast(err.message));
   }, [setToast]);
 
-  // Grow in a worker, regrowing when leaf complexity changes; only the first
+  // Grow in a worker, regrowing when the home tree changes; only the first
   // forest places the cart. Without Worker support, grow on the main thread.
-  const leafScale = useGame((s) => LEAF_SCALE[s.preferences.leaves]);
   const placed = useRef(false);
   const worker = useRef<Worker | null>(null);
   const request = useRef(0);
@@ -115,12 +113,12 @@ export function ForestApp() {
       w.onmessage = (e: MessageEvent<{ id: number; forest: Forest }>) => {
         if (e.data.id === request.current) apply(e.data.forest);
       };
-      w.postMessage({ id, leafScale, family, focal, ancestors });
+      w.postMessage({ id, family, focal, ancestors });
       return;
     }
-    const t = window.setTimeout(() => apply(getForest(family, focal, leafScale, ancestors)), 0);
+    const t = window.setTimeout(() => apply(getForest(family, focal, ancestors)), 0);
     return () => window.clearTimeout(t);
-  }, [leafScale, family, focal, ancestors, GROW_VERSION]);
+  }, [family, focal, ancestors, GROW_VERSION]);
 
   // `?tree=<slug>` opens the drive beside that book's tree instead of at home.
   const linked = useMemo(() => (forest ? treeFromSearch(window.location.search, forest.trees) : undefined), [forest]);
@@ -144,12 +142,6 @@ export function ForestApp() {
       return true;
     };
     const st = useGame.getState();
-    // Every leaf drawn: changing the level regrows the forest and runs this again,
-    // so the shot API is installed only on the forest that will be photographed.
-    if (st.preferences.leaves !== "ultra") {
-      st.setPreferences({ leaves: "ultra" });
-      return;
-    }
     st.setPreferences({ camera: "follow", fog: "light", weather: false, motion: false });
     st.setSeason("summer");
     const time = new URLSearchParams(window.location.search).get("time");
