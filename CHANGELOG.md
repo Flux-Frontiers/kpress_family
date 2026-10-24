@@ -45,11 +45,13 @@ and the project uses [Semantic Versioning](https://semver.org/).
   the Kennedys, the Tudors and George Washington's family from
   genealogy_kg's corpus, all with the living-person filter on.
 - Each grove's stop plaza carries a monogram of its surname's initial in a
-  script face (Pinyon Script), from one shared atlas; the band and disc are
-  geometry, so the marks cost one texture however many groves there are.
+  script face (Pinyon Script), from one shared atlas, each letter centered
+  on its ink rather than its advance box; the band and disc are geometry,
+  so the marks cost one texture however many groves there are.
 - Signpost faces have textures only within 70 m of the cart, and the species
   plates are shared across signs: a family's sign memory is bounded by what
-  stands near you, not by its size.
+  stands near you, not by its size. A board that comes into reach gets a
+  fresh material, since one that merely gains a map keeps its old shader.
 - Names written in capitals (the old GEDCOM way of marking a surname) read
   in title case; roman numerals stay.
 - Privacy tests over the committed fixtures and git.
