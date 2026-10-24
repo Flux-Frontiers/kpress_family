@@ -23,7 +23,7 @@ export const TOUR_WELCOME_BACK = "Welcome back. Off around the ring we go.";
 export const TOUR_LAP_DONE =
   "That was every grove on the ring. Now back to the home tree, where the tour ends.";
 
-/** Said when the rider takes the wheel, or the tour hands it back at the redwood. */
+/** Said when the rider takes the wheel, or the tour hands it back at the home tree. */
 export const TOUR_FAREWELL = "You have the wheel. Ride the ring again any time.";
 
 export type TourFacts = { books: number; groves: number };

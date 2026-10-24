@@ -34,7 +34,7 @@ export function PauseOverlay() {
     <dialog ref={dialog} aria-labelledby="settings-title" onCancel={(e) => { e.preventDefault(); resume(); }}
       className="forest-settings m-auto max-h-[90dvh] w-[min(100%-2rem,30rem)] overflow-auto rounded-xl border border-border bg-surface p-6 text-fg shadow-2xl">
       <p className="text-xs tracking-[0.2em] text-primary uppercase">Take a breath</p>
-      <h2 id="settings-title" className="mt-1 font-display text-3xl">Make the forest yours</h2>
+      <h2 id="settings-title" className="mt-1 font-display text-3xl">Make the orchard yours</h2>
       <p className="mt-2 text-sm text-muted">Your cart is parked. These settings are saved on this device.</p>
       <div className="my-5 grid gap-4 text-sm">
         <label className="flex items-center justify-between gap-4">Driving pace
@@ -47,7 +47,7 @@ export function PauseOverlay() {
         </label>
         <label className="flex items-center justify-between gap-4">Camera · C
           <select value={prefs.camera} onChange={(e) => setPreferences({ camera: e.target.value as typeof prefs.camera })} className="rounded-md border border-border bg-bg p-2">
-            <option value="follow">Behind the cart</option><option value="high">High view</option><option value="cart">In the cart</option><option value="god">God's eye · the whole forest</option>
+            <option value="follow">Behind the cart</option><option value="high">High view</option><option value="cart">In the cart</option><option value="god">God's eye · the whole orchard</option>
           </select>
         </label>
         <label className="flex items-center justify-between gap-4">Wind & gentle cart motion
@@ -108,7 +108,7 @@ export function PauseOverlay() {
         onClick={() => { if (window.confirm("Reset every setting on this device, including the tour welcome? Your album and visited groves are kept.")) resetSettings(); }}>
         Reset all settings
       </button>
-      <button ref={back} type="button" className="mt-5 min-h-11 w-full rounded-md bg-primary text-primary-fg" onClick={resume}>Back to the forest</button>
+      <button ref={back} type="button" className="mt-5 min-h-11 w-full rounded-md bg-primary text-primary-fg" onClick={resume}>Back to the orchard</button>
     </dialog>
   );
 }

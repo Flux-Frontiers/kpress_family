@@ -253,7 +253,7 @@ export function Player({ forest, playing }: { forest: Forest; playing: boolean }
           if (tourState.tour.done) {
             endTour();
             useGame.getState().setTravelMode("free");
-            useGame.getState().setToast("Tour over · back at the redwood");
+            useGame.getState().setToast("Tour over · back at the home tree");
           }
         }
       }

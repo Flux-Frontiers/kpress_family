@@ -87,7 +87,7 @@ export function ForestApp() {
       window.__gameReady = true;
     };
     const id = ++request.current;
-    if (placed.current) useGame.getState().setToast("Growing the forest…");
+    if (placed.current) useGame.getState().setToast("Growing the orchard...");
     const w = worker.current;
     if (w) {
       // Only the latest request wins if the level changes again mid-growth.

@@ -142,7 +142,7 @@ export function HUD({ forest }: { forest: Forest }) {
               type="button"
               onClick={() => { saveScreenshot(COARSE_POINTER); (document.activeElement as HTMLElement | null)?.blur(); }}
               className={"size-11 place-items-center rounded-md border border-border bg-surface " + (clean ? "grid" : "hidden sm:grid")}
-              aria-label="Save a screenshot of the forest" title="Screenshot"
+              aria-label="Save a screenshot of the orchard" title="Screenshot"
             >
               <Camera className="size-4" strokeWidth={1.75} />
             </button>
@@ -199,7 +199,7 @@ export function HUD({ forest }: { forest: Forest }) {
                 type="button"
                 onClick={() => useGame.getState().toggleHelp()}
                 className="hidden size-11 place-items-center rounded-md border border-border bg-surface sm:grid"
-                aria-label="About the forest and tonight's sky" title="About · ?"
+                aria-label="About the orchard and tonight's sky" title="About · ?"
               >
                 <Info className="size-4" strokeWidth={1.75} />
               </button>
