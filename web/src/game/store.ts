@@ -18,6 +18,8 @@ type SaveBlob = {
   /** The browser's location, rounded to 0.1 degree, once it has been given. */
   place: Place | null;
   preferences: Preferences;
+  /** The person chosen as the home tree in the reader, or null for the app's own pick. */
+  home: string | null;
 };
 
 const TIME_CYCLE: Record<TimeMode, TimeMode> = { live: "dawn", dawn: "day", day: "dusk", dusk: "night", night: "live" };
@@ -29,6 +31,7 @@ function loadSave(): SaveBlob {
     grovesVisited: [],
     place: null,
     preferences: readPreferences(),
+    home: null,
   };
   if (typeof window === "undefined") return defaults;
   try {
@@ -43,6 +46,7 @@ function loadSave(): SaveBlob {
       grovesVisited: Array.isArray(parsed.grovesVisited) ? parsed.grovesVisited : [],
       place: parsed.place && Number.isFinite(parsed.place.lat) && Number.isFinite(parsed.place.lon) ? parsed.place : null,
       preferences: readPreferences(parsed.preferences),
+      home: typeof parsed.home === "string" ? parsed.home : null,
     };
   } catch {
     return defaults;
@@ -54,6 +58,7 @@ function persist(s: {
   grovesVisited: string[];
   place: Place | null;
   preferences: Preferences;
+  home: string | null;
 }) {
   try {
     const blob: SaveBlob = {
@@ -62,6 +67,7 @@ function persist(s: {
       grovesVisited: s.grovesVisited,
       place: s.place,
       preferences: s.preferences,
+      home: s.home,
     };
     window.localStorage.setItem(SAVE_KEY, JSON.stringify(blob));
   } catch {
@@ -160,6 +166,10 @@ export type GameStore = {
   collect: (slug: string, title: string) => void;
   /** Take every book out of the press. */
   emptyPress: () => void;
+  /** The person the home tree is grown around, chosen in the reader; null for the app's own pick. */
+  home: string | null;
+  /** Grow the home tree around this person (FamilyReader), and remember it. */
+  setHome: (id: string | null) => void;
   /**
    * Drop album entries that name no line of this family: a save from another
    * family, or from before this was a family app, would fill the cart.
@@ -248,6 +258,7 @@ export const useGame = create<GameStore>((set, get) => ({
   searchPick: null,
   library: initial.library,
   grovesVisited: initial.grovesVisited,
+  home: initial.home,
   nearbySlug: null,
   nearbyDist: 99,
   nearbyDismissed: null,
@@ -321,6 +332,10 @@ export const useGame = create<GameStore>((set, get) => ({
   emptyPress: () => {
     set({ library: [], lastReadSlug: null });
     persist(get());
+  },
+  setHome: (home) => {
+    set({ home });
+    persist({ ...get(), home });
   },
   keepLines: (slugs) => {
     const known = new Set(slugs);

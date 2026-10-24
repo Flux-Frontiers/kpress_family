@@ -35,7 +35,8 @@ make web-dev
 corpus (`corpora/gedcom-samples/sample-kennedy/kennedy.ged`) into
 `.demo/kennedy`, with the living filter on, and exports it the same way.
 
-`?focal=<id>` opens on that person's hourglass; otherwise the app picks the
+`?focal=<id>` opens on that person's hourglass. Otherwise the home tree is
+the person chosen with "Make this the home tree" in the record reader, or the
 person whose hourglass is fullest. `?tree=<line id>` opens beside a line's
 tree.
 

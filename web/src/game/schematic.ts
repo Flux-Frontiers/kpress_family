@@ -24,6 +24,8 @@ export type SchematicBead = {
   shape: BeadShape;
   color: string;
   living: boolean;
+  /** Drawn as a spouse who married in: their name plate hangs below, clear of their partner's. */
+  marriedIn: boolean;
   /** Index into the forest's trees, or -1 for the home tree. */
   tree: number;
 };
@@ -85,6 +87,7 @@ function addTree(index: FamilyIndex, t: FamilyTree, tree: number, ox: number, oz
       shape: shapeOf(person?.sex ?? null),
       color: living ? LIVING_BEAD : generationColor(p.generation),
       living,
+      marriedIn: p.marriedIn,
       tree,
     });
     const from = below(p.node);

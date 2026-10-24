@@ -29,8 +29,13 @@ type Load<T> = { state: "loading" } | { state: "error"; message: string } | { st
  * the summary, events, relatives and the GEDCOM record lines. A relative is a
  * link: on this line it turns the page, on another it opens that line.
  */
-export function FamilyReader({ line }: { line: LineCard }) {
+export function FamilyReader({ line, home }: { line: LineCard; home: string }) {
   const close = () => useGame.getState().openReader(null);
+  /** Regrow the orchard with this person's hourglass at the hub. */
+  const makeHome = (id: string) => {
+    useGame.getState().setHome(id);
+    close();
+  };
   const roster = line.roster;
   const startAt = () => {
     const wanted = pendingPerson ?? lastPerson.get(line.slug);
@@ -112,6 +117,16 @@ export function FamilyReader({ line }: { line: LineCard }) {
             <h2 id="reader-title" className="font-display text-2xl leading-tight sm:text-3xl">{current?.name ?? line.title}</h2>
             {current?.years ? <p className="text-sm text-muted">{current.years}</p> : null}
           </div>
+          {current && page.state === "ready" && !page.value.living ? (
+            home === current.id ? (
+              <p className="shrink-0 self-center text-xs text-muted">The home tree</p>
+            ) : (
+              <button type="button" onClick={() => makeHome(current.id)}
+                className="min-h-11 shrink-0 self-center rounded-md border border-border px-3 text-sm text-primary">
+                Make this the home tree
+              </button>
+            )
+          ) : null}
           <button type="button" autoFocus onClick={close}
             className="grid size-11 shrink-0 place-items-center rounded-md text-muted" aria-label="Close the record">
             <X className="size-5" strokeWidth={1.75} />

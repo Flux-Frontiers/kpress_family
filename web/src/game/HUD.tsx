@@ -427,7 +427,7 @@ export function HUD({ forest }: { forest: Forest }) {
 
       {browsing ? <BrowsePanel forest={forest} /> : null}
       {plaque ? <PlaquePanel plaque={plaque} /> : null}
-      {reading ? <FamilyReader key={reading.line.slug} line={reading.line} /> : null}
+      {reading ? <FamilyReader key={reading.line.slug} line={reading.line} home={forest.corpusTree.focal} /> : null}
     </div>
   );
 }

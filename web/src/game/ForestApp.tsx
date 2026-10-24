@@ -25,12 +25,15 @@ export function ForestApp() {
   const [mounted, setMounted] = useState(false);
   const [forest, setForest] = useState<Forest | null>(null);
   const [family, setFamily] = useState<FamilyCatalog | null>(null);
-  // `?focal=<id>` opens on that person's hourglass; otherwise whoever's shows the most family.
+  // `?focal=<id>` opens on that person's hourglass; then the person chosen in
+  // the reader (setHome); otherwise whoever's shows the most family.
+  const home = useGame((s) => s.home);
   const focal = useMemo(() => {
     if (!family) return "";
+    const has = (id: string | null) => id !== null && family.people.some((p) => p.id === id);
     const asked = new URLSearchParams(window.location.search).get("focal");
-    return asked && family.people.some((p) => p.id === asked) ? asked : richestFocal(indexCatalog(family));
-  }, [family]);
+    return has(asked) ? asked! : has(home) ? home! : richestFocal(indexCatalog(family));
+  }, [family, home]);
   const playing = useGame((s) => s.playing);
   const play = useGame((s) => s.play);
   const setToast = useGame((s) => s.setToast);

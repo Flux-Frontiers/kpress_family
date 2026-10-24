@@ -28,7 +28,11 @@ and the project uses [Semantic Versioning](https://semver.org/).
 - Schematic mode (V, or Settings): every tree drawn as a family diagram, each
   person a bead colored by generation and shaped by sex, straight barked
   limbs, brass marriage bars, and names over the nearest tree; living people
-  are gray and unnamed. Tapping a bead opens that person's record.
+  are gray and unnamed. Tapping a bead opens that person's record. A
+  couple's names sit one above and one below, and the beads glow faintly in
+  their own colors so the diagram reads at night.
+- "Make this the home tree" in the record reader regrows the orchard around
+  that person and remembers the choice; `?focal=` still overrides it.
 - `make family` and `make demo` (the public Kennedy sample), both through
   genealogy_kg with the living-person filter on.
 - Privacy tests over the committed fixtures and git.

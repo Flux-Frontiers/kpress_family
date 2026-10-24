@@ -72,10 +72,28 @@ const SHAPES: Record<BeadShape, () => SphereGeometry | BoxGeometry | OctahedronG
   diamond: () => new OctahedronGeometry(BEAD_R * 1.25),
 };
 
+/** Each bead glows faintly in its own color (the instance color), so the diagram reads at dusk and by night. */
+const BEAD_GLOW = 0.35;
+
+/**
+ * A standard material that also emits its instance color, scaled by `amount`:
+ * three's emissive is one color for the whole mesh, so it is patched in.
+ */
+function glowing(m: MeshStandardMaterial, amount: number): MeshStandardMaterial {
+  m.onBeforeCompile = (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <emissivemap_fragment>",
+      `#include <emissivemap_fragment>\n#ifdef USE_INSTANCING_COLOR\ntotalEmissiveRadiance += vColor.rgb * ${amount.toFixed(2)};\n#endif`,
+    );
+  };
+  m.customProgramCacheKey = () => `schematic-bead-glow-${amount}`;
+  return m;
+}
+
 function BeadMesh({ beads, shape }: { beads: SchematicBead[]; shape: BeadShape }) {
   const ref = useRef<InstancedMesh>(null);
   const geometry = useMemo(() => SHAPES[shape](), [shape]);
-  const material = useMemo(() => new MeshStandardMaterial({ roughness: 0.45, metalness: 0.1 }), []);
+  const material = useMemo(() => glowing(new MeshStandardMaterial({ roughness: 0.45, metalness: 0.1 }), BEAD_GLOW), []);
   useEffect(() => () => { geometry.dispose(); material.dispose(); }, [geometry, material]);
   useLayoutEffect(() => {
     const mesh = ref.current;
@@ -121,7 +139,7 @@ function plate(name: string) {
   }
   const map = new CanvasTexture(canvas);
   map.colorSpace = SRGBColorSpace;
-  const made = { material: new SpriteMaterial({ map, sizeAttenuation: false, depthWrite: false, transparent: true, fog: false }), aspect: width / LABEL_PX };
+  const made = { material: new SpriteMaterial({ map, sizeAttenuation: false, depthTest: false, depthWrite: false, transparent: true, fog: false }), aspect: width / LABEL_PX };
   plates.set(name, made);
   return made;
 }
@@ -146,9 +164,12 @@ export function SchematicOrchard({ forest, family, picker }: {
   const barkMat = useMemo(() => {
     const m = redwoodBark();
     for (const t of [m.map, m.normalMap]) if (t) { t.wrapS = t.wrapT = RepeatWrapping; t.repeat.set(1, 3); }
+    // A little warmth of its own, so the wood does not go black at night.
+    m.emissive.set("#3a2416");
+    m.emissiveIntensity = 0.6;
     return m;
   }, []);
-  const brassMat = useMemo(() => new MeshStandardMaterial({ color: BRASS, metalness: 0.7, roughness: 0.35 }), []);
+  const brassMat = useMemo(() => new MeshStandardMaterial({ color: BRASS, metalness: 0.7, roughness: 0.35, emissive: BRASS, emissiveIntensity: 0.25 }), []);
   useEffect(() => () => {
     barkMat.map?.dispose();
     barkMat.normalMap?.dispose();
@@ -195,7 +216,8 @@ export function SchematicOrchard({ forest, family, picker }: {
       {labels.map((b) => {
         const p = plate(b.name);
         return (
-          <sprite key={b.id + b.tree} material={p.material} position={[b.x, b.y + BEAD_R * 1.8, b.z]}
+          // A spouse's plate hangs below their bead, their partner's above, so a couple's names do not collide.
+          <sprite key={b.id + b.tree} material={p.material} position={[b.x, b.y + (b.marriedIn ? -BEAD_R * 2.6 : BEAD_R * 2.6), b.z]}
             scale={[LABEL_SCREEN * p.aspect, LABEL_SCREEN, 1]} renderOrder={10} />
         );
       })}
