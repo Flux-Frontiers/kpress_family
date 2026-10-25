@@ -1,15 +1,10 @@
-import { useFrame } from "@react-three/fiber";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, type RefObject } from "react";
 import {
-  BoxGeometry, CanvasTexture, Color, CylinderGeometry, InstancedMesh, MeshStandardMaterial, Object3D,
-  OctahedronGeometry, Quaternion, RepeatWrapping, SphereGeometry, SpriteMaterial, SRGBColorSpace, Vector3, type Ray,
+  BoxGeometry, Color, CylinderGeometry, InstancedMesh, MeshStandardMaterial, Object3D,
+  OctahedronGeometry, Quaternion, RepeatWrapping, SphereGeometry, Vector3, type Ray,
 } from "three";
 import { redwoodBark } from "./CorpusRedwood";
-import { indexCatalog, type FamilyCatalog } from "./familyCatalog";
-import type { Forest } from "./forest";
-import { buildSchematic, pickBead, type BeadShape, type SchematicBead, type SchematicSegment } from "./schematic";
-import { sim } from "./sim";
-import { useGame } from "./store";
+import { pickBead, type BeadShape, type Schematic, type SchematicBead, type SchematicSegment } from "./schematic";
 
 /** Bead size, m: a sphere's radius; a cube and an octahedron match it. */
 const BEAD_R = 0.36;
@@ -17,11 +12,6 @@ const LIMB_R = 0.07;
 const TRUNK_R = 0.16;
 const BAR_R = 0.05;
 const BRASS = "#b08a3e";
-/** Name plates show over the beads of the tree nearest the cart, within this far, m. */
-const LABEL_REACH = 30;
-/** A name plate's height as a fraction of the view's: one size on screen at any distance, as GroveLabels does. */
-const LABEL_SCREEN = 0.024;
-const LABEL_PX = 64;
 
 const up = new Vector3(0, 1, 0);
 const o = new Object3D();
@@ -114,48 +104,14 @@ function BeadMesh({ beads, shape }: { beads: SchematicBead[]; shape: BeadShape }
   return <instancedMesh ref={ref} args={[geometry, material, Math.max(1, beads.length)]} castShadow />;
 }
 
-/** A name on a dark rounded plate, as a sprite material; cached by name. */
-const plates = new Map<string, { material: SpriteMaterial; aspect: number }>();
-function plate(name: string) {
-  const hit = plates.get(name);
-  if (hit) return hit;
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  const font = `600 ${LABEL_PX * 0.56}px "Source Sans 3", ui-sans-serif, system-ui, sans-serif`;
-  let width = LABEL_PX * 3;
-  if (ctx) { ctx.font = font; width = Math.ceil(ctx.measureText(name).width + LABEL_PX * 0.6); }
-  canvas.width = width;
-  canvas.height = LABEL_PX;
-  if (ctx) {
-    ctx.font = font;
-    ctx.fillStyle = "rgba(22, 33, 62, 0.8)";
-    ctx.beginPath();
-    ctx.roundRect(0, 0, width, LABEL_PX, LABEL_PX / 2);
-    ctx.fill();
-    ctx.fillStyle = "#f3ead8";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(name, width / 2, LABEL_PX / 2 + 1);
-  }
-  const map = new CanvasTexture(canvas);
-  map.colorSpace = SRGBColorSpace;
-  const made = { material: new SpriteMaterial({ map, sizeAttenuation: false, depthTest: false, depthWrite: false, transparent: true, fog: false }), aspect: width / LABEL_PX };
-  plates.set(name, made);
-  return made;
-}
-
 /**
  * Schematic mode's orchard (schematic.ts): beads, barked limbs and brass
- * marriage bars for every tree, and name plates over the tree nearest the
- * cart. Tapping a bead is handled by the canvas through `picker`.
+ * marriage bars for every tree. The name plates are NamePlates, shared with
+ * the wood view. Tapping a bead is handled by the canvas through `picker`.
  */
-export function SchematicOrchard({ forest, family, picker }: {
-  forest: Forest; family: FamilyCatalog; picker: RefObject<((ray: Ray, maxDist: number) => SchematicBead | null) | null>;
+export function SchematicOrchard({ schematic, picker }: {
+  schematic: Schematic; picker: RefObject<((ray: Ray, maxDist: number) => SchematicBead | null) | null>;
 }) {
-  const schematic = useMemo(
-    () => buildSchematic(indexCatalog(family), forest.trees, forest.corpusTree.focal, forest.corpusTree.ancestors),
-    [family, forest],
-  );
   const byShape = useMemo(() => {
     const out: Record<BeadShape, SchematicBead[]> = { round: [], square: [], diamond: [] };
     for (const b of schematic.beads) out[b.shape].push(b);
@@ -185,42 +141,11 @@ export function SchematicOrchard({ forest, family, picker }: {
     return () => { picker.current = null; };
   }, [schematic, picker]);
 
-  // The tree whose names show: the nearest to the cart, checked twice a second.
-  const [named, setNamed] = useState<number | null>(null);
-  const since = useRef(0);
-  useFrame((_, dt) => {
-    since.current += dt;
-    if (since.current < 0.5) return;
-    since.current = 0;
-    let best: number | null = null, bestD = LABEL_REACH;
-    const home = Math.hypot(sim.x, sim.z);
-    if (home < bestD) { best = -1; bestD = home; }
-    forest.trees.forEach((t, i) => {
-      const d = Math.hypot(t.x - sim.x, t.z - sim.z);
-      if (d < bestD) { best = i; bestD = d; }
-    });
-    if (best !== named) setNamed(best);
-  });
-  // Not in god's eye, where the grove names (GroveLabels) say enough.
-  const godEye = useGame((s) => s.preferences.camera === "god");
-  const labels = useMemo(
-    () => (named === null || godEye ? [] : schematic.beads.filter((b) => b.tree === named && b.name)),
-    [named, schematic, godEye],
-  );
-
   return (
     <group>
       <SegmentMesh segments={schematic.limbs} radius={limbRadius} material={barkMat} sides={8} />
       <SegmentMesh segments={schematic.bars} radius={barRadius} material={brassMat} sides={8} />
       {(["round", "square", "diamond"] as const).map((shape) => <BeadMesh key={shape} beads={byShape[shape]} shape={shape} />)}
-      {labels.map((b) => {
-        const p = plate(b.name);
-        return (
-          // A spouse's plate hangs below their bead, their partner's above, so a couple's names do not collide.
-          <sprite key={b.id + b.tree} material={p.material} position={[b.x, b.y + (b.marriedIn ? -BEAD_R * 2.6 : BEAD_R * 2.6), b.z]}
-            scale={[LABEL_SCREEN * p.aspect, LABEL_SCREEN, 1]} renderOrder={10} />
-        );
-      })}
     </group>
   );
 }

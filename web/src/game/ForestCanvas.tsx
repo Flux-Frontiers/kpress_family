@@ -1,15 +1,16 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useMemo, useRef, type RefObject } from "react";
 import { ACESFilmicToneMapping, PerspectiveCamera, Raycaster, Vector2, type Ray } from "three";
-import type { FamilyCatalog } from "./familyCatalog";
+import { indexCatalog, type FamilyCatalog } from "./familyCatalog";
 import { openPerson } from "./FamilyReader";
 import { COARSE_POINTER, EXPOSURE, PHONE } from "./Environment";
 import { pickTree, type Forest, type TreeSite } from "./forest";
 import { forestGodLimits, godPose, zoomGodView } from "./godEye";
 import { GroveLabels } from "./GroveLabels";
 import { Player } from "./Player";
+import { NamePlates } from "./NamePlates";
 import { SchematicOrchard } from "./SchematicOrchard";
-import type { SchematicBead } from "./schematic";
+import { buildSchematic, type SchematicBead } from "./schematic";
 import { setScreenshotCapture } from "./screenshot";
 import { Trees } from "./Trees";
 import { World } from "./World";
@@ -23,6 +24,11 @@ export function ForestCanvas({ forest, family }: { forest: Forest; family: Famil
   const picker = useRef<((e: MouseEvent) => TreeSite | null) | null>(null);
   const schematic = useGame((s) => s.preferences.schematic) && family !== null;
   const beadPicker = useRef<((ray: Ray, maxDist: number) => SchematicBead | null) | null>(null);
+  // Every person's place on their tree: the schematic draws it, and the name plates hang from it in either view.
+  const layout = useMemo(
+    () => (family ? buildSchematic(indexCatalog(family), forest.trees, forest.corpusTree.focal, forest.corpusTree.ancestors) : null),
+    [family, forest],
+  );
 
   return (
     <Canvas
@@ -58,7 +64,8 @@ export function ForestCanvas({ forest, family }: { forest: Forest; family: Famil
       }}
     >
       <World forest={forest} season={season} />
-      {schematic ? <SchematicOrchard forest={forest} family={family!} picker={beadPicker} /> : <Trees forest={forest} season={season} query={query} />}
+      {schematic && layout ? <SchematicOrchard schematic={layout} picker={beadPicker} /> : <Trees forest={forest} season={season} query={query} />}
+      {layout ? <NamePlates forest={forest} schematic={layout} /> : null}
       <StatsSampler />
       <ScreenshotCapture />
       <TreePicker forest={forest} picker={picker} />

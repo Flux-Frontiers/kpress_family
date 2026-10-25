@@ -195,6 +195,7 @@ export function ForestApp() {
         st.setPreferences({ camera: next[st.preferences.camera] });
       }
       if (e.code === "KeyV") st.setPreferences({ schematic: !st.preferences.schematic });
+      if (e.code === "KeyN") st.setPreferences({ names: !st.preferences.names });
       if (e.code === "KeyH" && forest) {
         st.selectGrove(null);
         st.requestJump(forest.home, "Home · the home tree");
