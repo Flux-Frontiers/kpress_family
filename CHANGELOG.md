@@ -69,5 +69,5 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 - From the copy of The Knowledge Press: The Forest: the book catalog and
   reader, moots, diaries, the stoic quest, the space-colonization grower,
-  the Flame of Knowledge, four wind sculptures and the compass rose. See
-  `PROVENANCE.md`.
+  the Flame of Knowledge, four wind sculptures, the compass rose and the
+  Forest's feature backlog (`web/FEATURES.md`). See `PROVENANCE.md`.

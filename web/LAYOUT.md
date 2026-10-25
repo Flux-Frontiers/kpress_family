@@ -61,9 +61,43 @@ nothing above the ground.
 
 ## Groves
 
-A grove is a surname. Every person belongs to exactly one line (a founder's
-descent within the surname), every line is one tree, and a grove holds the
-surname's lines. Most groves hold one tree: 43 of the Kennedys' 45 do.
+A grove is a surname. Every person belongs to exactly one line, every line
+is one tree, and a grove holds the surname's lines. Most groves hold one
+tree: 43 of the Kennedys' 45 do.
+
+A line is a surname's chain of descent. The export (`genkg export-web`)
+links each parent and child who share a surname; each connected group is a
+line, and its founder, the earliest member with no parent in the group, is
+the trunk. People with no surname in the record join a parent's line,
+father first. A married-in spouse is a twig on their partner's line tree
+and a member of their own line, so they stand in two groves.
+
+The ring trees are not the home tree's descendants. The rings hold the
+whole family, partitioned by surname; the home tree is a second view that
+cuts across the lines, one person's ancestors and descendants, and everyone
+on it also stands in their own line out on the rings. John Fitzgerald
+Kennedy is on the hub hourglass and in the Kennedy grove's tree under its
+founder of 1823; Rose Fitzgerald is on the hourglass and in the Fitzgerald
+tree.
+
+George Washington's family shows the difference most clearly, because the
+file is his ancestry and he has no children on record. The Washington
+grove is the surname's chain of descent from its founder, Robert
+Washington, born 1404 (the line's founding year, his first dated marriage
+or eldest child, is 1430), 70 people over three centuries, and George, born
+1732, is at the tip of one limb, the last Washington in the file. The Ball
+grove is the same for his mother's surname, 56 people from William Ball,
+born 1450, with Mary Ball at a tip; she is also a twig on the
+Washington tree, married to Augustine. Every other grove is another strand
+of the same pedigree, an ancestress's surname traced back through her
+fathers to the earliest person of that name the file knows, and a lone 5 m
+tree is a woman whose own parents it does not record. The groves are the
+roots of George's hourglass pulled apart and planted by surname, each with
+its founder at the trunk and its latest member at a tip; the gold arcs in
+god's eye are the marriages that join strand to strand, and followed inward
+they all end at George. The hub shows the same people joined: his hourglass
+has roots and no crown, since the crown would be his own descendants, and
+"Show ancestors" raises the roots as one crown with George at the trunk.
 
 - The trees in a grove are packed as close as their crowns allow, no nearer
   than 6.5 m between trunks; a lone tree stands at the grove's center.

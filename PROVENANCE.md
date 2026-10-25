@@ -50,4 +50,6 @@ support pages. The Cosmographium, the Double Helix and the sundial were kept.
 ## Still from knowledge_press
 
 Nothing known, as of 2026-10-24: the start-screen stills, the book-genre
-grove marks and the book cargo in the cart have each been replaced.
+grove marks and the book cargo in the cart have each been replaced, and
+`web/FEATURES.md`, the Forest's feature backlog, was removed the same day.
+The Family's open work lives in the private plan, not in the repo.
