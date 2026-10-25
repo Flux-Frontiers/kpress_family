@@ -167,8 +167,11 @@ A lane can only fall between two groves, so the spokes are as even as the
 groves allow. On the Kennedys' wheel the four are 87, 102, 92 and 79
 degrees apart.
 
-Where a spoke crosses a ring there is a paved junction, 3 m in radius,
-enough for the tour cart's rounded turn.
+Where a spoke crosses a ring, the four corners are rounded by curbs of
+2 m radius, so the roads read as one road bending and the tour cart's
+rounded turns keep their wheels on the brick. At the outer ring the spoke
+ends in a T, and only its two inside corners are rounded. Signposts keep
+5 m from a crossing, clear of its curbs.
 
 ## Stops, signposts and monograms
 

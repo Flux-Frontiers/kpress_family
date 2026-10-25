@@ -73,7 +73,8 @@ export function HUD({ forest }: { forest: Forest }) {
   const setPreferences = useGame((s) => s.setPreferences);
 
   // Silent mode keeps every card from popping up on its own; a tree the player picked still shows.
-  const shownSlug = pinnedSlug ?? (silent ? null : cardSlug);
+  // On the ring, the tour's own card speaks for each stop, so a passing tree's card stays down too.
+  const shownSlug = pinnedSlug ?? (silent || travelMode === "circuit" ? null : cardSlug);
   const nearby = shownSlug ? forest.trees.find((t) => t.line.slug === shownSlug) : undefined;
   const showBook = Boolean(nearby && (pinnedSlug || nearby.line.slug !== nearbyDismissed));
   const bookDist = nearby ? Math.hypot(nearby.x - x, nearby.z - z) : Infinity;
@@ -328,6 +329,36 @@ export function HUD({ forest }: { forest: Forest }) {
               <h2 className="font-display mt-0.5 text-xl leading-tight sm:text-2xl">{touring.label}</h2>
               {/* The heading already names the grove; the spoken text starts with it. */}
               <p className="mt-2 text-sm leading-relaxed text-fg/90">{touring.narration.replace(`${touring.label}: `, "").replace(/^./, (c) => c.toUpperCase())}</p>
+              {/* The stop's actions, so no second card is needed: the one line's album and records, or the grove's lines. */}
+              {(() => {
+                const lines = forest.trees.filter((t) => forest.chunks[t.chunk]?.genre === touring.genre);
+                const one = lines.length === 1 ? lines[0]! : null;
+                return (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {one ? (library.includes(one.line.slug) ? (
+                      <p className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-primary/60 px-4 text-sm text-fg">
+                        <Check className="size-4 text-primary" strokeWidth={2} /> In your album
+                      </p>
+                    ) : (
+                      <button type="button" onClick={() => collect(one.line.slug, one.line.title)}
+                        className="min-h-11 rounded-md bg-primary px-4 text-sm text-primary-fg">
+                        Add to the album · E
+                      </button>
+                    )) : (
+                      <button type="button" onClick={() => openCatalog(touring.genre)}
+                        className="min-h-11 rounded-md bg-primary px-4 text-sm text-primary-fg">
+                        {lines.length} lines in this grove
+                      </button>
+                    )}
+                    {one ? (
+                      <button type="button" onClick={() => openReader(one.line.slug)}
+                        className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-border px-4 text-sm text-fg">
+                        <BookOpen className="size-4" strokeWidth={1.75} /> Open the records
+                      </button>
+                    ) : null}
+                  </div>
+                );
+              })()}
             </article>
           ) : tourNote && !silent ? (
             <article className="rounded-lg border border-border bg-surface/94 p-3 sm:p-4" aria-live="polite">
