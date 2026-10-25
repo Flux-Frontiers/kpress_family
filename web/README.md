@@ -42,6 +42,9 @@ The world itself (sky, stars, planets, weather, seasons, roads, the cart, the
 guided tour, and the Cosmographium, Double Helix and sundial exhibits) comes
 from The Knowledge Press: The Forest; see `../PROVENANCE.md`.
 
+How a family becomes an orchard, with the three demo families as examples:
+[LAYOUT.md](LAYOUT.md).
+
 ## Stack
 
 React, three.js via React Three Fiber, Zustand and Vite. The tests run on
