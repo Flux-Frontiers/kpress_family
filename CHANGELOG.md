@@ -48,6 +48,15 @@ and the project uses [Semantic Versioning](https://semver.org/).
   script face (Pinyon Script), from one shared atlas, each letter centered
   on its ink rather than its advance box; the band and disc are geometry,
   so the marks cost one texture however many groves there are.
+- Name plates over the people of the tree nearest the cart, in the wood view
+  as in the schematic: the wooden trees grow from the same layout the
+  schematic's beads come from, so one component hangs the plates in either.
+  A "Name plates" setting (N) turns them off.
+- Four spokes from the hub, reserved as lanes when the inner tier is seated,
+  one before the grove nearest each quarter bearing, so they come out even.
+  Before, a spoke took any gap that happened to clear 2 m, and the groves
+  are seated 4 m apart, so which gaps passed was chance and all of a
+  family's spokes could fall in one half of the wheel.
 - Signpost faces have textures only within 70 m of the cart, and the species
   plates are shared across signs: a family's sign memory is bounded by what
   stands near you, not by its size. A board that comes into reach gets a

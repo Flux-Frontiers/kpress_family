@@ -85,8 +85,8 @@ const GROVE_MIN_R = 5;
 const SPOKE_LANE = 2;
 /** Ring roads are sampled about this far apart. */
 const ROAD_STEP = 2;
-/** The most spokes from the hub. */
-const MAX_SPOKES = 6;
+/** Spokes from the hub: four, reserved as lanes when the inner tier is seated (wheelLayout). */
+const SPOKES = 4;
 /**
  * Paved disc where a spoke meets a ring, as small as the tour allows. The
  * tour's turn there is rounded with TOUR_TURN_R, which cuts 1.2 m inside the
@@ -402,7 +402,7 @@ function buildForest(family: FamilyCatalog, focal: string, ancestors: boolean): 
   const hubPlazaR = Math.max(HUB_PLAZA_R, corpusTree.pitRadius + 2);
   const hubClear = Math.max(HUB_CLEAR, hubPlazaR + 8, crownReach + 6);
   const wheel = wheelLayout(layouts.map((l) => groveRadius(l.extent)), {
-    hub: hubClear, setback: GROVE_SETBACK, gap: GROVE_GAP, lane: SPOKE_LANE, spokes: MAX_SPOKES,
+    hub: hubClear, setback: GROVE_SETBACK, gap: GROVE_GAP, lane: SPOKE_LANE, spokes: SPOKES,
   });
   // Turn the wheel so a spoke runs out behind home: the drive starts on the road.
   const turn = HUB_PLAQUE_DIR - (wheel.spokes[0] ?? HUB_PLAQUE_DIR);

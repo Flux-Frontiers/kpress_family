@@ -32,7 +32,8 @@ builds.
 | `familyForest.ts` | Line cards, line trees as the renderer's trees, and the home tree with its pit |
 | `forest.ts` | The orchard: groves by surname, the hub, roads, the tour loop |
 | `GlassPit.tsx` | The glass floor, the pit under it, and the marriage arcs |
-| `schematic.ts`, `SchematicOrchard.tsx` | Schematic mode (V): each person a bead colored by generation, straight limbs, marriage bars, names nearby |
+| `schematic.ts`, `SchematicOrchard.tsx` | Schematic mode (V): each person a bead colored by generation, straight limbs, marriage bars |
+| `NamePlates.tsx` | Names over the people of the tree nearest the cart, in either view; the "Name plates" setting (N) |
 | `FamilyReader.tsx` | The record reader: a line's people, one page each |
 | `HUD.tsx` | Cards, search, the line list and the album |
 | `growTree.ts` | Pipe-model radii, the bark sweep and the leaves |
@@ -40,6 +41,9 @@ builds.
 The world itself (sky, stars, planets, weather, seasons, roads, the cart, the
 guided tour, and the Cosmographium, Double Helix and sundial exhibits) comes
 from The Knowledge Press: The Forest; see `../PROVENANCE.md`.
+
+How a family becomes an orchard, with the three demo families as examples:
+[LAYOUT.md](LAYOUT.md).
 
 ## Stack
 

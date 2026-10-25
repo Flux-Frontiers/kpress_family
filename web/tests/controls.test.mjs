@@ -132,6 +132,9 @@ test("old or malformed preferences have usable defaults and bounded sensitivity"
   // New visitors start in the high view; a saved behind-the-cart view survives.
   assert.equal(readPreferences({ pace: "unknown", camera: "unknown" }).camera, "high");
   assert.equal(readPreferences({ camera: "follow" }).camera, "follow");
+  // Name plates are on unless turned off.
+  assert.equal(readPreferences().names, true);
+  assert.equal(readPreferences({ names: false }).names, false);
   // A saved god's-eye view survives a reload.
   assert.equal(readPreferences({ camera: "god" }).camera, "god");
   assert.equal(readPreferences({ camera: "cart" }).camera, "cart");
