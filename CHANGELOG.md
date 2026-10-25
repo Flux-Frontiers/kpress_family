@@ -52,6 +52,15 @@ and the project uses [Semantic Versioning](https://semver.org/).
   as in the schematic: the wooden trees grow from the same layout the
   schematic's beads come from, so one component hangs the plates in either.
   A "Name plates" setting (N) turns them off.
+- One card per tour stop. On the ring, a passing tree's card no longer pops
+  up on its own, and the stop's "On the ring" card carries the actions
+  itself: add the line to the album and open its records, or browse the
+  grove's lines. Before, the line card showed as the cart slowed, the grove
+  card replaced it once stopped, and the line card came back on leaving.
+- Rounded curbs where a spoke meets a ring, in place of the 3 m paved disc
+  that covered every crossing: a 2 m fillet on each corner, the two inside
+  ones at the outer ring's T. The tour's turns stay on the brick, tested
+  wheel by wheel.
 - Four spokes from the hub, reserved as lanes when the inner tier is seated,
   one before the grove nearest each quarter bearing, so they come out even.
   Before, a spoke took any gap that happened to clear 2 m, and the groves
