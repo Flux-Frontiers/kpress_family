@@ -29,17 +29,18 @@ index the start screen offers a choice from. That directory is personal data
 and is never committed:
 
 ```bash
-make demos                       # the Kennedys, the Tudors, George Washington's family
+make demos                       # the Kennedys, the Tudors, George Washington's family, two fictional ones
 make family FAMILY=mine FAMILY_REPO=../my-family FAMILY_TITLE="My Family"
 make web-dev
 ```
 
-`make demos` builds three public files from genealogy_kg's local corpus into
-`.demo/<slug>`, with the living filter on, and exports them. `make family`
-adds any genkg store built with the filter on; `FAMILY_FOCAL=<id>` names the
-person its home tree opens on, and `FAMILY_UNKNOWN_BIRTH=keep` is for wholly
-historical files, where a missing birth date means an old record rather than
-a living person.
+`make demos` builds five public files from genealogy_kg's local corpus into
+`.demo/<slug>` (the Kennedys, the Tudors, George Washington's family, the Lord
+of the Rings and the Simpsons), with the living filter on, and exports them.
+`make family` adds any genkg store built with the filter on;
+`FAMILY_FOCAL=<id>` names the person its home tree opens on, and
+`FAMILY_UNKNOWN_BIRTH=keep` is for wholly historical files, where a missing
+birth date means an old record rather than a living person.
 
 `?family=<slug>` opens that family; otherwise the one chosen last on this
 device, or the first. Each family keeps its own album, groves visited and home

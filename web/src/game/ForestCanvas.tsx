@@ -8,6 +8,7 @@ import { pickTree, type Forest, type TreeSite } from "./forest";
 import { forestGodLimits, godPose, zoomGodView } from "./godEye";
 import { GroveLabels } from "./GroveLabels";
 import { Player } from "./Player";
+import { HomeMarks } from "./HomeMarks";
 import { NamePlates } from "./NamePlates";
 import { SchematicOrchard } from "./SchematicOrchard";
 import { buildSchematic, type SchematicBead } from "./schematic";
@@ -66,6 +67,7 @@ export function ForestCanvas({ forest, family }: { forest: Forest; family: Famil
       <World forest={forest} season={season} />
       {schematic && layout ? <SchematicOrchard schematic={layout} picker={beadPicker} /> : <Trees forest={forest} season={season} query={query} />}
       {layout ? <NamePlates forest={forest} schematic={layout} /> : null}
+      {family ? <HomeMarks forest={forest} family={family} schematic={schematic ? layout : null} /> : null}
       <StatsSampler />
       <ScreenshotCapture />
       <TreePicker forest={forest} picker={picker} />

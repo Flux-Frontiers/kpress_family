@@ -175,6 +175,12 @@ export type Forest = {
   worldRadius: number;
   /** The home hourglass at the hub: the focal person's ancestors and descendants, over the glass pit. */
   corpusTree: HomeTree;
+  /**
+   * The home person's own line out on the rings: its tree (an index into
+   * `trees`) and grove. Null when their line is not planted (no surname line,
+   * or a living person's).
+   */
+  homeLine: { tree: number; genre: string } | null;
   /** Set pieces in roadside glades. */
   exhibits: Exhibit[];
   /** Discs the cart cannot drive into besides trunks: the redwood and each exhibit's plinth. */
@@ -655,6 +661,11 @@ function buildForest(family: FamilyCatalog, focal: string, ancestors: boolean): 
     home: HOME,
     worldRadius: worldRadius + 18,
     corpusTree,
+    homeLine: (() => {
+      const own = index.person.get(focal)?.line;
+      const tree = own ? trees.findIndex((t) => t.line.slug === own) : -1;
+      return tree < 0 ? null : { tree, genre: groves[trees[tree]!.chunk]!.genre };
+    })(),
     exhibits,
     obstacles: [{ x: 0, z: 0, r: corpusTree.baseRadius }, ...exhibits.map((e) => ({ x: e.x, z: e.z, r: e.obstacle }))],
     grid,

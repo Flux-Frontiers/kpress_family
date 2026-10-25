@@ -101,6 +101,8 @@ demos:
 	$(call demo,kennedy,The Kennedys,$(CORPORA)/gedcom-samples/sample-kennedy/kennedy.ged,redact,I104)
 	$(call demo,tudors,The Tudors,$(CORPORA)/entries/royalty/english-tudor-royal-family/English+Tudor+Royal+Family.ged,keep,I14)
 	$(call demo,washington,George Washington's Family,$(CORPORA)/entries/us-presidents/george-washington-family-big/George+Washington+Family+Big.ged,keep,I1)
+	$(call demo,lotr,The Lord of the Rings,$(CORPORA)/entries/fictional-characters/lord-of-the-rings-family-tree/Lord+of+the+Rings+Family+Tree.ged,keep,I0001)
+	$(call demo,simpsons,The Simpsons,$(CORPORA)/entries/fictional-characters/simpsons-cartoon-family-tree/Simpsons+Cartoon+Family+Tree.ged,keep,Bart_Simpson)
 
 gallery:
 	cd web && node scripts/gallery.mjs

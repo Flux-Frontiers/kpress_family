@@ -20,8 +20,10 @@ export function PauseOverlay() {
       dialog.current?.showModal();
       // showModal focuses the first control, the pace menu, which phones then
       // show as picked. React's autoFocus ran once at mount, while the dialog
-      // was closed, so it can't steer this; focus the way back instead.
-      back.current?.focus();
+      // was closed, so it can't steer this; focus the way back instead,
+      // without scrolling to it at the bottom, so the card opens at its top.
+      back.current?.focus({ preventScroll: true });
+      if (dialog.current) dialog.current.scrollTop = 0;
     } else dialog.current?.close();
   }, [paused]);
 
