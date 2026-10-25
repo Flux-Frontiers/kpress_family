@@ -327,6 +327,11 @@ export function HUD({ forest }: { forest: Forest }) {
                 On the ring
               </p>
               <h2 className="font-display mt-0.5 text-xl leading-tight sm:text-2xl">{touring.label}</h2>
+              {forest.homeLine?.genre === touring.genre ? (
+                <p className="mt-0.5 flex items-center gap-1.5 text-sm text-[#f3d27a]">
+                  <House className="size-3.5" strokeWidth={2} /> {forest.corpusTree.focalName}'s own line, gilded on the tree
+                </p>
+              ) : null}
               {/* The heading already names the grove; the spoken text starts with it. */}
               <p className="mt-2 text-sm leading-relaxed text-fg/90">{touring.narration.replace(`${touring.label}: `, "").replace(/^./, (c) => c.toUpperCase())}</p>
               {/* The stop's actions, so no second card is needed: the one line's album and records, or the grove's lines. */}
@@ -577,6 +582,13 @@ function Minimap({ forest, x, z, yaw, pins, picked }: {
           />
         );
       })}
+      {/* The grove of the home person's own line. */}
+      {forest.homeLine ? (() => {
+        const g = forest.groves.find((gr) => gr.genre === forest.homeLine!.genre)!;
+        const c = to(g.x, g.z);
+        return <House className="pointer-events-none absolute size-3.5 text-[#f3d27a] drop-shadow" strokeWidth={2.25}
+          style={{ left: c.left, top: c.top, transform: "translate(-50%, -50%)", zIndex: 2 }} aria-hidden />;
+      })() : null}
       {pins.slice(0, 200).map((t) => {
         const c = to(t.x, t.z);
         const on = t.line.slug === picked;

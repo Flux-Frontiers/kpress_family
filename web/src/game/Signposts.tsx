@@ -260,16 +260,19 @@ function Signpost({
   grove,
   selected,
   near,
+  home,
 }: {
   sign: Forest["signs"][number];
   grove: Grove;
   selected: boolean;
   /** Within SIGN_TEXTURE_REACH of the cart: the board carries its face. */
   near: boolean;
+  /** The grove holds the home person's own line. */
+  home: boolean;
 }) {
   const night = useNightLamps();
-  const face = useLitFace(() => drawSign(grove.label, `${grove.bookCount} trees`, grove.color), [0.27, 0.73],
-    [grove.label, grove.bookCount, grove.color], near);
+  const face = useLitFace(() => drawSign(grove.label, `${grove.bookCount} trees${home ? " · the home line" : ""}`, grove.color), [0.27, 0.73],
+    [grove.label, grove.bookCount, grove.color, home], near);
   const species = SPECIES[speciesFor(grove.genre)]!;
   const plate = speciesPlate(species.common, species.latin);
   const glow = night * 0.95 + (selected ? 0.25 : 0);
@@ -461,6 +464,7 @@ export function Signposts({ forest }: { forest: Forest }) {
             grove={grove}
             selected={selectedGrove === sign.genre}
             near={near.has(i)}
+            home={forest.homeLine?.genre === sign.genre}
           />
         );
       })}

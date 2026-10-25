@@ -99,6 +99,14 @@ they all end at George. The hub shows the same people joined: his hourglass
 has roots and no crown, since the crown would be his own descendants, and
 "Show ancestors" raises the roots as one crown with George at the trunk.
 
+The home person is marked on their own line's tree. The wood from the
+ground up to them is gilded, generation by generation through their fathers
+or mothers in that line, and a lantern hangs where they are; in the
+schematic the gold follows its straight limbs. Their grove's signpost reads
+"the home line", the minimap marks it with a house, and the tour's card
+says so at its stop. Choosing a new home person in the reader moves the
+marks with them.
+
 - The trees in a grove are packed as close as their crowns allow, no nearer
   than 6.5 m between trunks; a lone tree stands at the grove's center.
 - The grove's radius is its widest crown's reach plus 3 m, never under 5 m.

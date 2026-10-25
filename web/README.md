@@ -33,6 +33,7 @@ builds.
 | `forest.ts` | The orchard: groves by surname, the hub, roads, the tour loop |
 | `GlassPit.tsx` | The glass floor, the pit under it, and the marriage arcs |
 | `schematic.ts`, `SchematicOrchard.tsx` | Schematic mode (V): each person a bead colored by generation, straight limbs, marriage bars |
+| `HomeMarks.tsx`, `homePath.ts` | The home person on their own line's tree: the wood up to them gilded, and a lantern |
 | `NamePlates.tsx` | Names over the people of the tree nearest the cart, in either view; the "Name plates" setting (N) |
 | `FamilyReader.tsx` | The record reader: a line's people, one page each |
 | `HUD.tsx` | Cards, search, the line list and the album |

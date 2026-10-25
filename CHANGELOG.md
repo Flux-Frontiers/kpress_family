@@ -43,15 +43,24 @@ and the project uses [Semantic Versioning](https://semver.org/).
   its own album, groves visited and home person, and a home person of its
   own by default. `make family FAMILY=<slug>` adds one; `make demos` builds
   the Kennedys, the Tudors and George Washington's family from
-  genealogy_kg's corpus, all with the living-person filter on.
+  genealogy_kg's corpus, all with the living-person filter on, and the Lord
+  of the Rings (home: Frodo) and the Simpsons (home: Bart).
 - Each grove's stop plaza carries a monogram of its surname's initial in a
   script face (Pinyon Script), from one shared atlas, each letter centered
   on its ink rather than its advance box; the band and disc are geometry,
   so the marks cost one texture however many groves there are.
+- The home person marked on their own line's tree out on the rings: the
+  wood from the ground up to them gilded and a lantern where they are (in
+  the schematic, the gold follows its straight limbs); their grove's
+  signpost reads "the home line", a house marks it on the minimap, and the
+  tour's card says so at its stop.
 - Name plates over the people of the tree nearest the cart, in the wood view
   as in the schematic: the wooden trees grow from the same layout the
   schematic's beads come from, so one component hangs the plates in either.
   A "Name plates" setting (N) turns them off.
+- The settings card opens at its top. It focused its "Back to the orchard"
+  button on opening, at the bottom, and on a phone that scrolled the card
+  down to it.
 - One card per tour stop. On the ring, a passing tree's card no longer pops
   up on its own, and the stop's "On the ring" card carries the actions
   itself: add the line to the album and open its records, or browse the

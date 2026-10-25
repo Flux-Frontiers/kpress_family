@@ -35,7 +35,7 @@ function placeSegment(s: SchematicSegment, r: number): boolean {
 }
 
 /** Segments as one InstancedMesh of cylinders. */
-function SegmentMesh({ segments, radius, material, sides }: {
+export function SegmentMesh({ segments, radius, material, sides }: {
   segments: SchematicSegment[]; radius: (s: SchematicSegment) => number; material: MeshStandardMaterial; sides: number;
 }) {
   const ref = useRef<InstancedMesh>(null);
