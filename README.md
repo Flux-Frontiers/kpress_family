@@ -9,6 +9,11 @@ from a GEDCOM file, through two apps:
 - an iPhone, iPad and Mac app that answers questions about the family on
   the device.
 
+The orchard is published at
+[flux-frontiers.github.io/kpress_family](https://flux-frontiers.github.io/kpress_family/)
+with three public families, and its user guide at
+[/docs/](https://flux-frontiers.github.io/kpress_family/docs/).
+
 **Status.** The web orchard is complete. One grove stands for each surname
 and one tree for each family line, and every tree's wood is the kinship
 graph itself. The home tree at the hub is a full hourglass: the focal
@@ -32,6 +37,7 @@ and is never committed:
 make demos                       # the Kennedys, the Tudors, George Washington's family, two fictional ones
 make family FAMILY=mine FAMILY_REPO=../my-family FAMILY_TITLE="My Family"
 make web-dev
+make families-publish            # upload the public demos for the Pages build, then redeploy
 ```
 
 `make demos` builds five public files from genealogy_kg's local corpus into
@@ -68,10 +74,13 @@ built GutenbergKG corpus.
 ## Privacy
 
 A GEDCOM holds personal data about living people. Real family data is never
-committed to this repository or published from it, and nothing here
-deploys: `web/dist/` holds the exported family after a local build, so it
-is not for publishing either. Demos and screenshots use public corpora
-only.
+committed to this repository or published from it. A local `web/dist/` holds
+whatever families were exported on this machine, so it is not for publishing.
+The published orchard is built in CI from the `family-data` release, which
+`make families-publish` fills with the `PUBLIC_FAMILIES` only (the Kennedys,
+the Tudors and George Washington's family, from genealogy_kg's public corpus
+with the living filter on); a personal family exported beside them is never
+packed. Demos and screenshots use public corpora only.
 
 `genkg export-web` refuses a store built without the living filter, and
 after writing it scans the export for every redacted name. The web tests

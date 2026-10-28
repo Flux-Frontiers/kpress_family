@@ -8,6 +8,16 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- A GitHub Pages deploy of the orchard at
+  https://flux-frontiers.github.io/kpress_family/, with a user guide
+  (`docs/`, `mkdocs.yml`) built into `/docs/` beside it, as knowledge_press
+  publishes its forest. The Web workflow reads the families from
+  `families.tar.gz` on the draft `family-data` release, which
+  `make families-publish` fills with the public demo families only
+  (`PUBLIC_FAMILIES`: the Kennedys, the Tudors, George Washington's family).
+  The start screen, the settings dialog and About link to the guide.
+  `make docs-install`, `make docs` and `make docs-serve` build it locally.
+
 - The web orchard, read from `genkg export-web` families in
   `web/public/families/`: one grove per surname, one tree per family line,
   each tree's wood the line's parent-to-child links, with married-in

@@ -4,9 +4,11 @@
 # Author: Eric G. Suchanek, PhD -- Flux-Frontiers, Liberty TWP, OH
 # Copyright (c) 2026 Eric G. Suchanek, PhD. Elastic License 2.0; see LICENSE.
 #
-# Started as a copy of knowledge_press; see PROVENANCE.md. Nothing here
-# publishes, uploads or deploys. genealogy_kg builds the graphs and writes
-# the exports; `make demo` only drives it.
+# Started as a copy of knowledge_press; see PROVENANCE.md. genealogy_kg
+# builds the graphs and writes the exports; `make demos` only drives it. The
+# one thing that publishes is `make families-publish`, which uploads the
+# public demo families (PUBLIC_FAMILIES, never anything else) for the Pages
+# build of the orchard.
 #
 # The web forest (web/):
 #   make web-install   -- npm install
@@ -25,6 +27,13 @@
 #   make demos         -- build the public demo families from genealogy_kg's
 #                         corpus into .demo/<slug> (filter on) and export them:
 #                         Kennedy, the Tudors and George Washington's family
+#   make families-publish -- upload PUBLIC_FAMILIES for the Pages build of the
+#                         orchard, then redeploy
+#
+# The user guide (docs/, mkdocs.yml):
+#   make docs-install  -- mkdocs-material into .venv-docs
+#   make docs          -- build the guide into site/ (--strict)
+#   make docs-serve    -- serve the guide with live reload
 #
 # The Swift kit (app/KnowledgePressKit):
 #   make kit-build     -- swift build
@@ -45,7 +54,8 @@ FAMILY_CUTOFF ?= 100
 FAMILY_UNKNOWN_BIRTH ?= redact
 CORPORA := $(GENEALOGY_KG_DIR)/corpora
 
-.PHONY: web-install web-dev web-test web-build web-preview web-kill kit-build kit-test family demos gallery
+.PHONY: web-install web-dev web-test web-build web-preview web-kill kit-build kit-test family demos gallery \
+	families-publish docs-install docs docs-serve
 
 web-install:
 	cd web && npm install
@@ -106,3 +116,45 @@ demos:
 
 gallery:
 	cd web && node scripts/gallery.mjs
+
+# The Pages build of the orchard reads its families from families.tar.gz on
+# the FAMILY_DATA_TAG release, as knowledge_press's reads its book text.
+# Only the PUBLIC_FAMILIES are packed, each with an index of just those, so a
+# personal family exported beside them in web/public/families never leaves
+# this machine. Run `make demos` first so they come from the current
+# genealogy_kg. The release stays a draft because Zenodo archives every
+# published release; web.yml needs contents: write to read a draft.
+PUBLIC_FAMILIES ?= kennedy tudors washington
+FAMILY_DATA_TAG ?= family-data
+FAMILY_DATA_STAGE := $(patsubst %/,%,$(or $(TMPDIR),/tmp))/kpress-families
+FAMILY_DATA_TARBALL := $(patsubst %/,%,$(or $(TMPDIR),/tmp))/families.tar.gz
+
+families-publish:
+	rm -rf "$(FAMILY_DATA_STAGE)" && mkdir -p "$(FAMILY_DATA_STAGE)/public/families"
+	for f in $(PUBLIC_FAMILIES); do \
+	  test -f web/public/families/$$f/catalog.json \
+	    || { echo "No export for $$f in web/public/families -- run 'make demos' first."; exit 1; }; \
+	  cp -R web/public/families/$$f "$(FAMILY_DATA_STAGE)/public/families/"; \
+	done
+	cd "$(FAMILY_DATA_STAGE)" && node "$(CURDIR)/web/scripts/families.mjs"
+	tar -czf "$(FAMILY_DATA_TARBALL)" -C "$(FAMILY_DATA_STAGE)/public/families" .
+	gh release view $(FAMILY_DATA_TAG) >/dev/null 2>&1 \
+	  || gh release create $(FAMILY_DATA_TAG) --draft --title "Family data for the web orchard" \
+	       --notes "families.tar.gz: the public demo families ($(PUBLIC_FAMILIES)) for the orchard's Pages build, from 'make demos' with the living-person filter on. Kept a draft so Zenodo does not archive it; do not publish."
+	gh release upload $(FAMILY_DATA_TAG) "$(FAMILY_DATA_TARBALL)" --clobber
+	rm -rf "$(FAMILY_DATA_STAGE)" "$(FAMILY_DATA_TARBALL)"
+	gh workflow run web.yml --ref main
+
+# The user guide: docs/*.md rendered by mkdocs-material into site/, as the Web
+# workflow renders it into web/dist/docs beside the orchard. --strict fails on
+# a broken link, so a bad link stops here rather than on the published site.
+DOCS_VENV ?= .venv-docs
+
+docs-install:
+	python3 -m venv $(DOCS_VENV) && $(DOCS_VENV)/bin/pip install -q -r docs/requirements.txt
+
+docs:
+	$(DOCS_VENV)/bin/mkdocs build --strict
+
+docs-serve:
+	$(DOCS_VENV)/bin/mkdocs serve

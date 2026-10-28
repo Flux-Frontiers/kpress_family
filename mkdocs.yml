@@ -1,0 +1,69 @@
+# The Knowledge Press: The Family documentation: the orchard user guide.
+# Built into web/dist/docs by the Web workflow, so it is published beside the
+# orchard at https://flux-frontiers.github.io/kpress_family/docs/. The
+# orchard itself is the Pages root, which is why this is not the fleet's
+# docs.yml: that would replace the orchard with the guide.
+
+site_name: "The Knowledge Press: The Family"
+site_description: The user guide for The Family, a web orchard of family trees built from a GenealogyKG store.
+site_url: https://flux-frontiers.github.io/kpress_family/docs/
+repo_url: https://github.com/Flux-Frontiers/kpress_family
+repo_name: Flux-Frontiers/kpress_family
+edit_uri: edit/main/docs/
+copyright: "&copy; 2026 Eric G. Suchanek, PhD, Flux-Frontiers"
+
+exclude_docs: |
+  requirements.txt
+
+theme:
+  name: material
+  logo: assets/seal.svg
+  favicon: assets/seal.svg
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: green
+      accent: green
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: green
+      accent: green
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.top
+    - content.code.copy
+    - content.action.edit
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.keys
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Orchard guide:
+      - Getting started: orchard/getting-started.md
+      - The orchard: orchard/the-orchard.md
+      - Driving and the tour: orchard/driving.md
+      - Reading the records: orchard/reading.md
+      - Finding people: orchard/finding.md
+      - Sky, seasons and weather: orchard/sky.md
+      - Settings: orchard/settings.md
+      - Privacy and the demo families: orchard/privacy.md
+      - Troubleshooting: orchard/troubleshooting.md

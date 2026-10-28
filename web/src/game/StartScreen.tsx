@@ -3,6 +3,7 @@ import { COARSE_POINTER } from "./Environment";
 import { SEASONS, type SeasonName } from "./seasons";
 import type { FamilyEntry } from "./familyCatalog";
 import { switchFamily } from "./familyChoice";
+import { USER_GUIDE_URL } from "./links";
 import { useGame } from "./store";
 
 /** The keys worth knowing before the first drive; About and the guide have the rest. */
@@ -102,6 +103,7 @@ export function StartScreen({
           {SEASONS[season].label} by the calendar, under your sky right now.
           {opensAt ? <> Opens beside <span className="text-fg">{opensAt}</span>.</> : null}
           {library.length > 0 ? <> {library.length} line{library.length === 1 ? "" : "s"} already in your album.</> : null}
+          {" "}<a href={USER_GUIDE_URL} target="_blank" rel="noopener" className="text-primary underline">User guide</a>
         </p>
       </div>
     </div>
