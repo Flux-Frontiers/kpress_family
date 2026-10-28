@@ -70,9 +70,11 @@ export function NamePlates({ forest, schematic }: { forest: Forest; schematic: S
   });
   const godEye = useGame((s) => s.preferences.camera === "god");
   const names = useGame((s) => s.preferences.names);
+  // Only while driving: on the start screen the plates drew over its card.
+  const playing = useGame((s) => s.playing);
   const labels = useMemo(
-    () => (named === null || godEye || !names ? [] : schematic.beads.filter((b) => b.tree === named && b.name)),
-    [named, schematic, godEye, names],
+    () => (named === null || godEye || !names || !playing ? [] : schematic.beads.filter((b) => b.tree === named && b.name)),
+    [named, schematic, godEye, names, playing],
   );
 
   return (
