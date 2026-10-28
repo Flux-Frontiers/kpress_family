@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { COARSE_POINTER } from "./Environment";
+import { USER_GUIDE_URL } from "./links";
 import { NightSky } from "./NightSky";
 import { useGame } from "./store";
 
@@ -102,7 +103,8 @@ export function About() {
           carries. The orchard is built with three.js and React. The astronomy is SunCalc's; the stars are the Yale
           Bright Star Catalogue (Hoffleit &amp; Warren, 1991); the planets follow JPL's approximate Keplerian elements
           (Standish) with magnitudes from Mallama &amp; Hilton (2018); the moon is NASA's Lunar Reconnaissance
-          Orbiter color mosaic.
+          Orbiter color mosaic. The <a href={USER_GUIDE_URL} target="_blank" rel="noopener" className="text-primary underline">user
+          guide</a> covers the rest.
         </p>
       </div>
       </div>

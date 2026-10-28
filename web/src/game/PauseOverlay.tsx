@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { USER_GUIDE_URL } from "./links";
 import { SEASON_ORDER, SEASONS, type SeasonName } from "./seasons";
 import { unlockSpeech } from "./speech";
 import { useGame } from "./store";
@@ -104,6 +105,9 @@ export function PauseOverlay() {
         <p><span className="text-fg">G</span> groves · <span className="text-fg">B</span> lines · <span className="text-fg">H</span> home · <span className="text-fg">Q</span> guided tour · <span className="text-fg">?</span> about</p>
         <p className="mt-2 text-xs">Release the throttle to stop. You can turn in place. On a phone, the stick drives and a drag anywhere else looks. Gamepad: left stick to drive, right stick to look around, A to add a line to the album, LT to brake, RT to hurry.</p>
       </div>
+      <p className="mt-4 text-center text-sm text-muted">
+        <a href={USER_GUIDE_URL} target="_blank" rel="noopener" className="text-primary underline">Read the user guide</a>
+      </p>
       <button type="button" className="mt-3 min-h-11 w-full rounded-md border border-border text-muted"
         onClick={() => { if (window.confirm("Reset every setting on this device, including the tour welcome? Your album and visited groves are kept.")) resetSettings(); }}>
         Reset all settings
