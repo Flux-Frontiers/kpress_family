@@ -1,8 +1,17 @@
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/Flux-Frontiers/kpress_family/releases)
+[![License: Elastic-2.0](https://img.shields.io/badge/License-Elastic%202.0%20%7C%20app%20proprietary-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-22-blue.svg)](https://nodejs.org/)
+[![Swift](https://img.shields.io/badge/swift-6-blue.svg)](https://www.swift.org/)
+[![Data: GenealogyKG](https://img.shields.io/badge/data-GenealogyKG-blue.svg)](https://github.com/Flux-Frontiers/genealogy_kg)
+[![CI](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/ci.yml/badge.svg)](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/ci.yml)
+[![Web](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/web.yml/badge.svg)](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/web.yml)
+[![App](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/app.yml/badge.svg)](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/app.yml)
+
 ![The Family logo](./logo.svg)
 
 # The Knowledge Press: The Family
 
-The second edition of The Knowledge Press. It reads a
+The second volume of The Knowledge Press. It reads a
 [GenealogyKG](https://github.com/Flux-Frontiers/genealogy_kg) store built
 from a GEDCOM file, through two apps:
 
@@ -11,19 +20,22 @@ from a GEDCOM file, through two apps:
 - an iPhone, iPad and Mac app that answers questions about the family on
   the device.
 
-The orchard is published at
-[flux-frontiers.github.io/kpress_family](https://flux-frontiers.github.io/kpress_family/)
-with three public families, and its user guide at
-[/docs/](https://flux-frontiers.github.io/kpress_family/docs/).
+*Author: Eric G. Suchanek, PhD -- Flux-Frontiers, Liberty TWP, OH*
 
-**Status.** The web orchard is complete. One grove stands for each surname
-and one tree for each family line, and every tree's wood is the kinship
-graph itself. The home tree at the hub is a full hourglass: the focal
-person's descendants are the crown, and their ancestors are the roots, seen
-through a glass floor over a lit pit. Drive up to a tree to read its line's
-records, add lines to your album, search names, places and years, or ride
-the guided tour, which visits the groves in the order their families began.
-The iPhone, iPad and Mac app is next. The repository started as a copy of
+**Open the orchard:** https://flux-frontiers.github.io/kpress_family/
+
+**User guide:** https://flux-frontiers.github.io/kpress_family/docs/
+
+One grove stands for each surname and one tree for each family line, and
+every tree's wood is the kinship graph itself. The home tree at the hub is a
+full hourglass: the focal person's descendants are the crown, and their
+ancestors are the roots, seen through a glass floor over a lit pit. Drive up
+to a tree to read its line's records, add lines to your album, search names,
+places and years, or ride the guided tour, which visits the groves in the
+order their families began. The published orchard shows three public
+families.
+
+The repository started as a copy of
 [knowledge_press](https://github.com/Flux-Frontiers/knowledge_press); see
 [PROVENANCE.md](PROVENANCE.md).
 
@@ -89,6 +101,28 @@ after writing it scans the export for every redacted name. The web tests
 check what this repository can: every committed fixture was exported with
 the filter on, each living person in it is a name of "Living" with no
 dates, places or page, and git tracks no export, GEDCOM or pack.
+
+## Citation
+
+If you use The Family in your research or project, please cite it:
+
+> Suchanek, E. G. (2026). *The Knowledge Press: The Family* (Version 0.1.0) [Software]. Flux-Frontiers. https://github.com/Flux-Frontiers/kpress_family
+
+```bibtex
+@software{suchanek_kpress_family,
+  author    = {Suchanek, Eric G.},
+  title     = {The {Knowledge Press}: The Family},
+  version   = {0.1.0},
+  year      = {2026},
+  publisher = {Flux-Frontiers},
+  url       = {https://github.com/Flux-Frontiers/kpress_family},
+}
+```
+
+The same metadata is in [`CITATION.cff`](CITATION.cff). The kinship graph
+the orchard grows is GenealogyKG's; please cite it too:
+
+> Suchanek, E. G. (2026). GenealogyKG: Genealogical Knowledge Graph (Version 0.5.0) [Software]. Flux-Frontiers. https://doi.org/10.5281/zenodo.22182369
 
 ## License
 
