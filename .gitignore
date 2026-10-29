@@ -61,3 +61,6 @@ web/public/families/
 
 # Local stills for review; not committed
 renders/
+
+# AgentKG conversational memory (local)
+.agentkg/
