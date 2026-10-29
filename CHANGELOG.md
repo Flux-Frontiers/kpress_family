@@ -8,6 +8,10 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- A logo, `logo.svg`, in the README: an hourglass home tree inside the
+  orchard's ring roads, its people colored by generation, and a pedigree
+  under the title. In the same style as The Disulfides' logo.
+
 - A GitHub Pages deploy of the orchard at
   https://flux-frontiers.github.io/kpress_family/, with a user guide
   (`docs/`, `mkdocs.yml`) built into `/docs/` beside it, as knowledge_press

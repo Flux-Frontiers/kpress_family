@@ -1,3 +1,5 @@
+![The Family logo](./logo.svg)
+
 # The Knowledge Press: The Family
 
 The second edition of The Knowledge Press. It reads a

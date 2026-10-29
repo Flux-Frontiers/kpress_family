@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 380" role="img" aria-labelledby="title desc">
+  <title id="title">The Knowledge Press: The Family</title>
+  <desc id="desc">An hourglass family tree inside the orchard's two ring roads, its descendants in the crown and its ancestors in the roots below a glass floor, each person a bead colored by generation; a pedigree, two parents joined by a marriage bar over their three children; and the title.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="0%">
+      <stop offset="0%" stop-color="#2a1a22"/>
+      <stop offset="50%" stop-color="#3a2430"/>
+      <stop offset="100%" stop-color="#22151c"/>
+    </linearGradient>
+    <!-- In user space: a vertical trunk has no bounding-box width to map a gradient onto. -->
+    <linearGradient id="wood" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="312" y2="140">
+      <stop offset="0%" stop-color="#b89a62"/>
+      <stop offset="60%" stop-color="#d4c088"/>
+      <stop offset="100%" stop-color="#e7d7ad"/>
+    </linearGradient>
+    <!-- GENERATION_COLORS from the orchard (schematic.ts), outward from the trunk person.
+         In user space, for the same reason as the wood: a level bar has no height. -->
+    <linearGradient id="generations" gradientUnits="userSpaceOnUse" x1="100" x2="570" y1="0" y2="0">
+      <stop offset="0%" stop-color="#e8c547"/>
+      <stop offset="14%" stop-color="#e9883a"/>
+      <stop offset="29%" stop-color="#d6534f"/>
+      <stop offset="43%" stop-color="#b54d8f"/>
+      <stop offset="57%" stop-color="#6f5bc0"/>
+      <stop offset="71%" stop-color="#3f83c9"/>
+      <stop offset="86%" stop-color="#2fa7a0"/>
+      <stop offset="100%" stop-color="#5aa84a"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#140b10" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="380" rx="42" fill="url(#bg)"/>
+
+  <!-- The medallion: the home tree, an hourglass, inside the orchard's inner and outer ring roads. -->
+  <g transform="translate(54 -2)" filter="url(#shadow)">
+    <circle cx="166" cy="192" r="150" fill="#2c1b24" opacity="0.96"/>
+    <circle cx="166" cy="192" r="126" fill="none" stroke="#e8dcc3" stroke-width="4" opacity="0.75"/>
+    <circle cx="166" cy="192" r="80" fill="none" stroke="#e8dcc3" stroke-width="2" opacity="0.28"/>
+
+    <!-- The glass floor over the lit pit. -->
+    <ellipse cx="166" cy="250" rx="70" ry="10" fill="#9fd0e0" opacity="0.18"/>
+    <path d="M96 250 L236 250" stroke="#cfe7ef" stroke-width="2" opacity="0.5"/>
+
+    <!-- The trunk; descendants branch above the floor, ancestors below it. -->
+    <g fill="none" stroke="url(#wood)" stroke-linecap="round">
+      <path d="M166 250 L166 172" stroke-width="12"/>
+      <path d="M166 214 Q130 190 104 176" stroke-width="7"/>
+      <path d="M166 214 Q202 190 228 176" stroke-width="7"/>
+      <path d="M166 186 Q150 160 140 140" stroke-width="5"/>
+      <path d="M166 186 Q182 160 192 140" stroke-width="5"/>
+      <path d="M166 250 L166 268" stroke-width="9"/>
+      <path d="M166 268 Q140 280 124 296" stroke-width="5"/>
+      <path d="M166 268 Q192 280 208 296" stroke-width="5"/>
+    </g>
+
+    <!-- The trunk person and spouse. -->
+    <path d="M154 166 L178 166" stroke="#f4f0dc" stroke-width="3" opacity="0.8"/>
+    <circle cx="154" cy="166" r="9" fill="#e8c547"/>
+    <circle cx="178" cy="166" r="9" fill="#e8c547"/>
+
+    <!-- Children, grandchildren, great-grandchildren: outward along the ramp. -->
+    <g>
+      <circle cx="104" cy="174" r="8" fill="#e9883a"/>
+      <circle cx="228" cy="174" r="8" fill="#e9883a"/>
+      <circle cx="140" cy="138" r="8" fill="#e9883a"/>
+      <circle cx="192" cy="138" r="8" fill="#e9883a"/>
+
+      <circle cx="88" cy="160" r="7" fill="#d6534f"/>
+      <circle cx="110" cy="154" r="7" fill="#d6534f"/>
+      <circle cx="222" cy="154" r="7" fill="#d6534f"/>
+      <circle cx="244" cy="160" r="7" fill="#d6534f"/>
+      <circle cx="126" cy="118" r="7" fill="#d6534f"/>
+      <circle cx="150" cy="114" r="7" fill="#d6534f"/>
+      <circle cx="182" cy="114" r="7" fill="#d6534f"/>
+      <circle cx="206" cy="118" r="7" fill="#d6534f"/>
+
+      <circle cx="96" cy="138" r="6" fill="#b54d8f"/>
+      <circle cx="236" cy="138" r="6" fill="#b54d8f"/>
+      <circle cx="138" cy="96" r="6" fill="#b54d8f"/>
+      <circle cx="166" cy="92" r="6" fill="#b54d8f"/>
+      <circle cx="194" cy="96" r="6" fill="#b54d8f"/>
+    </g>
+
+    <!-- Parents and grandparents in the roots: the ramp from its far end. -->
+    <g>
+      <circle cx="124" cy="298" r="8" fill="#5aa84a"/>
+      <circle cx="208" cy="298" r="8" fill="#5aa84a"/>
+      <circle cx="108" cy="306" r="6" fill="#2fa7a0"/>
+      <circle cx="138" cy="310" r="6" fill="#2fa7a0"/>
+      <circle cx="194" cy="310" r="6" fill="#2fa7a0"/>
+      <circle cx="224" cy="306" r="6" fill="#2fa7a0"/>
+    </g>
+  </g>
+
+  <!-- The pedigree, underlining the title: two parents, the marriage bar, three children. -->
+  <g transform="translate(521 200) scale(0.7)" filter="url(#shadow)">
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M241 8 L429 8 M335 8 L335 44 M100 44 L570 44 M100 44 L100 80 M335 44 L335 80 M570 44 L570 80" stroke="#d4c088" stroke-width="14" opacity="0.55"/>
+      <path d="M100 44 L570 44" stroke="url(#generations)" stroke-width="9"/>
+      <path d="M241 8 L429 8 M335 8 L335 44 M100 44 L100 80 M335 44 L335 80 M570 44 L570 80" stroke="#f4f0dc" stroke-width="5" opacity="0.85"/>
+    </g>
+
+    <circle cx="241" cy="8" r="21" fill="#e8c547" stroke="#f7f0d2" stroke-width="5"/>
+    <circle cx="429" cy="8" r="21" fill="#e8c547" stroke="#f7f0d2" stroke-width="5"/>
+
+    <circle cx="100" cy="80" r="15" fill="#e9883a" stroke="#f4f0dc" stroke-width="3"/>
+    <circle cx="335" cy="80" r="15" fill="#d6534f" stroke="#f4f0dc" stroke-width="3"/>
+    <circle cx="570" cy="80" r="15" fill="#b54d8f" stroke="#f4f0dc" stroke-width="3"/>
+  </g>
+
+  <!-- The title. -->
+  <g transform="translate(424 0)" fill="#f4f0dc">
+    <text x="2" y="64" font-size="22" font-family="Arial, Helvetica, sans-serif" letter-spacing="6" fill="#e8d6dc">THE KNOWLEDGE PRESS</text>
+    <text x="0" y="156" font-size="88" font-weight="700" font-family="Georgia, 'Times New Roman', serif" letter-spacing="1">The Family</text>
+    <text x="2" y="334" font-size="28" font-family="Arial, Helvetica, sans-serif" fill="#e7d7ad">surnames  &#8226;  lines  &#8226;  people</text>
+  </g>
+</svg>
