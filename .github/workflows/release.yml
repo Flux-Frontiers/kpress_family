@@ -1,0 +1,54 @@
+name: Release
+
+# doc_kg's release.yml without its PyPI job: there is no package to publish.
+# A v* tag builds the web orchard and cuts a GitHub Release carrying the build
+# and release-notes.md; publishing that Release is what makes Zenodo archive
+# it and mint its DOI.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write  # needed to create GitHub Releases and upload assets
+
+jobs:
+  release:
+    name: Build & Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Test and build the web orchard
+        working-directory: web
+        run: |
+          npm test
+          npm run build
+          (cd dist && zip -qr "../../kpress-family-web-${GITHUB_REF_NAME}.zip" .)
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          ASSET="kpress-family-web-${TAG}.zip"
+          if gh release view "$TAG" &>/dev/null; then
+            echo "Release $TAG already exists — uploading assets only"
+            gh release upload "$TAG" "$ASSET" --clobber
+          else
+            gh release create "$TAG" "$ASSET" \
+              --title "The Knowledge Press: The Family $TAG" \
+              --notes-file release-notes.md
+          fi
