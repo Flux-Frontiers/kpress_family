@@ -6,6 +6,15 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **The ring tour leaves a grove at a drive.** Started from a tree, the
+  guided tour crawled toward the ring, held to the slow pace meant for
+  drifting off the road, and then braked in the middle of the grove to face
+  the grove's sign from well off the road. It now drives to the ring at full
+  tour speed, skips the stop for the grove it set out from, and pulls up at
+  the next grove on the road. Ported from The Forest (knowledge_press #82).
+
 ## [0.1.0] - 2026-10-29
 
 ### Added
