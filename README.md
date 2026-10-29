@@ -6,6 +6,7 @@
 [![CI](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/ci.yml/badge.svg)](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/ci.yml)
 [![Web](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/web.yml/badge.svg)](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/web.yml)
 [![App](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/app.yml/badge.svg)](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/app.yml)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23765496-blue.svg)](https://doi.org/10.5281/zenodo.23765496)
 
 ![The Family logo](./logo.svg)
 
@@ -106,7 +107,7 @@ dates, places or page, and git tracks no export, GEDCOM or pack.
 
 If you use The Family in your research or project, please cite it:
 
-> Suchanek, E. G. (2026). *The Knowledge Press: The Family* (Version 0.1.0) [Software]. Flux-Frontiers. https://github.com/Flux-Frontiers/kpress_family
+> Suchanek, E. G. (2026). *The Knowledge Press: The Family* (Version 0.1.0) [Software]. Flux-Frontiers. https://doi.org/10.5281/zenodo.23765496
 
 ```bibtex
 @software{suchanek_kpress_family,
@@ -115,6 +116,7 @@ If you use The Family in your research or project, please cite it:
   version   = {0.1.0},
   year      = {2026},
   publisher = {Flux-Frontiers},
+  doi       = {10.5281/zenodo.23765496},
   url       = {https://github.com/Flux-Frontiers/kpress_family},
 }
 ```
