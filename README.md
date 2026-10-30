@@ -8,7 +8,7 @@
 [![App](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/app.yml/badge.svg)](https://github.com/Flux-Frontiers/kpress_family/actions/workflows/app.yml)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23765496-blue.svg)](https://doi.org/10.5281/zenodo.23765496)
 
-![The Family logo](./logo.svg)
+<img src="./logo.svg" alt="The Family logo" width="600">
 
 # The Knowledge Press: The Family
 
@@ -19,7 +19,7 @@ from a GEDCOM file, through two apps:
 - a web orchard of family trees, one tree per family line, which you drive
   through in 3-D, and
 - an iPhone, iPad and Mac app that answers questions about the family on
-  the device.
+  the device. The apps are in development and not yet available.
 
 *Author: Eric G. Suchanek, PhD -- Flux-Frontiers, Liberty TWP, OH*
 
@@ -78,7 +78,7 @@ Needs Node 22 and Swift 6.
 make web-install   # once
 make web-test      # node test suite
 make web-build     # typecheck and production build
-make web-dev       # dev server on port 5173
+make web-dev       # dev server on port 5173; __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS=<your-mac>.local for a phone or iPad
 make kit-test      # Swift kit tests
 make gallery       # a portrait of each line tree into renders/lines (needs web-dev)
 ```

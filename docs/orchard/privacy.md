@@ -85,6 +85,15 @@ make family FAMILY=mine FAMILY_REPO=../my-family FAMILY_TITLE="My Family"
 make web-dev
 ```
 
+The dev server also listens on your network address, so a phone or iPad on
+the same network can open `http://<your-mac>.local:5173`. Vite refuses host
+names it does not know, so name yours when you start the server, which keeps
+it out of `vite.config.ts` and the repository:
+
+```bash
+__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS=<your-mac>.local make web-dev
+```
+
 `FAMILY_FOCAL=<id>` names the person the home tree opens on. The
 [README](https://github.com/Flux-Frontiers/kpress_family/blob/main/README.md)
 covers the other options. `web/public/families/` is ignored by git, so the
