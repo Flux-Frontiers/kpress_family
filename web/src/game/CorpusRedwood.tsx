@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { BufferAttribute, BufferGeometry, CanvasTexture, Color, DoubleSide, InstancedMesh, MeshDepthMaterial, MeshStandardMaterial, Object3D, PlaneGeometry, RepeatWrapping, RGBADepthPacking, SRGBColorSpace } from "three";
 import { COARSE_POINTER, textureAnisotropy } from "./Environment";
+import { openPerson } from "./FamilyReader";
 import { HUB_PLAQUE_DIR, HUB_PLAQUE_DIST, type Forest } from "./forest";
 import type { SeasonName } from "./seasons";
 import { Lectern } from "./Signposts";
@@ -133,12 +134,12 @@ const REDWOOD_BODY =
   "The home tree is one person's whole family. Their ancestors are the roots, under the glass: " +
   "parents one tier down, grandparents two, doubling as they go. Their descendants are the crown. " +
   "Every limb is a parent and a child, and every limb is as thick as the family it carries. " +
-  "Click the tree or press B to browse every line and jump to its tree.";
+  "Click the tree for their record, or press B to browse every line and jump to its tree.";
 
 const ANCESTORS_BODY =
   "This is the home tree turned over: one person's ancestors rise as the crown, parents one tier " +
   "up, grandparents two, doubling as they go. Every limb is a child and a parent. Switch back to " +
-  "the whole family from the hub card. Click the tree or press B to browse every line.";
+  "the whole family from the hub card. Click the tree for their record, or press B to browse every line.";
 
 function pointer(on: boolean) {
   document.body.style.cursor = on ? "pointer" : "";
@@ -149,12 +150,13 @@ function RedwoodPlaque({ forest }: { forest: Forest }) {
   const byline = `${c.totalChunks.toLocaleString("en-US")} people · ${forest.trees.length} lines · ${Math.round(c.height)} m`;
   const x = Math.cos(HUB_PLAQUE_DIR) * HUB_PLAQUE_DIST;
   const z = Math.sin(HUB_PLAQUE_DIR) * HUB_PLAQUE_DIST;
-  // Tapping the plaque lists every line, as tapping the tree does.
+  const body = c.ancestors ? ANCESTORS_BODY : REDWOOD_BODY;
+  // Tapping the plaque shows it at reading size.
   return (
     <group position={[x, 0, z]} rotation={[0, Math.atan2(x, z), 0]}
-      onClick={(e) => { e.stopPropagation(); useGame.getState().openCatalog(null); }}
+      onClick={(e) => { e.stopPropagation(); useGame.getState().openPlaque({ title: c.focalName, byline, body }); }}
       onPointerOver={() => pointer(true)} onPointerOut={() => pointer(false)}>
-      <Lectern title={c.focalName} byline={byline} body={c.ancestors ? ANCESTORS_BODY : REDWOOD_BODY} />
+      <Lectern title={c.focalName} byline={byline} body={body} />
     </group>
   );
 }
@@ -223,10 +225,16 @@ export function CorpusRedwood({ forest, season, wood = true }: { forest: Forest;
       {wood ? (<>
       {/* Touch devices skip the redwood's shadows, as they do the book trees' leaves. */}
       <mesh geometry={bark} material={barkMat} castShadow={!COARSE_POINTER} receiveShadow />
-      {/* Tapping the trunk lists every book. An invisible cone takes the click:
+      {/* Tapping the trunk opens the home person's record, or lists every line when their
+          line is not planted. An invisible cone takes the click:
           hit-testing the bark itself, one limb per book, on every pointer move costs too much. */}
       <mesh position={[0, c.height * 0.3, 0]}
-        onClick={(e) => { e.stopPropagation(); useGame.getState().openCatalog(null); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          const own = forest.homeLine ? forest.trees[forest.homeLine.tree] : undefined;
+          if (own) openPerson(own.line.slug, c.focal);
+          else useGame.getState().openCatalog(null);
+        }}
         onPointerOver={() => pointer(true)} onPointerOut={() => pointer(false)}>
         <cylinderGeometry args={[c.baseRadius * 0.35, c.baseRadius, c.height * 0.6, 12]} />
         <meshBasicMaterial visible={false} />

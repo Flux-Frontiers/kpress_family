@@ -78,6 +78,9 @@ Washington's, where the file is his ancestry and his hourglass has nothing
 above the ground. **Show the whole family** turns it back. The orchard
 regrows each time, which takes a moment.
 
+Click the home tree to open the home person's record. Click the plaque in
+front of it to read the plaque full size.
+
 ### The home line
 
 The home person is also marked on their own line's tree. The wood from the

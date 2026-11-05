@@ -6,6 +6,15 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **The home tree opens the home person's record.** Clicking the trunk of
+  the home tree at the hub opens the home person's record in the reader.
+  When the home person's own line is not planted, it lists every line as
+  before. Clicking the plaque in front of the tree shows the plaque at
+  reading size, as the grove signs do. The plaque text and the orchard
+  guide say so.
+
 ### Fixed
 
 - **The ring tour leaves a grove at a drive.** Started from a tree, the
