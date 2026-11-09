@@ -1,53 +1,35 @@
-# Release Notes -- v0.1.0
+# Release Notes -- v0.2.0
 
-> Released: 2026-10-29
+> Released: 2026-11-08
 
-The first release of The Family, the second volume of The Knowledge Press.
-It reads a GenealogyKG store built from a GEDCOM file and grows it as an
-orchard you drive through in the browser: one grove for each surname, one
-tree for each family line, and every tree's wood the kinship graph itself.
-The orchard is published at https://flux-frontiers.github.io/kpress_family/
-with three public families, and its user guide at
-https://flux-frontiers.github.io/kpress_family/docs/.
+The home tree at the hub now opens the home person's record, and the guided
+tour no longer crawls when it starts from inside a grove. The orchard is
+published at https://flux-frontiers.github.io/kpress_family/ and its user
+guide at https://flux-frontiers.github.io/kpress_family/docs/.
 
 ## What changed
 
-**The orchard.** Each line's tree grows from its parent-to-child links, with
-married-in spouses as twigs. Marriages between lines show as gold arcs in the
-god's-eye view. The groves stand on rings around a hub, with four spokes
-spaced evenly around the wheel and rounded curbs where the roads meet.
+**The home tree opens its person.** Clicking the trunk of the home tree
+opens the home person's record in the reader. When that person's own line is
+not planted, it lists every line as before. Clicking the plaque in front of
+the tree shows it at reading size, as the grove signs do.
 
-**The home tree.** At the hub stands one person's full hourglass: their
-descendants as the crown and their ancestors as roots, seen through a glass
-floor over a lit pit. "Show ancestors" turns it over so the ancestors rise as
-the crown. "Make this the home tree" in the record reader regrows the orchard
-around anyone, and the home person is marked on their own line's tree out on
-the rings, the wood up to them gilded and a lantern where they stand.
+**The ring tour leaves a grove at a drive.** Started from a tree, the tour
+used to crawl toward the ring at the off-road pace and brake in the middle of
+the grove to face its sign. It now drives to the ring at full tour speed,
+skips the grove it set out from, and stops at the next grove on the road.
+This is ported from The Forest.
 
-**Reading the family.** The record reader gives each person a page, with
-relatives as links. The lantern search covers names, birthplaces and years.
-The guided tour visits the groves in the order their families began and ends
-at the home tree. Lines added to the album ride in the cart as bound family
-albums, and the album's ranks run from Reader to Keeper of the Line.
+**Docs.** The README carries the Zenodo concept DOI, the docs explain opening
+the dev server from a phone or iPad, and a note warns what an App Store build
+of this edition would need.
 
-**Schematic mode.** V draws every tree as a family diagram: each person a
-bead colored by generation and shaped by sex, brass marriage bars, and name
-plates over the nearest tree, in this view or the wood view.
-
-**Several families.** The start screen and `?family=` choose among families,
-each with its own album and home person. `make demos` builds the Kennedys,
-the Tudors and George Washington's family from genealogy_kg's corpus, with the
-living-person filter on, and two fictional families. Only the three historical
-families are published.
-
-**Privacy.** Living people show only that their details are withheld, and
-tests check that no committed fixture or tracked file carries a living
-person's details.
+**Dependencies.** The web lock is refreshed within the existing ranges; no
+floor changed.
 
 ## Upgrading
 
-Nothing to upgrade: this is the first release. A `v*` tag now builds the
-orchard and publishes a GitHub Release carrying the build and these notes.
+Nothing to do. Rebuild the web data only if your store changed.
 
 ---
 

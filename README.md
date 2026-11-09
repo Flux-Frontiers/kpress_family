@@ -1,4 +1,4 @@
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/Flux-Frontiers/kpress_family/releases)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/Flux-Frontiers/kpress_family/releases)
 [![License: Elastic-2.0](https://img.shields.io/badge/License-Elastic%202.0%20%7C%20app%20proprietary-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-22-blue.svg)](https://nodejs.org/)
 [![Swift](https://img.shields.io/badge/swift-6-blue.svg)](https://www.swift.org/)
@@ -107,13 +107,13 @@ dates, places or page, and git tracks no export, GEDCOM or pack.
 
 If you use The Family in your research or project, please cite it:
 
-> Suchanek, E. G. (2026). *The Knowledge Press: The Family* (Version 0.1.0) [Software]. Flux-Frontiers. https://doi.org/10.5281/zenodo.23765496
+> Suchanek, E. G. (2026). *The Knowledge Press: The Family* (Version 0.2.0) [Software]. Flux-Frontiers. https://doi.org/10.5281/zenodo.23765496
 
 ```bibtex
 @software{suchanek_kpress_family,
   author    = {Suchanek, Eric G.},
   title     = {The {Knowledge Press}: The Family},
-  version   = {0.1.0},
+  version   = {0.2.0},
   year      = {2026},
   publisher = {Flux-Frontiers},
   doi       = {10.5281/zenodo.23765496},
