@@ -6,6 +6,8 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-08
+
 ### Added
 
 - **The home tree opens the home person's record.** Clicking the trunk of
@@ -14,6 +16,12 @@ and the project uses [Semantic Versioning](https://semver.org/).
   before. Clicking the plaque in front of the tree shows the plaque at
   reading size, as the grove signs do. The plaque text and the orchard
   guide say so.
+
+### Changed
+
+- The web lock is refreshed to the newest versions the existing ranges
+  allow (React 19.2.9, three 0.186.1, Vite 8.3.6, zustand 5.1.0, Tailwind
+  4.3.5). No floor changed.
 
 ### Fixed
 
