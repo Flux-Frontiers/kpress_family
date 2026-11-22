@@ -6,6 +6,16 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **A Flux-Frontiers fleet mark.** The drop line from The Family's own
+  logo, two spouses, a drop line and their children, redrawn in the
+  fleet's Art Techno style, with the tagline SURNAMES . LINES . PEOPLE. It
+  names the project wherever the fleet's other marks appear; the logo, the
+  app icon and the seal are unchanged. `scripts/build_logo.py` draws the
+  mark, a 64 px icon and a banner as SVG under `assets/` and writes the
+  PNGs.
+
 ## [0.2.0] - 2026-11-08
 
 ### Added
